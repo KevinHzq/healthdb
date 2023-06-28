@@ -1,9 +1,9 @@
 Package: odcfun
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Overdose Cohort Team In-house Functions
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Kevin Hu
+Maintainer: Kevin Hu <kevin.hu@bccdc.ca>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
@@ -11,5 +11,6 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     dplyr,
+    lubridate,
     magrittr
 RoxygenNote: 7.2.3
