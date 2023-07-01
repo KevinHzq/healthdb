@@ -10,7 +10,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    data.table,
     dplyr,
+    dtplyr,
     lubridate,
-    magrittr
+    magrittr,
+    stringr,
+    tidyr
 RoxygenNote: 7.2.3
