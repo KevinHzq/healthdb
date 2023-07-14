@@ -1,8 +1,8 @@
-identify_code <- function(dat, clnt_id_nm = "moh_study_id", code_col_prefix, codes_vec, match_type = c("start", "exact", "regex"), n_per_clnt = 1, fuzzy_cd = NULL, collaspe_by_nm = NULL, trans_longer = FALSE) {
+identify_code <- function(dat, clnt_id_nm = "moh_study_id", code_col_nm, codes_vec, match_type = c("start", "exact", "regex"), n_per_clnt = 1, fuzzy_cd = NULL, collaspe_by_nm = NULL, trans_longer = FALSE) {
   #stop if conflict
   if(all(n_per_clnt == 1, !is.null(fuzzy_cd))) stop("Fuzzy code should not be supplied if only one record per client is required. If appropriate, include it in codes_vec instead.")
 
-  #add fuzzy_cd into code_vec so that only one filter is engouh afterward
+  #add fuzzy_cd into code_vec so that only one filter is enough afterward
   codes_vec <- c(codes_vec, fuzzy_cd) %>% unique()
 
   #use data.table and dtplyr to speed up the performance
@@ -12,10 +12,10 @@ identify_code <- function(dat, clnt_id_nm = "moh_study_id", code_col_prefix, cod
   if (trans_longer) {
     dat <- dat %>%
       tidyr::pivot_longer(
-        cols = dplyr::starts_with(code_col_prefix),
+        cols = dplyr::starts_with(code_col_nm),
         names_to = "cd_position",
-        names_prefix = code_col_prefix,
-        values_to = code_col_prefix,
+        names_prefix = code_col_nm,
+        values_to = code_col_nm,
         values_drop_na = TRUE
       ) #%>%
     #dplyr::as_tibble()
@@ -24,15 +24,15 @@ identify_code <- function(dat, clnt_id_nm = "moh_study_id", code_col_prefix, cod
   #code filter by match types
   if (match_type == "start")
   {
-    dat <- dplyr::filter(dat, stringr::str_detect(.data[[code_col_prefix]], paste("^", codes_vec, collapse = "|", sep = "")))
+    dat <- dplyr::filter(dat, stringr::str_detect(.data[[code_col_nm]], paste("^", codes_vec, collapse = "|", sep = "")))
   }
   if (match_type == "regex")
   {
-    dat <- dplyr::filter(dat, stringr::str_detect(.data[[code_col_prefix]], paste(codes_vec, collapse = "|", sep = "")))
+    dat <- dplyr::filter(dat, stringr::str_detect(.data[[code_col_nm]], paste(codes_vec, collapse = "|", sep = "")))
   }
   if (match_type == "exact")
   {
-    dat <- dplyr::filter(dat, .data[[code_col_prefix]] %in% codes_vec)
+    dat <- dplyr::filter(dat, .data[[code_col_nm]] %in% codes_vec)
   }
 
   #save intermediate data.table result
@@ -51,7 +51,7 @@ identify_code <- function(dat, clnt_id_nm = "moh_study_id", code_col_prefix, cod
     else dat <- dat %>% dplyr::filter(dplyr::n() >= n_per_clnt)
 
     #records cannot be all fuzzy within person
-    if (!is.null(fuzzy_cd)) dat <- dat %>% dplyr::filter(!all(.data[[code_col_prefix]] %in% fuzzy_cd))
+    if (!is.null(fuzzy_cd)) dat <- dat %>% dplyr::filter(!all(.data[[code_col_nm]] %in% fuzzy_cd))
 
     #clean up grouping before output
     dat %>% dplyr::ungroup()
