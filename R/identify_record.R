@@ -1,23 +1,32 @@
-identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = c("start", "in", "regex", "between"), n_per_clnt = 1, fuzzy_val = NULL, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "in", n_per_clnt = 1, fuzzy_val = NULL, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+  # input checks
+  if (any(sapply(list(clnt_id_nm, var_nm, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
+
+  if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
+
+  if (match_type %in% c("in", "between")) {
+    if (class(dat[[var_nm]]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
+  }
+
   # stop if conflict
   if (all(n_per_clnt == 1, !is.null(fuzzy_val))) stop("Fuzzy val should not be supplied if only one record per client is required. If appropriate, include it in val_vector instead.")
 
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(dat)[, rid := .I]
 
-  #stop if n_per_clnt doesn't make sense
+  # stop if n_per_clnt doesn't make sense
   if (!is.null(collapse_by_nm)) {
-    max_n <- dt[,  .(max_n_per_clnt = data.table::uniqueN(collapse_by_nm)), by = clnt_id_nm][, max(max_n_per_clnt)]
-    }
-  else {
-    max_n <- dt[,  .N, by = clnt_id_nm][, max(N)]
+    max_n <- dt[, .(max_n_per_clnt = data.table::uniqueN(collapse_by_nm)), by = clnt_id_nm][, max(max_n_per_clnt)]
+  } else {
+    max_n <- dt[, .N, by = clnt_id_nm][, max(N)]
   }
 
-  if(max_n < n_per_clnt) stop("The maximum of n_per_clnt in the data is", max_n, "and smaller than the target specified. Try reduce n_per_clnt.")
+  if (max_n < n_per_clnt) stop("The maximum of n_per_clnt in the data is", max_n, "and smaller than the target specified. Try reduce n_per_clnt.")
 
   # pivot longer to simplify logic of interpreting n per client and filtering
   if (multi_var_cols) {
     # remove columns with only NAs, otherwise melt will give error due to unknown col type
+    # therefore, if this happened, the output would have fewer columns than the raw data
     dt <- dt[, .SD, .SDcols = function(x) !all(is.na(x))]
 
     dt <- data.table::melt(dt,
@@ -56,18 +65,23 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = c(
     dt[, incl := `%between%`(.SD, val_vector) %>% any(), by = "rid", .SDcols = var_nm]
   }
 
-  #explain the configuration in plain language to prompt user thinking
-  if (verbose) cat("Searching conditions:\nEach client has at least", n_per_clnt, "of distinct", ifelse(is.null(collapse_by_nm), "record(s)", collapse_by_nm),
+  # explain the configuration in plain language to prompt user thinking
+  if (verbose) {
+    cat(
+      "\nSearching conditions:\nEach client has at least", n_per_clnt, "of distinct", ifelse(is.null(collapse_by_nm), "record(s)", collapse_by_nm),
       "\n  where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm, "column",
       "\n    contains a value", match_msg, match_str,
-      ifelse(n_per_clnt > 1 & !is.null(fuzzy_val), paste("\nExcluding clients which all their matched values are in set", deparse(fuzzy_val)), ""))
+      ifelse(n_per_clnt > 1 & !is.null(fuzzy_val), paste("\nExcluding clients which all their matched values are in set", deparse(fuzzy_val)), ""), "\n"
+    )
+  }
 
   # run filter and save; the above filter only updates the dat with new columns
   dt <- dt[incl == TRUE]
   dt[, incl := NULL]
   n_row <- nrow(dt)
-  if (n_row == 0) warning("No match found. Check val_vector.")
-  else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm])
+  if (n_row == 0) {
+    warning("No match found. Check val_vector.")
+  } else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
 
   # records cannot be all fuzzy within person
   if (!is.null(fuzzy_val)) {
@@ -77,8 +91,7 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = c(
     if (n_row != 0 & nrow(dt) == 0) {
       warning("Some matches found but all excluded by fuzzy_val.")
       n_row <- nrow(dt)
-    }
-    else if (verbose) cat("\nNumber of clients with fuzz_val exclusion:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm])
+    } else if (verbose) cat("\nNumber of clients with fuzz_val exclusion:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
   }
 
   # pivot back to one-row-per-record form for easier n_per_client interpretation
@@ -101,8 +114,9 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = c(
     }
 
     dt <- dt[.(n_filter[, ..clnt_id_nm]), on = clnt_id_nm]
-    if (n_row != 0 & nrow(dt) == 0) warning("Some matches found but all excluded by counting n_per_clnt.")
-    else if (verbose) cat("\nNumber of clients satisfied all conditions:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm])
+    if (n_row != 0 & nrow(dt) == 0) {
+      warning("Some matches found but all excluded by counting n_per_clnt.")
+    } else if (verbose) cat("\nNumber of clients satisfied all conditions:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
 
     # convert back to dataframe before output
     data.table::setDF(dt)
