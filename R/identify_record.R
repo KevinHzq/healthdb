@@ -5,7 +5,7 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-    if (class(dat[[var_nm]]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
+    if (class(dat[, grep(var_nm, names(dat))]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
   }
 
   # stop if conflict
@@ -47,22 +47,22 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
   if (match_type == "start") {
     match_str <- paste0("^", val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
-    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = var_nm]
+    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
   }
   if (match_type == "regex") {
     match_str <- paste0(val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
-    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = var_nm]
+    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
   }
   if (match_type == "in") {
     match_str <- deparse(val_vector)
     match_msg <- "in set"
-    dt[, incl := `%in%`(unlist(.SD), val_vector) %>% any(), by = "rid", .SDcols = var_nm]
+    dt[, incl := `%in%`(unlist(.SD), val_vector) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
   }
   if (match_type == "between") {
     match_str <- deparse(val_vector)
     match_msg <- "between range (bounds included)"
-    dt[, incl := `%between%`(.SD, val_vector) %>% any(), by = "rid", .SDcols = var_nm]
+    dt[, incl := `%between%`(.SD, val_vector) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
   }
 
   # explain the configuration in plain language to prompt user thinking
@@ -85,8 +85,8 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
 
   # records cannot be all fuzzy within person
   if (!is.null(fuzzy_val)) {
-    dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), fuzzy_val) %>% all(), by = clnt_id_nm, .SDcols = var_nm]
-    dt <- dt[fuzzy == FALSE]
+    dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), val_vector) %>% any(), by = clnt_id_nm, .SDcols = var_nm]
+    dt <- dt[fuzzy == TRUE]
     dt[, fuzzy := NULL]
     if (n_row != 0 & nrow(dt) == 0) {
       warning("Some matches found but all excluded by fuzzy_val.")
