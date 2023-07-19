@@ -1,11 +1,11 @@
-identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "in", n_per_clnt = 1, fuzzy_val = NULL, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, fuzzy_val = NULL, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
   # input checks
-  if (any(sapply(list(clnt_id_nm, var_nm, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
+  if (any(sapply(list(clnt_id_nm, var_nm_pattern, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
 
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-    if (class(dat[, grep(var_nm, names(dat))]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
+    if (class(dat[, grep(var_nm_pattern, names(dat))]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
   }
 
   # stop if conflict
@@ -23,53 +23,51 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
 
   if (max_n < n_per_clnt) stop("The maximum of n_per_clnt in the data is", max_n, "and smaller than the target specified. Try reduce n_per_clnt.")
 
-  # pivot longer to simplify logic of interpreting n per client and filtering
-  if (multi_var_cols) {
-    # remove columns with only NAs, otherwise melt will give error due to unknown col type
-    # therefore, if this happened, the output would have fewer columns than the raw data
-    dt <- dt[, .SD, .SDcols = function(x) !all(is.na(x))]
-
-    dt <- data.table::melt(dt,
-      measure.vars = patterns(paste0("^", var_nm)),
-      variable.name = "position",
-      value.name = var_nm
-    )
+  # force extract match if single var col
+  if (!multi_var_cols) {
+    var_nm_pattern <- paste0("^", var_nm_pattern, "$")
   }
 
   # add fuzzy_val into code_vec or fuzzy_val won't be identify at all; not needed for range filter
   if (match_type != "between") val_vector <- c(val_vector, fuzzy_val) %>% unique()
 
   # code filter by match types:
-  # steps to preserve original record as a row without copying the original data (use extra memory):
-  # 1 compute incl indicator by record_id, so all sub-rows (long form) within record would have the same value
-  # 2 filter by incl
-  # 3 pivot back to wide form
+  # logic to preserve original record as a row without copying the original data (use extra memory):
+  # 1 get a vector of all possible values
+  # 2 find the vector of matched values by match_type
+  # 3 compute incl indicator by row id across var columns, so that TRUE if any col has a match
+  # 4 filter rows by incl
+
+  all_val <- dt[, unlist(.SD) %>% stats::na.omit() %>% unique(), .SDcols = patterns(var_nm_pattern)]
+
   if (match_type == "start") {
     match_str <- paste0("^", val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
-    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
+    match_val <- all_val[data.table::like(all_val, match_str)]
   }
   if (match_type == "regex") {
     match_str <- paste0(val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
-    dt[, incl := data.table::like(.SD, match_str) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
+    match_val <- all_val[data.table::like(all_val, match_str)]
   }
   if (match_type == "in") {
     match_str <- deparse(val_vector)
-    match_msg <- "in set"
-    dt[, incl := `%in%`(unlist(.SD), val_vector) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
+    match_msg <- "exactly matched values in set"
+    match_val <- val_vector
   }
   if (match_type == "between") {
     match_str <- deparse(val_vector)
     match_msg <- "between range (bounds included)"
-    dt[, incl := `%between%`(.SD, val_vector) %>% any(), by = "rid", .SDcols = patterns(paste0("^", var_nm))]
+    match_val <- all_val[`%between%`(all_val, val_vector)]
   }
+
+  dt[, incl := `%in%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
 
   # explain the configuration in plain language to prompt user thinking
   if (verbose) {
     cat(
       "\nSearching conditions:\nEach client has at least", n_per_clnt, "of distinct", ifelse(is.null(collapse_by_nm), "record(s)", collapse_by_nm),
-      "\n  where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm, "column",
+      "\n  where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column",
       "\n    contains a value", match_msg, match_str,
       ifelse(n_per_clnt > 1 & !is.null(fuzzy_val), paste("\nExcluding clients which all their matched values are in set", deparse(fuzzy_val)), ""), "\n"
     )
@@ -85,7 +83,8 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
 
   # records cannot be all fuzzy within person
   if (!is.null(fuzzy_val)) {
-    dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), val_vector) %>% any(), by = clnt_id_nm, .SDcols = var_nm]
+    match_val_wo_fuzzy <- setdiff(match_val, fuzzy_val)
+    dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), match_val_wo_fuzzy) %>% any(), by = clnt_id_nm, .SDcols = patterns(var_nm_pattern)]
     dt <- dt[fuzzy == TRUE]
     dt[, fuzzy := NULL]
     if (n_row != 0 & nrow(dt) == 0) {
@@ -94,8 +93,6 @@ identify_record <- function(dat, clnt_id_nm, var_nm, val_vector, match_type = "i
     } else if (verbose) cat("\nNumber of clients with fuzz_val exclusion:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
   }
 
-  # pivot back to one-row-per-record form for easier n_per_client interpretation
-  if (multi_var_cols) dt <- data.table::dcast(dt, ... ~ position, value.var = var_nm)
   dt[, rid := NULL]
 
   # job done if getting any records
