@@ -5,7 +5,7 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-    if (class(dat[, grep(var_nm_pattern, names(dat))]) != class(val_vector)) warning("val_vector is not the same type as the var_nm column.")
+    if (class(dat[, grep(var_nm_pattern, names(dat))]) != class(val_vector)) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
   }
 
   # stop if conflict
@@ -41,8 +41,10 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   all_val <- dt[, unlist(.SD) %>% stats::na.omit() %>% unique(), .SDcols = patterns(var_nm_pattern)]
 
   if (match_type == "start") {
+    #match_str/msg is for verbose
     match_str <- paste0("^", val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
+    #extract matched values from all possible ones
     match_val <- all_val[data.table::like(all_val, match_str)]
   }
   if (match_type == "regex") {
@@ -82,6 +84,8 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   } else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
 
   # records cannot be all fuzzy within person
+  # because keeping original record per row, values in var cols may contain those outside the matched set, so all val == fuzzy would not give correct answer, e.g., fuzzy plus non-match would not be excluded
+  # therefore, the matched set (match_val) was made in previous steps and used here to ensure non-match won't affect the result but still be kept as is in original records.
   if (!is.null(fuzzy_val)) {
     match_val_wo_fuzzy <- setdiff(match_val, fuzzy_val)
     dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), match_val_wo_fuzzy) %>% any(), by = clnt_id_nm, .SDcols = patterns(var_nm_pattern)]

@@ -11,8 +11,8 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     data.table,
+    dbplyr,
     dplyr,
-    dtplyr,
     lubridate,
     magrittr,
     stringr,
