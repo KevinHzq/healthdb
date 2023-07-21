@@ -1,15 +1,12 @@
-identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, fuzzy_val = NULL, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
   # input checks
   if (any(sapply(list(clnt_id_nm, var_nm_pattern, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
 
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-    if (class(dat[, grep(var_nm_pattern, names(dat))]) != class(val_vector)) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
+   if (class(dat[, grep(var_nm_pattern, names(dat))[1]]) != class(val_vector)) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
   }
-
-  # stop if conflict
-  if (all(n_per_clnt == 1, !is.null(fuzzy_val))) stop("Fuzzy val should not be supplied if only one record per client is required. If appropriate, include it in val_vector instead.")
 
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(dat)[, rid := .I]
@@ -27,9 +24,6 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   if (!multi_var_cols) {
     var_nm_pattern <- paste0("^", var_nm_pattern, "$")
   }
-
-  # add fuzzy_val into code_vec or fuzzy_val won't be identify at all; not needed for range filter
-  if (match_type != "between") val_vector <- c(val_vector, fuzzy_val) %>% unique()
 
   # code filter by match types:
   # logic to preserve original record as a row without copying the original data (use extra memory):
@@ -69,9 +63,8 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   if (verbose) {
     cat(
       "\nSearching conditions:\nEach client has at least", n_per_clnt, "of distinct", ifelse(is.null(collapse_by_nm), "record(s)", collapse_by_nm),
-      "\n  where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column",
-      "\n    contains a value", match_msg, match_str,
-      ifelse(n_per_clnt > 1 & !is.null(fuzzy_val), paste("\nExcluding clients which all their matched values are in set", deparse(fuzzy_val)), ""), "\n"
+      "\n - where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column",
+      "\n   - contains a value", match_msg, match_str, "\n"
     )
   }
 
@@ -82,20 +75,6 @@ identify_record <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_t
   if (n_row == 0) {
     warning("No match found. Check val_vector.")
   } else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
-
-  # records cannot be all fuzzy within person
-  # because keeping original record per row, values in var cols may contain those outside the matched set, so all val == fuzzy would not give correct answer, e.g., fuzzy plus non-match would not be excluded
-  # therefore, the matched set (match_val) was made in previous steps and used here to ensure non-match won't affect the result but still be kept as is in original records.
-  if (!is.null(fuzzy_val)) {
-    match_val_wo_fuzzy <- setdiff(match_val, fuzzy_val)
-    dt[, fuzzy := `%in%`(unlist(.SD) %>% stats::na.omit(), match_val_wo_fuzzy) %>% any(), by = clnt_id_nm, .SDcols = patterns(var_nm_pattern)]
-    dt <- dt[fuzzy == TRUE]
-    dt[, fuzzy := NULL]
-    if (n_row != 0 & nrow(dt) == 0) {
-      warning("Some matches found but all excluded by fuzzy_val.")
-      n_row <- nrow(dt)
-    } else if (verbose) cat("\nNumber of clients with fuzz_val exclusion:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
-  }
 
   dt[, rid := NULL]
 
