@@ -62,8 +62,8 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
   # explain the configuration in plain language to prompt user thinking
   if (verbose) {
     cat(
-      "\nSearching conditions:\nEach client has at least", n_per_clnt, "of distinct", ifelse(is.null(collapse_by_nm), "record(s)", collapse_by_nm),
-      "\n - where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column",
+      "\nSearching conditions:\nEach client has at least", n_per_clnt, "record(s)", ifelse(is.null(collapse_by_nm), "", paste("with distinct", collapse_by_nm)),
+      "\n - where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column in each record",
       "\n   - contains a value", match_msg, match_str, "\n"
     )
   }
