@@ -1,6 +1,8 @@
 #' @keywords internal
 "_PACKAGE"
 
+utils::globalVariables(c("patterns"))
+
 ## usethis namespace: start
 #' @importFrom data.table %between%
 #' @importFrom data.table .BY
@@ -12,5 +14,6 @@
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
+#' @importFrom rlang .data
 ## usethis namespace: end
 NULL

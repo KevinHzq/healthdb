@@ -15,6 +15,7 @@ Imports:
     dplyr,
     lubridate,
     magrittr,
-    stringr,
+    purrr,
+    rlang,
     tidyr
 RoxygenNote: 7.2.3
