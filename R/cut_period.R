@@ -30,7 +30,7 @@
 cut_period <- function(dat, start, end, len, unit = "day", .dt_trans = NULL) {
   # input checks
   new_cols <- c("segment_start", "segment_end", "segment_id")
-  if (any(colnames(dat) %in% new_cols)) stop("Existing column names conflict with new names being created:", paste(new_cols, collapse = ", "), ". Please rename existing names.")
+  dat <- dat %>% dplyr::rename_with(~ paste(.x, "og", sep = "_", recycle0 = TRUE), dplyr::any_of(new_cols))
 
   if (!is.null(.dt_trans)) {
     dat <- dat %>% dplyr::mutate(dplyr::across(c({{ start }}, {{ end }}), .dt_trans))
