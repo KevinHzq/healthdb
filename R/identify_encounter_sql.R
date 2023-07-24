@@ -8,8 +8,8 @@ identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_v
 
   if (match_type %in% c("in", "between")) {
     db_head <- utils::head(remote_tbl, n = 1) %>% dplyr::collect()
-    var_class <- db_head[[grep(var_nm_pattern, names(db_head))[1]]] %>% class()
-    if (any(var_class != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", var_class, ").")
+    var_class <- sapply(db_head[, grep(var_nm_pattern, names(db_head))], class)
+    if (any(var_class != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", paste(var_class, collapse = ", "), ").")
   }
 
   #place holder for temp column names

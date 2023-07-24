@@ -5,14 +5,20 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-   if (any(class(dat[[grep(var_nm_pattern, names(dat))[1]]]) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
+   if (any(sapply(dt[, grep(var_nm_pattern, names(dt))], class) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm columns (", paste(sapply(dt[, grep(var_nm_pattern, names(dt))], class), collapse = ", "), ").")
   }
 
   #place holder for temp column names
   rid <- max_n_per_clnt <- N <- incl <- n_collapsed <- NULL
 
   # use data.table to speed up the performance
-  dt <- data.table::as.data.table(dat)[, rid := .I]
+  dt <- data.table::as.data.table(dat)
+
+  #treat potential name conflicts
+  temp_cols <- c("rid", "incl")
+  data.table::setnames(dat, old = temp_cols, new = paste(temp_cols, "og", sep = "."), skip_absent = TRUE)
+
+  dt[, rid := .I]
 
   # stop if n_per_clnt doesn't make sense
   if (!is.null(collapse_by_nm)) {
@@ -60,7 +66,14 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
     match_val <- all_val[`%between%`(all_val, val_vector)]
   }
 
-  dt[, incl := `%in%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
+  #use %chin% to speed up character matching
+  if (all(is.character(match_val), sapply(dt[, grep(var_nm_pattern, names(dt))], is.character)))
+  {
+    dt[, incl := data.table::`%chin%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
+  }
+  else {
+    dt[, incl := `%in%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
+  }
 
   # explain the configuration in plain language to prompt user thinking
   if (verbose) {
@@ -73,13 +86,13 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
 
   # run filter and save; the above filter only updates the dat with new columns
   dt <- dt[incl == TRUE]
-  dt[, incl := NULL]
+
   n_row <- nrow(dt)
   if (n_row == 0) {
     warning("No match found. Check val_vector.")
   } else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
 
-  dt[, rid := NULL]
+  dt[, c(temp_cols) := NULL]
 
   # job done if getting any records
   if (n_per_clnt == 1) {
