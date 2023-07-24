@@ -9,10 +9,13 @@ identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_v
   if (match_type %in% c("in", "between")) {
     db_head <- utils::head(remote_tbl, n = 1) %>% dplyr::collect()
     var_class <- db_head[[grep(var_nm_pattern, names(db_head))[1]]] %>% class()
-    if (var_class != class(val_vector)) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", var_class, ").")
+    if (any(var_class != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", var_class, ").")
   }
 
-  # force extract match if single var col
+  #place holder for temp column names
+  n_collapsed <- n_collapsed_id <- NULL
+
+  # force exact match if single var col
   if (!multi_var_cols) {
     var_nm_regex <- paste0("^", var_nm_pattern, "$")
   } else {

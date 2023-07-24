@@ -5,22 +5,25 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-   if (class(dat[, grep(var_nm_pattern, names(dat))[1]]) != class(val_vector)) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
+   if (any(class(dat[[grep(var_nm_pattern, names(dat))[1]]]) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", class(dat[, grep(var_nm_pattern, names(dat))]),").")
   }
+
+  #place holder for temp column names
+  rid <- max_n_per_clnt <- N <- incl <- n_collapsed <- NULL
 
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(dat)[, rid := .I]
 
   # stop if n_per_clnt doesn't make sense
   if (!is.null(collapse_by_nm)) {
-    max_n <- dt[, .(max_n_per_clnt = data.table::uniqueN(collapse_by_nm)), by = clnt_id_nm][, max(max_n_per_clnt)]
+    max_n <- dt[, list(max_n_per_clnt = data.table::uniqueN(collapse_by_nm)), by = clnt_id_nm][, max(max_n_per_clnt)]
   } else {
     max_n <- dt[, .N, by = clnt_id_nm][, max(N)]
   }
 
   if (max_n < n_per_clnt) stop("The maximum of n_per_clnt in the data is", max_n, "and smaller than the target specified. Try reduce n_per_clnt.")
 
-  # force extract match if single var col
+  # force exact match if single var col
   if (!multi_var_cols) {
     var_nm_pattern <- paste0("^", var_nm_pattern, "$")
   }
@@ -88,12 +91,12 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
   else {
     # count differently if unit id is supplied by collaspe_by_nm
     if (!is.null(collapse_by_nm)) {
-      n_filter <- dt[, .(n_collapsed = data.table::uniqueN(.SD)), by = clnt_id_nm, .SDcols = collapse_by_nm][n_collapsed >= n_per_clnt]
+      n_filter <- dt[, list(n_collapsed = data.table::uniqueN(.SD)), by = clnt_id_nm, .SDcols = collapse_by_nm][n_collapsed >= n_per_clnt]
     } else {
       n_filter <- dt[, .N, by = clnt_id_nm][N >= n_per_clnt]
     }
 
-    dt <- dt[.(n_filter[, ..clnt_id_nm]), on = clnt_id_nm]
+    dt <- dt[list(n_filter[, clnt_id_nm, with = FALSE]), on = clnt_id_nm]
     if (n_row != 0 & nrow(dt) == 0) {
       warning("Some matches found but all excluded by counting n_per_clnt.")
     } else if (verbose) cat("\nNumber of clients satisfied all conditions:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
