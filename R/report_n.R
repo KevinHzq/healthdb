@@ -23,9 +23,9 @@
 report_n <- function(..., on_nm) {
   if (!is.character(on_nm)) stop("The `on_nm` argument must be character.")
 
-  if (all(sapply(list(...), function(x) on_nm %in% names(x)))) {
-    sapply(list(...), function(x) dplyr::group_by(x, .data[[on_nm]]) %>% dplyr::n_groups())
-  } else {
-    stop("All data must have the", on_nm, "column.")
-  }
+  col_nm <- sapply(list(...), function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else names(x)})
+
+  if (all(sapply(col_nm, function(x) on_nm %in% x))) stop("All data must have the ", on_nm, " column.")
+
+  sapply(list(...), function(x) dplyr::group_by(x, .data[[on_nm]]) %>% dplyr::n_groups())
 }
