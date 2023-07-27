@@ -54,12 +54,12 @@ identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_v
     match_val <- all_val[data.table::like(all_val, match_str)]
   }
   if (match_type == "in") {
-    match_str <- deparse(val_vector)
+    match_str <- deparse(substitute(val_vector))
     match_msg <- "exactly matched values in set"
     match_val <- val_vector
   }
   if (match_type == "between") {
-    match_str <- deparse(val_vector)
+    match_str <- deparse(substitute(val_vector))
     match_msg <- "between range (bounds included)"
     match_val <- all_val[`%between%`(all_val, val_vector)]
   }
