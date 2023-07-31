@@ -2,7 +2,7 @@
 
 export("%>%")
 export(cut_period)
-export(is_any_dates)
+export(if_dates)
 export(report_n)
 importFrom(data.table,"%between%")
 importFrom(data.table,":=")
