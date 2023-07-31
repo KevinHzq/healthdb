@@ -18,14 +18,14 @@ A sequence of distinct n in on_nm for each data frames
 This function is intended to mimic dplyr::n_distinct() for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study.
 }
 \examples{
-#some exclusions
+# some exclusions
 iris_1 <- subset(iris, Petal.Length > 1)
 iris_2 <- subset(iris, Petal.Length > 2)
 
-#get n at each operation
+# get n at each operation
 n <- report_n(iris, iris_1, iris_2, on_nm = "Species")
 n
 
-#get the difference at each step
+# get the difference at each step
 diff(n)
 }

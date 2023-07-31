@@ -22,6 +22,6 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = TR
     cat("\nOf the", cat_n[2], report_on_nm, "in data,", diff(cat_n), "were excluded.\n")
   }
 
-  if ("dtplyr_step" %in% class(keep_rows)) keep_rows <- as_tibble(keep_rows)
+  if ("dtplyr_step" %in% class(keep_rows)) keep_rows <- dplyr::as_tibble(keep_rows)
   return(keep_rows)
 }
