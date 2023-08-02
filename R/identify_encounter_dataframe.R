@@ -1,4 +1,4 @@
-identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
   # input checks
   if (any(sapply(list(clnt_id_nm, var_nm_pattern, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
 
@@ -12,11 +12,11 @@ identify_encounter <- function(dat, clnt_id_nm, var_nm_pattern, val_vector, matc
   rid <- max_n_per_clnt <- N <- incl <- n_collapsed <- NULL
 
   # use data.table to speed up the performance
-  dt <- data.table::as.data.table(dat)
+  dt <- data.table::as.data.table(data)
 
   #treat potential name conflicts
   temp_cols <- c("rid", "incl")
-  data.table::setnames(dat, old = temp_cols, new = paste(temp_cols, "og", sep = "."), skip_absent = TRUE)
+  data.table::setnames(data, old = temp_cols, new = paste(temp_cols, "og", sep = "."), skip_absent = TRUE)
 
   dt[, rid := .I]
 

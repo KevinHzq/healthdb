@@ -1,13 +1,13 @@
-identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE, query_only = TRUE) {
+identify_encounter.tbl_sql <- function(data, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE, query_only = TRUE) {
   # input checks
-  if (!any(class(remote_tbl) %in% c("tbl_dbi", "tbl_sql", "tbl_lazy"))) stop("remote_tbl must be a remote database table made by e.g., tbl(db_connection, in_schema('schema_name', 'table_name'))")
+  if (!any(class(data) %in% c("tbl_dbi", "tbl_sql", "tbl_lazy"))) stop("remote_tbl must be a remote database table made by e.g., tbl(db_connection, in_schema('schema_name', 'table_name'))")
 
   if (any(sapply(list(clnt_id_nm, var_nm_pattern, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
 
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-    db_head <- utils::head(remote_tbl, n = 1) %>% dplyr::collect()
+    db_head <- utils::head(data, n = 1) %>% dplyr::collect()
     var_class <- sapply(db_head[, grep(var_nm_pattern, names(db_head))], class)
     if (any(var_class != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm column (", paste(var_class, collapse = ", "), ").")
   }
@@ -30,7 +30,7 @@ identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_v
   # 4 filter rows by incl
 
   # Note that SQL does not support regular expression. The match is done by collecting all distinct possible values locally then using regex in R. The result is plugged into subseqent query as: WHERE var_nm IN (match_result).
-  all_val <- remote_tbl %>%
+  all_val <- data %>%
     tidyr::pivot_longer(
       cols = dplyr::matches({{ var_nm_regex }}),
       names_to = "position",
@@ -65,7 +65,7 @@ identify_encounter_sql <- function(remote_tbl, clnt_id_nm, var_nm_pattern, val_v
   }
 
   # run filter with matched value set
-  q_any_match <- remote_tbl %>%
+  q_any_match <- data %>%
     dplyr::filter(dplyr::if_any(dplyr::matches(var_nm_regex), ~ . %in% dbplyr::sql(dbplyr::escape_ansi(match_val, collapse = ",", parens = TRUE))))
 
   # explain the configuration in plain language to prompt user thinking
