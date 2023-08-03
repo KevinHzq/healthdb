@@ -5,16 +5,16 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
   if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
 
   if (match_type %in% c("in", "between")) {
-   if (any(sapply(dt[, grep(var_nm_pattern, names(dt))], class) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm columns (", paste(sapply(dt[, grep(var_nm_pattern, names(dt))], class), collapse = ", "), ").")
+    if (any(sapply(dt[, grep(var_nm_pattern, names(dt))], class) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm columns (", paste(sapply(dt[, grep(var_nm_pattern, names(dt))], class), collapse = ", "), ").")
   }
 
-  #place holder for temp column names
-  rid <- max_n_per_clnt <- N <- incl <- n_collapsed <- NULL
+  # place holder for temp column names
+  rid <- max_n_per_clnt <- N <- incl <- NULL
 
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(data)
 
-  #treat potential name conflicts
+  # treat potential name conflicts
   temp_cols <- c("rid", "incl")
   data.table::setnames(data, old = temp_cols, new = paste(temp_cols, "og", sep = "."), skip_absent = TRUE)
 
@@ -44,10 +44,10 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
   all_val <- dt[, unlist(.SD) %>% stats::na.omit() %>% unique(), .SDcols = patterns(var_nm_pattern)]
 
   if (match_type == "start") {
-    #match_str/msg is for verbose
+    # match_str/msg is for verbose
     match_str <- paste0("^", val_vector, collapse = "|")
     match_msg <- "satisfied regular expression"
-    #extract matched values from all possible ones
+    # extract matched values from all possible ones
     match_val <- all_val[data.table::like(all_val, match_str)]
   }
   if (match_type == "regex") {
@@ -66,12 +66,10 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
     match_val <- all_val[`%between%`(all_val, val_vector)]
   }
 
-  #use %chin% to speed up character matching
-  if (all(is.character(match_val), sapply(dt[, grep(var_nm_pattern, names(dt))], is.character)))
-  {
+  # use %chin% to speed up character matching
+  if (all(is.character(match_val), sapply(dt[, grep(var_nm_pattern, names(dt))], is.character))) {
     dt[, incl := data.table::`%chin%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
-  }
-  else {
+  } else {
     dt[, incl := `%in%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
   }
 
@@ -94,28 +92,9 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
 
   dt[, c(temp_cols) := NULL]
 
-  # job done if getting any records
-  if (n_per_clnt == 1) {
-    data.table::setDF(dt)
-    return(dt)
-  }
+  # job done
+  data.table::setDF(dt)
+  return(dt)
 
-  # keep records for person with number of records >= n_per_clnt
-  else {
-    # count differently if unit id is supplied by collaspe_by_nm
-    if (!is.null(collapse_by_nm)) {
-      n_filter <- dt[, list(n_collapsed = data.table::uniqueN(.SD)), by = clnt_id_nm, .SDcols = collapse_by_nm][n_collapsed >= n_per_clnt]
-    } else {
-      n_filter <- dt[, .N, by = clnt_id_nm][N >= n_per_clnt]
-    }
 
-    dt <- dt[list(n_filter[, clnt_id_nm, with = FALSE]), on = clnt_id_nm]
-    if (n_row != 0 & nrow(dt) == 0) {
-      warning("Some matches found but all excluded by counting n_per_clnt.")
-    } else if (verbose) cat("\nNumber of clients satisfied all conditions:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
-
-    # convert back to dataframe before output
-    data.table::setDF(dt)
-    return(dt)
-  }
 }
