@@ -21,7 +21,7 @@
 #' # get the difference at each step
 #' diff(n)
 report_n <- function(..., on) {
-  on <- rlang::as_name(enquo(on))
+  on <- rlang::as_name(rlang::enquo(on))
 
   col_nm <- sapply(list(...), function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else names(x)})
 

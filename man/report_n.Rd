@@ -4,15 +4,15 @@
 \alias{report_n}
 \title{Report number of distinct value in a column across data frames}
 \usage{
-report_n(..., on_nm)
+report_n(..., on)
 }
 \arguments{
 \item{...}{Data frames or remote tables (e.g., from dbplyr)}
 
-\item{on_nm}{The column name to report on. It must be present in all data sources.}
+\item{on}{The column to report on. It must be present in all data sources.}
 }
 \value{
-A sequence of distinct n in on_nm for each data frames
+A sequence of the number of distinct `on` for each data frames
 }
 \description{
 This function is intended to mimic dplyr::n_distinct() for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study.
@@ -23,7 +23,7 @@ iris_1 <- subset(iris, Petal.Length > 1)
 iris_2 <- subset(iris, Petal.Length > 2)
 
 # get n at each operation
-n <- report_n(iris, iris_1, iris_2, on_nm = "Species")
+n <- report_n(iris, iris_1, iris_2, on = Species)
 n
 
 # get the difference at each step
