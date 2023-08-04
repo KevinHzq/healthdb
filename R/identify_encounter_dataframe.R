@@ -1,15 +1,21 @@
-identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE) {
+#' @export
+identify_encounter.data.frame <- function(data, from_var, match_vals, match_type = c("in", "start", "regex", "like", "between", "glue_sql"), if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
   # input checks
-  if (any(sapply(list(clnt_id_nm, var_nm_pattern, collapse_by_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
+  rlang::arg_match0(match_type, c("in", "start", "regex", "between", "like"))
 
-  if (!(match_type %in% c("start", "regex", "in", "between"))) stop('match_type must be one of "start", "regex", "in", or "between"')
+  # get variable names as text with tidyselect and NSE
+  df_head <- data %>%
+    dplyr::select({{ from_var }}) %>%
+    utils::head(n = 1)
+    var_nm <- names(df_head)
 
   if (match_type %in% c("in", "between")) {
-    if (any(sapply(dt[, grep(var_nm_pattern, names(dt))], class) != class(val_vector))) warning("val_vector (", class(val_vector), ") is not the same type as the var_nm columns (", paste(sapply(dt[, grep(var_nm_pattern, names(dt))], class), collapse = ", "), ").")
+    var_class <- purrr::map_chr(df_head %>% dplyr::select(dplyr::all_of(var_nm)), class)
+    if (!any(class(match_vals) %in% var_class)) warning("`match_vals` (", class(match_vals), ") is not the same type as the `from_var` columns (", paste(var_class, collapse = ", "), ").")
   }
 
   # place holder for temp column names
-  rid <- max_n_per_clnt <- N <- incl <- NULL
+  rid <- N <- incl <- NULL
 
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(data)
@@ -20,20 +26,6 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
 
   dt[, rid := .I]
 
-  # stop if n_per_clnt doesn't make sense
-  if (!is.null(collapse_by_nm)) {
-    max_n <- dt[, list(max_n_per_clnt = data.table::uniqueN(collapse_by_nm)), by = clnt_id_nm][, max(max_n_per_clnt)]
-  } else {
-    max_n <- dt[, .N, by = clnt_id_nm][, max(N)]
-  }
-
-  if (max_n < n_per_clnt) stop("The maximum of n_per_clnt in the data is", max_n, "and smaller than the target specified. Try reduce n_per_clnt.")
-
-  # force exact match if single var col
-  if (!multi_var_cols) {
-    var_nm_pattern <- paste0("^", var_nm_pattern, "$")
-  }
-
   # code filter by match types:
   # logic to preserve original record as a row without copying the original data (use extra memory):
   # 1 get a vector of all possible values
@@ -41,60 +33,71 @@ identify_encounter.data.frame <- function(data, clnt_id_nm, var_nm_pattern, val_
   # 3 compute incl indicator by row id across var columns, so that TRUE if any col has a match
   # 4 filter rows by incl
 
-  all_val <- dt[, unlist(.SD) %>% stats::na.omit() %>% unique(), .SDcols = patterns(var_nm_pattern)]
+  all_val <- dt[, unlist(.SD) %>% stats::na.omit() %>% unique(), .SDcols = var_nm]
 
-  if (match_type == "start") {
-    # match_str/msg is for verbose
-    match_str <- paste0("^", val_vector, collapse = "|")
-    match_msg <- "satisfied regular expression"
-    # extract matched values from all possible ones
-    match_val <- all_val[data.table::like(all_val, match_str)]
-  }
-  if (match_type == "regex") {
-    match_str <- paste0(val_vector, collapse = "|")
-    match_msg <- "satisfied regular expression"
-    match_val <- all_val[data.table::like(all_val, match_str)]
-  }
-  if (match_type == "in") {
-    match_str <- deparse(substitute(val_vector))
-    match_msg <- "exactly matched values in set"
-    match_val <- val_vector
-  }
-  if (match_type == "between") {
-    match_str <- deparse(substitute(val_vector))
-    match_msg <- "between range (bounds included)"
-    match_val <- all_val[`%between%`(all_val, val_vector)]
-  }
+  switch(match_type,
+    "start" = {
+      # match_str/msg is for verbose
+      match_str <- paste0("^", match_vals, collapse = "|")
+      match_msg <- "satisfied regular expression:"
+      # extract matched values from all possible ones
+      matched_vals <- all_val[data.table::like(all_val, match_str)]
+    },
+    "regex" = {
+      match_str <- paste0(match_vals, collapse = "|")
+      match_msg <- "satisfied regular expression:"
+      matched_vals <- all_val[data.table::like(all_val, match_str)]
+    },
+    "like" = {
+      match_str <- paste0(match_vals, collapse = "|")
+      match_msg <- "satisfied LIKE expression:"
+      matched_vals <- all_val[stringr::str_like(all_val, match_str)]
+    },
+    "in" = {
+      match_str <- deparse(substitute(match_vals))
+      match_msg <- "exactly matched values in set:"
+      matched_vals <- match_vals
+    },
+    "between" = {
+      match_str <- deparse(substitute(match_vals))
+      match_msg <- "between range (bounds included):"
+      matched_vals <- all_val[`%between%`(all_val, match_vals)]
+    }
+  )
+
+  combine_fn <- ifelse(if_all, all, any)
 
   # use %chin% to speed up character matching
-  if (all(is.character(match_val), sapply(dt[, grep(var_nm_pattern, names(dt))], is.character))) {
-    dt[, incl := data.table::`%chin%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
+  if (all(is.character(matched_vals), sapply(dt[, var_nm, with = FALSE], is.character))) {
+    dt[, incl := data.table::`%chin%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = "rid", .SDcols = var_nm]
   } else {
-    dt[, incl := `%in%`(unlist(.SD), match_val) %>% any(), by = "rid", .SDcols = patterns(var_nm_pattern)]
-  }
-
-  # explain the configuration in plain language to prompt user thinking
-  if (verbose) {
-    cat(
-      "\nSearching conditions:\nEach client has at least", n_per_clnt, "record(s)", ifelse(is.null(collapse_by_nm), "", paste("with distinct", collapse_by_nm)),
-      "\n - where", ifelse(multi_var_cols, "at least one of the", "the single"), var_nm_pattern, "column in each record",
-      "\n   - contains a value", match_msg, match_str, "\n"
-    )
+    dt[, incl := `%in%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = "rid", .SDcols = var_nm]
   }
 
   # run filter and save; the above filter only updates the dat with new columns
   dt <- dt[incl == TRUE]
 
-  n_row <- nrow(dt)
-  if (n_row == 0) {
-    warning("No match found. Check val_vector.")
-  } else if (verbose) cat("\nNumber of clients that has any matches:", dt[, data.table::uniqueN(.SD), .SDcols = clnt_id_nm], "\n")
-
   dt[, c(temp_cols) := NULL]
+
+  # explain the configuration in plain language to prompt user thinking
+  if (verbose) {
+    result_vals <- dt[, unlist(.SD), .SDcols = var_nm] %>% unique()
+
+    cat(
+      "\nIdentify records with condition(s):",
+      "\n - where", ifelse(if_all & length(var_nm) > 1, "all of the", ifelse(length(var_nm) > 1, "at least one of the", "the")), paste0(var_nm, collapse = ", "), "column(s) in each record",
+      "\n   - contains a value", match_msg, match_str, "\n"
+    )
+
+    cat(ifelse(is.numeric(result_vals), "\nRange of values in the result", "\nAll unique value(s) in the result"), ifelse(!if_all & length(var_nm) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
+
+    switch(match_type,
+      "between" = print(range(result_vals)),
+      if (is.numeric(result_vals)) print(range(result_vals)) else print(result_vals, max = 100)
+    )
+  }
 
   # job done
   data.table::setDF(dt)
   return(dt)
-
-
 }

@@ -1,3 +1,18 @@
-identify_encounter <- function(data, clnt_id_nm, var_nm_pattern, val_vector, match_type = "in", n_per_clnt = 1, collapse_by_nm = NULL, multi_var_cols = FALSE, verbose = TRUE, ...) {
+#' Title
+#'
+#' @param data
+#' @param from_var
+#' @param match_vals
+#' @param match_type
+#' @param if_all
+#' @param verbose
+#' @param query_only
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+identify_encounter <- function(data, from_var, match_vals, match_type = c("in", "start", "regex", "like", "between", "glue_sql"), if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
   UseMethod("identify_encounter")
 }
