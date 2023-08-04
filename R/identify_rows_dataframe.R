@@ -1,5 +1,5 @@
 #' @export
-identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between"), vals, if_all = FALSE, verbose = TRUE) {
+identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between"), vals, if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
   # input checks
   rlang::arg_match0(match, c("in", "start", "regex", "between", "like"))
 
