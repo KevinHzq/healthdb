@@ -13,7 +13,6 @@ Imports:
     data.table,
     dbplyr,
     dplyr,
-    dtplyr,
     glue,
     lubridate,
     magrittr,
