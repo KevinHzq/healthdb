@@ -8,7 +8,7 @@
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
-#' @param ... Additional argument passing to as.Date for character to date conversion.
+#' @param ... Additional argument passing to data.table::as.IDate for date conversion.
 #'
 #' @return Single logical for whether there is any draw from x satisfied the conditions
 #' @export
@@ -25,7 +25,7 @@
 if_dates <- function(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...) {
   if (all(is.null(apart), is.null(within))) stop("apart and within cannot both be NULL")
 
-  stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
+  #stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
   stopifnot(is.wholenumber(n))
 
   # place holder for var names

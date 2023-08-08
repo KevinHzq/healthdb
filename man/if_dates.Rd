@@ -17,7 +17,7 @@ if_dates(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...)
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
-\item{...}{Additional argument passing to as.Date for character to date conversion.}
+\item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
 }
 \value{
 Single logical for whether there is any draw from x satisfied the conditions

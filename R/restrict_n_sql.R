@@ -42,5 +42,5 @@ restrict_n.tbl_sql <- function(data, clnt_id = NULL, n_per_clnt, count_by = NULL
     cat("\n Of the", initial_n, "clients in the input,", initial_n - report_n(db, on = {{ clnt_id }}), "were excluded by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
   }
 
-  return(db)
+  return(dplyr::ungroup(db))
 }
