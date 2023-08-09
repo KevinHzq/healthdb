@@ -15,22 +15,20 @@
 #' @export
 #'
 #' @examples
-#' #exclude with condition
+#' # exclude with condition
 #' cyl4 <- exclude(mtcars, condition = cyl == 4, report_on = cyl)
 #'
-#' #exclude with another data
+#' # exclude with another data
 #' exclude(mtcars, cyl4, dplyr::join_by(cyl), report_on = cyl)
 exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = TRUE, report_on = NULL, ...) {
+  rlang::check_exclusive(excl, condition)
+
   if (is.null(excl)) {
-    #if only data is supplied, do filter with negation
-    if (is.null(substitute(condition))) {
-      stop("The `condition` argument must be supplied if `excl` is absent")
-    } else {
-      keep_rows <- dplyr::filter(data, !({{ condition }}), ...)
-      if (verbose) cat("\nExclude a subset of `data` that satisfies condition:", deparse(substitute(condition)), "\n")
-    }
+    # if only data is supplied, do filter with negation
+    keep_rows <- dplyr::filter(data, !({{ condition }}), ...)
+    if (verbose) cat("\nExclude a subset of `data` that satisfies condition:", deparse(substitute(condition)), "\n")
   } else if (any(class(data) %in% class(excl))) {
-    #if two data sets, do anti_join
+    # if two data sets, do anti_join
     if (verbose) cat("\nExclude records in `data` through anti_join with `excl` matching on (by argument):", deparse(substitute(by)), "\n")
     keep_rows <- dplyr::anti_join(data, excl, by = {{ by }}, ...)
   } else {
@@ -38,7 +36,7 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = TR
   }
 
   if (!is.null(substitute(report_on))) {
-    cat_n <- report_n(keep_rows, data, on = {{ report_on }} )
+    cat_n <- report_n(keep_rows, data, on = {{ report_on }})
     cat("\nOf the", cat_n[2], deparse(substitute(report_on)), "in data,", diff(cat_n), "were excluded.\n")
   }
 
