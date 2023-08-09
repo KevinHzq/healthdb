@@ -1,7 +1,7 @@
 #' @export
 identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
   # input checks
-  rlang::arg_match0(match, c("in", "start", "regex", "between", "like", "glue_sql"))
+  match <- rlang::arg_match0(match, c("in", "start", "regex", "between", "like", "glue_sql"))
 
   # get variable names as text with tidyselect and NSE
   db_head <- data %>%
