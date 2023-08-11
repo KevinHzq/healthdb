@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = TRUE, ...) {
+restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(n > 1, is.wholenumber(n))
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string

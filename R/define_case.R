@@ -17,6 +17,7 @@
 #' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default).
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
+#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
 #' @param ... Additional arguments passing to `restrict_dates()`.
 #'
 #' @return A subset of input data satisfied the specified case definition.
@@ -60,7 +61,7 @@
 #'   ),
 #'   define_case
 #' )
-define_case <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, ...) {
+define_case <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)
@@ -74,51 +75,57 @@ define_case <- function(data, vars, match = c("in", "start", "regex", "like", "b
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_rows calls
-  arg <- rlang::enexprs(data, vars, match, vals, if_all)
-  names(arg) <- purrr::map_chr(rlang::exprs(data, vars, match, vals, if_all), rlang::as_label)
+  arg <- rlang::enexprs(data, vars, match, vals, if_all, verbose)
+  names(arg) <- purrr::map_chr(rlang::exprs(data, vars, match, vals, if_all, verbose), rlang::as_label)
   incl <- rlang::call2("identify_rows", !!!arg)
   incl <- rlang::call_modify(incl, ... = rlang::zap(), .homonyms = "first")
 
   # body
-  cat("\n--------------Inclusion step--------------\n")
+  if (verbose) cat("\n--------------Inclusion step--------------\n")
   result <- eval(incl)
 
   if (!is.null(excl_vals)) {
-    cat("\n--------------Exclusion step--------------\n")
+    if (verbose) cat("\n--------------Exclusion step--------------\n")
     # allow overwriting arguments for identifying exclusion values
     excl <- rlang::call_modify(incl, !!!excl_args, vals = excl_vals, .homonyms = "last")
-    result <- rlang::inject(result %>% exclude(eval(excl), by = !!clnt_id, report_on = !!clnt_id))
+    result <- rlang::inject(result %>% exclude(!!excl, by = !!clnt_id, report_on = !!clnt_id, verbose = verbose))
   }
 
   if (n_per_clnt > 1) {
-    cat("\n--------------No. rows restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg())))
+    if (verbose) cat("\n--------------No. rows restriction--------------\n")
+    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), verbose = verbose))
   }
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
-    cat("\n--------------Time span restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, force_collect = force_collect, ...))
+    if (verbose) cat("\n--------------Time span restriction--------------\n")
+    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, force_collect = force_collect, verbose = verbose, ...))
   }
 
+  if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")
+  # fixing sql translation failed when using .data with slice_min/max
   if (is.data.frame(result)) {
     date_var <- rlang::expr(.data[[date_var]])
   } else {
     date_var <- rlang::expr(dbplyr::sql(dbplyr::escape_ansi(dbplyr::ident(!!date_var))))
   }
 
-  switch(keep,
-    "first" = result <- rlang::inject(result %>% dplyr::group_by(.data[[!!clnt_id]]) %>% dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>% dplyr::ungroup()),
-    "last" = result <- rlang::inject(result %>% dplyr::group_by(.data[[!!clnt_id]]) %>% dplyr::slice_max(!!date_var, n = 1, with_ties = FALSE) %>% dplyr::ungroup())
-  )
+  # replacing slice_ function in expression
+  if (keep != "all") {
+    expr_slice <- rlang::expr(result <- result %>%
+                                dplyr::group_by(.data[[!!clnt_id]]) %>%
+                                dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
+                                dplyr::ungroup()) %>%
+      rlang::expr_text()
+    if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("slice_min", "slice_max")
+    expr_slice <- expr_slice %>% rlang::parse_expr()
+    eval(expr_slice)
+  }
 
   if (force_collect) result <- dplyr::collect(result, cte = TRUE)
 
   return(result)
 }
 
-case_template <- function() {
-
-}
 
 # pmap(list(data = list(db, test_dat), vars = exprs(starts_with("diagx")), match = c("in", "start"), vals = list(c("304"), c("305")),  clnt_id = exprs(clnt_id, clnt_id), n_per_clnt = c(2, 3), excl_vals = list(c("50B"), c("304")), excl_args = list(list(if_all = TRUE), list(if_all = FALSE))), define_case)
 

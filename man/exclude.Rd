@@ -9,7 +9,7 @@ exclude(
   excl = NULL,
   by = NULL,
   condition = NULL,
-  verbose = TRUE,
+  verbose = getOption("odcfun.verbose"),
   report_on = NULL,
   ...
 )
@@ -23,7 +23,7 @@ exclude(
 
 \item{condition}{An expression that will be negated then passed to dplyr::filter, so the rows that satisfy `condition` are those to be removed from `data`.}
 
-\item{verbose}{A logical for whether printing explanation for the operation.}
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
 
 \item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.}
 

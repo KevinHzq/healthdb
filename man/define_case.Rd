@@ -19,6 +19,7 @@ define_case(
   keep = c("all", "first", "last"),
   if_all = FALSE,
   force_collect = FALSE,
+  verbose = getOption("odcfun.verbose"),
   ...
 )
 }
@@ -51,6 +52,8 @@ define_case(
 
 \item{force_collect}{A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
+
 \item{...}{Additional arguments passing to `restrict_dates()`.}
 }
 \value{
@@ -82,7 +85,7 @@ define_case(df,
 # multiple sources with purrr::pmap
 # arguments with length = 1 will be recycle to match the number of sources
 # wrap expressions/unquoted variables with bquote(),
-# or rlang:exprs() to prevent evaluation in global environment,
+# or rlang:exprs() to prevent immediate evaluation,
 # or just use quoted variable names
 purrr::pmap(
   list(

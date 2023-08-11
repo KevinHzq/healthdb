@@ -4,18 +4,24 @@
 \alias{restrict_n}
 \title{Removes groups with n less than some number}
 \usage{
-restrict_n(data, clnt_id = NULL, n_per_clnt, count_by = NULL, verbose = TRUE)
+restrict_n(
+  data,
+  clnt_id,
+  n_per_clnt,
+  count_by = NULL,
+  verbose = getOption("odcfun.verbose")
+)
 }
 \arguments{
 \item{data}{Data frames or remote tables (e.g., from dbplyr)}
 
-\item{clnt_id}{Grouping variable (quoted/unquoted). The default is fetching "clnt_id" from the data's attributes.}
+\item{clnt_id}{Grouping variable (quoted/unquoted).}
 
 \item{n_per_clnt}{A single number specifying the minimum number of group size.}
 
 \item{count_by}{Another variable dictating the counting unit of n_per_clnt. The default is NULL meaning the inclusion criteria is the number of row, i.e., dplyr::n() >= n_per_clnt. If it is not NULL, the criteria becomes dplyr::n_distinct(count_by) >= n_per_clnt.}
 
-\item{verbose}{A logical for whether to report how many groups were removed.}
+\item{verbose}{A logical for whether to report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
 }
 \value{
 A subset of input data satisfied the group size requirement.

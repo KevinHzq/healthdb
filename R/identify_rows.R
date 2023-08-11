@@ -20,7 +20,7 @@
 #'  - "between" ~ a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
 #'  - "glue_sql" ~ a string of the part of query after WHERE, which will be passed to glue::glue_sql(). See ?glue_sql and example for detail.
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
-#' @param verbose A logical for whether printing explanation and result overview for the query.
+#' @param verbose A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
 #' @param query_only A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.
 #' @param ... For remote table method only. Additional arguments passing to `glue::glue_sql()` for parameterized queries.
 #'
@@ -44,7 +44,7 @@
 #' #you could also set query parameters in the global environment
 #' what <- c("setosa", "virginica")
 #' identify_rows(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
-identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
+identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
   rlang::check_required(vars)
   rlang::check_required(vals)
   UseMethod("identify_rows")

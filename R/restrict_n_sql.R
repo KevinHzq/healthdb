@@ -1,16 +1,9 @@
 #' @export
-restrict_n.tbl_sql <- function(data, clnt_id = NULL, n_per_clnt, count_by = NULL, verbose = TRUE) {
-  # try to fetch clnt_id from data's attributes
-  if (rlang::quo_is_null(rlang::enquo(clnt_id))) {
-    if (!is.null(attributes(data)[["clnt_id"]])) {
-      clnt_id_nm <- attributes(data)[["clnt_id"]]
-    } else {
-      stop("`clnt_id` must be supplied if it is not in the data's attributes.")
-    }
-  } else {
-    # as_name(enquo(arg)) converts both quoted and unquoted column name to string
-    clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
-  }
+restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbose = getOption("odcfun.verbose")
+) {
+  # as_name(enquo(arg)) converts both quoted and unquoted column name to string
+  clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
+
   # place holder for temp var names
   temp_n_collapsed <- temp_n_collapsed_id <- NULL
 

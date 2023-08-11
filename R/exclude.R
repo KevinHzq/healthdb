@@ -7,7 +7,7 @@
 #' @param excl Data frames or remote tables (e.g., from dbplyr). Rows/values present in it will be removed from `data` if there is a match. This will be passed to dplyr::anti_join as the second argument.
 #' @param by Column names that should be matched by anti_join or dplyr::join_by expressions. See anti_join's `by` argument for detail. Default NULL is the same as setdiff(data, excl).
 #' @param condition An expression that will be negated then passed to dplyr::filter, so the rows that satisfy `condition` are those to be removed from `data`.
-#' @param verbose A logical for whether printing explanation for the operation.
+#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
 #' @param report_on A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.
 #' @param ... Additional arguments passing to filter/anti_join for finer control of matching, e.g., na action, by-group filtering, etc.
 #'
@@ -20,7 +20,7 @@
 #'
 #' # exclude with another data
 #' exclude(mtcars, cyl4, dplyr::join_by(cyl), report_on = cyl)
-exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = TRUE, report_on = NULL, ...) {
+exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = getOption("odcfun.verbose"), report_on = NULL, ...) {
   rlang::check_exclusive(excl, condition)
 
   if (is.null(excl)) {
@@ -35,7 +35,7 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = TR
     stop("Both data and excl must be remote tables or local data frames. Try collect() the remote table - may be slow if collecting large data - before runing the function.")
   }
 
-  if (!is.null(substitute(report_on))) {
+  if (all(!is.null(substitute(report_on)), verbose)) {
     cat_n <- report_n(keep_rows, data, on = {{ report_on }})
     cat("\nOf the", cat_n[2], deparse(substitute(report_on)), "in data,", diff(cat_n), "were excluded.\n")
   }
