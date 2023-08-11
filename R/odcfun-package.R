@@ -14,6 +14,8 @@ utils::globalVariables(c("patterns"))
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
+#' @importFrom rlang !!
+#' @importFrom rlang !!!
 #' @importFrom rlang .data
 ## usethis namespace: end
 NULL
