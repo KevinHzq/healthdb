@@ -36,9 +36,9 @@ A data frame or remote table that is a subset of `data`.
 This function combines `dplyr::anti_join` and the opposite of `dplyr::filter`. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with negation of the expression given via the `condition` argument.
 }
 \examples{
-#exclude with condition
+# exclude with condition
 cyl4 <- exclude(mtcars, condition = cyl == 4, report_on = cyl)
 
-#exclude with another data
+# exclude with another data
 exclude(mtcars, cyl4, dplyr::join_by(cyl), report_on = cyl)
 }

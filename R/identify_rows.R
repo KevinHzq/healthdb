@@ -45,5 +45,7 @@
 #' what <- c("setosa", "virginica")
 #' identify_rows(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
 identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = TRUE, query_only = TRUE, ...) {
+  rlang::check_required(vars)
+  rlang::check_required(vals)
   UseMethod("identify_rows")
 }

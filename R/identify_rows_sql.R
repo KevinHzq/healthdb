@@ -12,7 +12,7 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
 
   if (match %in% c("in", "between")) {
     var_class <- purrr::map_chr(db_head %>% dplyr::select(dplyr::all_of(vars)), class)
-    if (!any(class(vals) %in% var_class)) warning("`match_vals` (", class(vals), ") is not the same type as the `from_var` columns (", paste(var_class, collapse = ", "), ").")
+    if (!any(class(vals) %in% var_class)) warning("`vals` (", class(vals), ") is not the same type as the `var` columns (", paste(var_class, collapse = ", "), ").")
   }
 
   # make match_str/msg for verbose
