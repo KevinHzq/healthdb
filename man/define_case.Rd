@@ -7,7 +7,7 @@
 define_case(
   data,
   vars,
-  match = c("in", "start", "regex", "like", "between", "glue_sql"),
+  match = "in",
   vals,
   clnt_id,
   n_per_clnt = 1,

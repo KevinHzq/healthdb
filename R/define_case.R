@@ -61,7 +61,7 @@
 #'   ),
 #'   define_case
 #' )
-define_case <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)

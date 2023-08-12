@@ -1,7 +1,8 @@
 #' @export
-identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
+identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
   # input checks
-  match <- rlang::arg_match0(match, c("in", "start", "regex", "between", "like"))
+  match <- rlang::arg_match0(match, c("in", "start", "regex", "like", "between", "glue_sql"))
+  if (match == "glue_sql") stop("'glue_sql' match option cannot be applied to local data frame.")
 
   # get variable names as text with tidyselect and NSE
   df_head <- data %>%

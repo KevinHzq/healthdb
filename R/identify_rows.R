@@ -7,7 +7,7 @@
 #' @param data Data frames or remote tables (e.g., from dbplyr)
 #' @param vars An expression passing to `dplyr::select()`. It can be Quoted/unquoted column names, or `tidyselect` helper functions, such as `starts_with()`.
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
-#'  - "in" ~ var %in% vals
+#'  - "in" ~ var %in% vals (This is default)
 #'  - "regex" ~ var data.table::`%like%` vals. For remote tables, unique values in vars are collected locally before matching (may be slow).
 #'  - "like" ~ stringr::str_like(var, vals). For remote tables, WHERE var LIKE val.
 #'  - "start" ~ same as regex or LIKE with modified vals, e.g., "^val1|^val2" or "va1%|val2%"

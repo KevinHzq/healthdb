@@ -22,7 +22,7 @@ identify_rows(
 
 \item{match}{One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
 \itemize{
-\item "in" ~ var \%in\% vals
+\item "in" ~ var \%in\% vals (This is default)
 \item "regex" ~ var data.table::\verb{\%like\%} vals. For remote tables, unique values in vars are collected locally before matching (may be slow).
 \item "like" ~ stringr::str_like(var, vals). For remote tables, WHERE var LIKE val.
 \item "start" ~ same as regex or LIKE with modified vals, e.g., "^val1|^val2" or "va1\%|val2\%"
