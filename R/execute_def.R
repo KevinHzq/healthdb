@@ -1,4 +1,56 @@
-execute_def <- function(def, with_data, bind = FALSE, force_proceed = FALSE) {
+#' Execute parameterized case definitions
+#'
+#' @description
+#' This function executes the function calls stored in the output tibble from build_def() with data objects supplied through a named list and returns the results as a list. It is intended to facilitate re-use of pre-defined calls with different data.
+#'
+#'
+#' @param def A tibble created by build_def().
+#' @param with_data A named list which the elements are in the form of src_lab = data, where `src_lab` corresponds to the src_labs argument from build_def() and `data` is the data object that will be passed to calls stored in def. The names (and length) of with_data must match the unique values of src_labs in def.
+#' @param bind A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default behavior is to try and return the unbinded result if failed.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow.
+#' @param force_collect A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data.
+#'
+#' @return A single (if bind = TRUE) or a list of data.frames or remote tables.
+#' @export
+#'
+#' @examples
+#' # toy data
+#' sample_size <- 30
+#' df <- data.frame(
+#'   clnt_id = rep(1:3, each = 10),
+#'   service_dt = sample(seq(as.Date("2020-01-01"), as.Date("2020-01-31"), by = 1),
+#'     size = sample_size, replace = TRUE
+#'   ),
+#'   diagx = sample(letters, size = sample_size, replace = TRUE),
+#'   diagx_1 = sample(c(NA, letters), size = sample_size, replace = TRUE),
+#'   diagx_2 = sample(c(NA, letters), size = sample_size, replace = TRUE)
+#' )
+#'
+#' # make a remote version of df
+#' db <- dbplyr::tbl_memdb(df)
+#'
+#' # use build_def to make a toy definition
+#' sud_def <- build_def("SUD", # usually a disease name
+#'   src_lab = c("src1", "src2"), # identify from multiple sources, e.g., hospitalization, ED visits.
+#'   # functions that filter the data with some criteria
+#'   def_fn = list(define_case),
+#'   fn_args = list(
+#'     vars = list(bquote(starts_with("diagx"))), # use bquote to pass tidyselect expressions
+#'     match = "start", # "start" will be applied to all sources as length = 1
+#'     vals = list(c("304"), c("305")),
+#'     clnt_id = "clnt_id",
+#'     # c() can be used in place of list
+#'     # if this argument only takes one value for each source
+#'     n_per_clnt = c(2, 3)
+#'   )
+#' )
+#'
+#' # save the definition for re-use
+#' # saveRDS(sud_def, file = some_path)
+#'
+#' sud_def %>% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = TRUE)
+execute_def <- function(def, with_data, bind = TRUE, force_proceed = FALSE, force_collect = FALSE) {
+  # capture data names in the original env before any eval
   with_data_expr <- rlang::enquo(with_data) %>% rlang::call_args()
   with_data_env <- rlang::enquo(with_data) %>% rlang::quo_get_env()
 
@@ -17,7 +69,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = FALSE) {
 
   # ask user input to proceed as collecting remote table may be slow
   # don't ask if all table is remote/local
-  is_local <- purrr::map_lgl(with_data, function(x) "data.frame" %in% class(x))
+  is_local <- purrr::map_lgl(with_data, is.data.frame)
   any_local <- any(is_local)
   any_remote <- any(!is_local)
 
@@ -38,7 +90,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = FALSE) {
       result = purrr::pmap(
         list(.data[["result"]], .data[["def_lab"]], .data[["src_labs"]]),
         function(dat, def, src) {
-          dat %>% mutate(
+          dat %>% dplyr::mutate(
             `def` = def,
             `src` = src,
             .before = 1
@@ -49,19 +101,37 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = FALSE) {
 
   # result <- purrr::map(def[["fn_call"]], function(x) eval(x, envir = with_data_env))
 
-  if (bind) {
-    if (any_remote & any_local) {
-      def <- def %>%
-        mutate(
-          result = purrr::map(.data[["result"]], dplyr::as_tibble, .progress = TRUE)
-        )
-    }
-
-    if (!any_local) result <- Reduce(dplyr::union, def[["result"]])
-    else result <- data.table::rbindlist(def[["result"]], use.names = FALSE)
-
+  if (bind & !force_collect & !any_local) {
+    # if the data are all remote, do union in SQL;
+    # union_all not necessary as already labeled by def and src; rows would not collapse across srcs
+    result <- rlang::try_fetch(purrr::reduce(def[["result"]], dplyr::union),
+      error = function(cnd) {
+        rlang::warn("Returned unbinded result. Binding failed probably due to combining tables from different databases, which cannot be binded without collecting. Use force_collect = TRUE.", parent = cnd)
+        return(def[["result"]])
+      }
+    )
+    # manual return here to simplify the subsequent if logic
     return(result)
+  } else if (bind | force_collect) {
+    # if not all remote, also collect the remote ones before binding
+    result <- purrr::map_if(def[["result"]], !is_local, dplyr::as_tibble, .progress = TRUE)
+  } else {
+    result <- def[["result"]]
   }
 
-  return(def[["result"]])
+  # do faster list bind on all local tables, with distinct() to match union result
+  # list_rbind chosen over rbindlist for better error msg at a cost of performance
+  if (bind) {
+    result <- rlang::try_fetch(purrr::list_rbind(result) %>% dplyr::distinct(),
+      error = function(cnd) {
+        rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources", parent = cnd)
+        return(result)
+      }
+    )
+  }
+  # result <- data.table::rbindlist(def[["result"]])
+  # result <- unique(result)
+  # data.table::setDF(result)
+
+  return(result)
 }

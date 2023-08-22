@@ -6,7 +6,7 @@
 #'
 #' @param def_lab A single character label for the definition, e.g., some disease.
 #' @param src_labs A character vector of place-holder names for the data sources that will be used to execute the definition.
-#' @param def_fn A list of functions (default: list(define_case)) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but keeping same argument names as define_case is highly recommended.
+#' @param def_fn A list of functions (default: list(define_case)) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but must name the first argument `data`.
 #' @param fn_args A named list of arguments passing to the `def_fn`. Each element in the list should have the same name as an argument in the source-specific `def_fn`, and the element length should also be either 1 or equal to the number of sources. If you have `def_fn` functions taking different sets of arguments, include the union in one list. Only those that are valid to the source-specific function will be used in the resulted function call.
 #'
 #' @return A tibble with `length(src_labs)` rows, containing the input arguments and the synthetic function call in the `fn_call` column.
@@ -20,7 +20,8 @@
 #'   # to show only valid arguments will be in the call
 #'   def_fn = list(define_case, mean),
 #'   fn_args = list(
-#'     vars = list(bquote(starts_with("diagx")), "diagx_2"), # use bquote to pass tidyselect expressions
+#'     # use bquote to pass tidyselect expressions
+#'     vars = list(bquote(starts_with("diagx")), "diagx_2"),
 #'     match = "start", # "start" will be applied to all sources as length = 1
 #'     vals = list(c("304"), c("305")),
 #'     clnt_id = "clnt_id",
@@ -54,22 +55,14 @@ build_def <- function(def_lab, src_labs, def_fn = list(define_case), fn_args) {
   df_data <- tidyr::expand_grid(def_lab, src_labs)
   df_fn <- dplyr::tibble(`def_fn` = fn_labs)
   df_args <- dplyr::as_tibble(fn_args)
-  # print(df_args)
-
-  # get the arguments that are not supplied (not needed anymore)
-  # extra_args <- Filter(Negate(rlang::is_missing), rlang::fn_fmls(def_fn))
-  # #extra_args <- rlang::call_args(rlang::call2(def_fn, !!!rlang::fn_fmls(def_fn)))
-  # df_extra <- dplyr::as_tibble(map(extra_args, list)) %>%
-  #   select(-any_of(colnames(df_args)))
-  #
-  # print(df_extra)
 
   # build calls with fn and args leaving data empty for re-usability (e.g. supplying different with the same def via execute_def)
   # unlist(recursive = FALSE) is necessary to prevent changing types of the variables in some cases
-  # i.e., n_per_clnt = c(2, 3) may end up as c(2, "3") when unlist
+  # i.e., n_per_clnt = c(2, 3) may end up as c(2, "3") when unlisting
   df <- dplyr::bind_cols(df_data, df_fn, df_args) %>%
     tidyr::nest(fn_args = dplyr::any_of(names(df_args))) %>%
     dplyr::mutate(
+      # use fn_fmls_names to filter valid arguments of the specific function
       fn_args = purrr::map2(.data[["def_fn"]], .data[["fn_args"]], function(x, y) unlist(y, recursive = FALSE)[names(y) %in% rlang::fn_fmls_names(rlang::parse_expr(x) %>% eval())]),
       fn_call = purrr::map2(.data[["def_fn"]], .data[["fn_args"]], function(x, y) rlang::call2(x, data = rlang::missing_arg(), rlang::splice(y)))
     )
