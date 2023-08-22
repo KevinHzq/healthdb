@@ -49,9 +49,9 @@ db <- dbplyr::tbl_memdb(df)
 sud_def <- build_def("SUD", # usually a disease name
   src_lab = c("src1", "src2"), # identify from multiple sources, e.g., hospitalization, ED visits.
   # functions that filter the data with some criteria
-  def_fn = list(define_case),
+  def_fn = define_case,
   fn_args = list(
-    vars = list(bquote(starts_with("diagx"))), # use bquote to pass tidyselect expressions
+    vars = starts_with("diagx"), # list/c could be omitted for single element
     match = "start", # "start" will be applied to all sources as length = 1
     vals = list(c("304"), c("305")),
     clnt_id = "clnt_id",

@@ -33,9 +33,9 @@
 #' sud_def <- build_def("SUD", # usually a disease name
 #'   src_lab = c("src1", "src2"), # identify from multiple sources, e.g., hospitalization, ED visits.
 #'   # functions that filter the data with some criteria
-#'   def_fn = list(define_case),
+#'   def_fn = define_case,
 #'   fn_args = list(
-#'     vars = list(bquote(starts_with("diagx"))), # use bquote to pass tidyselect expressions
+#'     vars = starts_with("diagx"), # list/c could be omitted for single element
 #'     match = "start", # "start" will be applied to all sources as length = 1
 #'     vals = list(c("304"), c("305")),
 #'     clnt_id = "clnt_id",
@@ -51,8 +51,9 @@
 #' sud_def %>% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = TRUE)
 execute_def <- function(def, with_data, bind = TRUE, force_proceed = FALSE, force_collect = FALSE) {
   # capture data names in the original env before any eval
-  with_data_expr <- rlang::enquo(with_data) %>% rlang::call_args()
-  with_data_env <- rlang::enquo(with_data) %>% rlang::quo_get_env()
+  with_data_quo <- rlang::enquo(with_data)
+  with_data_expr <- with_data_quo %>% rlang::call_args()
+  with_data_env <- with_data_quo %>% rlang::quo_get_env()
 
   # input checks
   stopifnot(
