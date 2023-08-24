@@ -33,7 +33,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         temp.nm_gap = temp.nm_lead - .data[[date_var]],
         temp.nm_keep = any(temp.nm_gap <= within, na.rm = TRUE)
       ) %>%
-      dplyr::filter(temp.nm_keep) %>%
+      dplyr::filter(temp.nm_keep == 1) %>%
       dplyr::select(-dplyr::starts_with("temp.nm_")) %>%
       dplyr::ungroup()
   }
