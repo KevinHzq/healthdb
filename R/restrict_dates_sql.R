@@ -7,7 +7,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  temp.nm_keep <- temp.nm_lead <- temp.nm_gap <- NULL
+  temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- NULL
 
   if (!is.null(apart)) {
     if (!force_collect) {
@@ -18,8 +18,8 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         dplyr::group_by(.data[[clnt_id]]) %>%
         dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
         dplyr::mutate(temp.nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
-        dplyr::filter(temp.nm_keep) %>%
-        dplyr::select(-dplyr::starts_with("temp.nm_")) %>%
+        dplyr::filter(temp_nm_keep) %>%
+        dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
         dplyr::ungroup()
     }
   } else {
@@ -29,12 +29,14 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::group_by(.data[[clnt_id]]) %>%
       dbplyr::window_order(.data[[date_var]]) %>%
       dplyr::mutate(
-        temp.nm_lead = dplyr::lead(.data[[date_var]], n - 1),
-        temp.nm_gap = temp.nm_lead - .data[[date_var]],
-        temp.nm_keep = any(temp.nm_gap <= within, na.rm = TRUE)
+        temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1),
+        #temp_nm_gap = temp.nm_lead - .data[[date_var]],
+        #SQL server does not accept subtracting dates
+        temp_nm_gap = sql(glue::glue_sql("DATEDIFF(day, {`date_var`},`temp_nm_lead`)", .con = dbplyr::remote_con(data))),
+        temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
       ) %>%
-      dplyr::filter(temp.nm_keep == 1) %>%
-      dplyr::select(-dplyr::starts_with("temp.nm_")) %>%
+      dplyr::filter(temp_nm_keep == 1) %>%
+      dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
       dplyr::ungroup()
   }
 
