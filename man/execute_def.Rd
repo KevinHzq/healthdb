@@ -42,7 +42,7 @@ df <- data.frame(
   diagx_2 = sample(c(NA, letters), size = sample_size, replace = TRUE)
 )
 
-# make a remote version of df
+# make df a database table
 db <- dbplyr::tbl_memdb(df)
 
 # use build_def to make a toy definition
@@ -51,10 +51,10 @@ sud_def <- build_def("SUD", # usually a disease name
   # functions that filter the data with some criteria
   def_fn = define_case,
   fn_args = list(
-    vars = starts_with("diagx"), # list/c could be omitted for single element
+    vars = starts_with("diagx"),
     match = "start", # "start" will be applied to all sources as length = 1
     vals = list(c("304"), c("305")),
-    clnt_id = "clnt_id",
+    clnt_id = "clnt_id", # list()/c() could be omitted for single element
     # c() can be used in place of list
     # if this argument only takes one value for each source
     n_per_clnt = c(2, 3)

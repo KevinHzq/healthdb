@@ -21,7 +21,7 @@ fetch_vars(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...)
 For example, given \code{keys} has 3 variables,
 list(
 y1 ~ tidyselect_expr1,
-y2 ~ tidyselect_expr1|key1 + key2)
+y2 ~ tidyselect_expr2|key1 + key2)
 
 meaning:
 \enumerate{
@@ -59,7 +59,7 @@ df3 <- data.frame(id = 1:n, sex = sample(c("F", "M"), size = n, replace = TRUE))
 
 # simple joins
 # note that for left_join(df1, df2), boths keys have to be used,
-# otherwise, error due to the relation would not be one-to-one
+# otherwise, error as the relation would not be one-to-one
 fetch_vars(df1,
   keys = c(id, year),
   linkage = list(

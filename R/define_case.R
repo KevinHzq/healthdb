@@ -70,6 +70,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
   has_date_var <- !rlang::quo_is_null(rlang::enquo(date_var))
   if (has_date_var) date_var <- rlang::as_name(rlang::enquo(date_var))
+  if (!has_date_var & any(!is.null(apart), !is.null(within))) stop("'date_var' must be supplied if 'within'/'apart' is not NULL")
 
   keep <- rlang::arg_match0(keep, c("all", "first", "last"))
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
