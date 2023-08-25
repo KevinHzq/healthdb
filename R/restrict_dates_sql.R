@@ -29,17 +29,17 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::group_by(.data[[clnt_id]]) %>%
       dbplyr::window_order(.data[[date_var]]) %>%
       dplyr::mutate(
-        temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1))
+        temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1)
+      )
 
-    #SQL server does not accept subtracting dates
+    # SQL server does not accept subtracting dates
     is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(data) %>% class(), "SQL Server|Maria") %>% any()
     if (is_mssql_mysql) {
       keep <- keep %>%
         dplyr::mutate(
           temp_nm_gap = dbplyr::sql(glue::glue_sql("DATEDIFF(day, {`date_var`}, {`temp_nm_lead`})", .con = dbplyr::remote_con(data), temp_nm_lead = "temp_nm_lead"))
         )
-    }
-    else {
+    } else {
       keep <- keep %>%
         dplyr::mutate(
           temp_nm_gap = temp_nm_lead - .data[[date_var]]
