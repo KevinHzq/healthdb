@@ -48,7 +48,12 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
 
     keep <- keep %>%
       dplyr::mutate(
-        temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
+        # the translation for any() failed on SQL server again
+        # temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
+        temp_nm_keep = max(dplyr::case_when(temp_nm_gap <= within ~ 1,
+                                     is.na(temp_nm_gap) ~ NA,
+                                     .default = 0),
+                           na.rm = TRUE)
       ) %>%
       dplyr::filter(temp_nm_keep == 1) %>%
       dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
