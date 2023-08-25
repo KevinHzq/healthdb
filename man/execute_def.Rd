@@ -17,11 +17,11 @@ execute_def(
 
 \item{with_data}{A named list which the elements are in the form of src_lab = data, where `src_lab` corresponds to the src_labs argument from build_def() and `data` is the data object that will be passed to calls stored in def. The names (and length) of with_data must match the unique values of src_labs in def.}
 
-\item{bind}{A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default behavior is to try and return the unbinded result if failed.}
+\item{bind}{A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default is FALSE. If TRUE, the behavior is to try and return the unbinded result when failed.}
 
-\item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow.}
+\item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
 
-\item{force_collect}{A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
+\item{force_collect}{A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data.}
 }
 \value{
 A single (if bind = TRUE) or a list of data.frames or remote tables.
