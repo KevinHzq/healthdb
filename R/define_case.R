@@ -107,7 +107,9 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (is.data.frame(result)) {
     date_var <- rlang::expr(.data[[date_var]])
   } else {
-    date_var <- rlang::expr(dbplyr::sql(dbplyr::escape_ansi(dbplyr::ident(!!date_var))))
+    # incorrect quoting of the var name on SQL server
+    # date_var <- rlang::expr(dbplyr::sql(dbplyr::escape_ansi(dbplyr::ident(!!date_var))))
+    date_var <- rlang::expr(dbplyr::sql(glue::glue_sql("{`date`}", .con = dbplyr::remote_con(result), date = date_var)))
   }
 
   # replacing slice_ function in expression
@@ -119,7 +121,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
       rlang::expr_text()
     if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("slice_min", "slice_max")
     expr_slice <- expr_slice %>% rlang::parse_expr()
-    eval(expr_slice)
+    #eval(expr_slice)
   }
 
   if (force_collect) result <- dplyr::collect(result, cte = TRUE)
