@@ -34,7 +34,7 @@ restrict_dates(
 
 \item{force_collect}{A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
-\item{verbose}{A logical for whether to report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
+\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
 \item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
 }

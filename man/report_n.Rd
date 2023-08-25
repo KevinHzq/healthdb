@@ -4,12 +4,14 @@
 \alias{report_n}
 \title{Report number of distinct value in a column across data frames}
 \usage{
-report_n(..., on)
+report_n(..., on, force_proceed = getOption("odcfun.force_proceed"))
 }
 \arguments{
 \item{...}{Data frames or remote tables (e.g., from dbplyr)}
 
 \item{on}{The column to report on. It must be present in all data sources.}
+
+\item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is TRUE to let user be aware of that the query execution may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
 }
 \value{
 A sequence of the number of distinct `on` for each data frames

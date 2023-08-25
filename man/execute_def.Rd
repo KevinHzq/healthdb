@@ -7,8 +7,8 @@
 execute_def(
   def,
   with_data,
-  bind = TRUE,
-  force_proceed = FALSE,
+  bind = FALSE,
+  force_proceed = getOption("odcfun.force_proceed"),
   force_collect = FALSE
 )
 }
@@ -21,7 +21,7 @@ execute_def(
 
 \item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow.}
 
-\item{force_collect}{A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data.}
+\item{force_collect}{A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
 }
 \value{
 A single (if bind = TRUE) or a list of data.frames or remote tables.

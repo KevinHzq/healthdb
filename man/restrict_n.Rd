@@ -21,7 +21,7 @@ restrict_n(
 
 \item{count_by}{Another variable dictating the counting unit of n_per_clnt. The default is NULL meaning the inclusion criteria is the number of row, i.e., dplyr::n() >= n_per_clnt. If it is not NULL, the criteria becomes dplyr::n_distinct(count_by) >= n_per_clnt.}
 
-\item{verbose}{A logical for whether to report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
+\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 }
 \value{
 A subset of input data satisfied the group size requirement.
