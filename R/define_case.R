@@ -121,7 +121,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
       rlang::expr_text()
     if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("slice_min", "slice_max")
     expr_slice <- expr_slice %>% rlang::parse_expr()
-    #eval(expr_slice)
+    eval(expr_slice)
   }
 
   if (force_collect) result <- dplyr::collect(result, cte = TRUE)
