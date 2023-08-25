@@ -31,8 +31,10 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbo
   }
 
   if (verbose) {
-    initial_n <- report_n(data, on = {{ clnt_id }})
-    cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(db, on = {{ clnt_id }}), "were excluded by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
+    # disable report_n to save the extra execution
+    # initial_n <- report_n(data, on = {{ clnt_id }})
+    # cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(db, on = {{ clnt_id }}), "were excluded by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
+    cat("\nApply restriction that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
   }
 
   return(dplyr::ungroup(db))

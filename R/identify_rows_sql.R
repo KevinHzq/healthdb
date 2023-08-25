@@ -96,14 +96,15 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
 
   # explain the configuration in plain language to prompt user thinking
   if (verbose) {
-    # get all values in data
-    matched_vals <- lapply(vars, function(x) {
-      dplyr::select(q_match, dplyr::all_of(x)) %>%
-        dplyr::distinct() %>%
-        dplyr::pull()
-    })
-    # if ("Date" %in% var_class)
-    matched_vals <- Reduce(dplyr::union, matched_vals)
+    # disable output info for remote tables as the query has to be ran immediately which is not desired
+    # # get all values in data
+    # matched_vals <- lapply(vars, function(x) {
+    #   dplyr::select(q_match, dplyr::all_of(x)) %>%
+    #     dplyr::distinct() %>%
+    #     dplyr::pull()
+    # })
+    # # if ("Date" %in% var_class)
+    # matched_vals <- Reduce(dplyr::union, matched_vals)
 
     cat(
       "\nIdentify records with condition(s):",
@@ -111,12 +112,12 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
       "\n   - contains a value", match_msg, match_str, "\n"
     )
 
-    cat(ifelse(is.numeric(matched_vals), "\nRange of values in the result", "\nAll unique value(s) in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
-
-    switch(match,
-      "between" = print(range(matched_vals)),
-      if (is.numeric(matched_vals)) print(range(matched_vals)) else print(matched_vals, max = 100)
-    )
+  #   cat(ifelse(is.numeric(matched_vals), "\nRange of values in the result", "\nAll unique value(s) in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
+  #
+  #   switch(match,
+  #     "between" = print(range(matched_vals)),
+  #     if (is.numeric(matched_vals)) print(range(matched_vals)) else print(matched_vals, max = 100)
+  #   )
   }
 
   # job done

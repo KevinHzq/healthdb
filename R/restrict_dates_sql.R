@@ -61,8 +61,10 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   }
 
   if (verbose) {
-    initial_n <- report_n(data, on = {{ clnt_id }})
-    cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(keep, on = {{ clnt_id }}), "were excluded by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
+    # disable report_n to save the extra execution
+    # initial_n <- report_n(data, on = {{ clnt_id }})
+    # cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(keep, on = {{ clnt_id }}), "were excluded by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
+    cat("\nApply restriction that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
   }
 
   return(keep)
