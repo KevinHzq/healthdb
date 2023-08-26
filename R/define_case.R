@@ -107,8 +107,15 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (is.data.frame(result)) {
     date_var <- rlang::expr(.data[[!!date_var]])
   } else {
+<<<<<<< HEAD
     date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
+=======
+    # incorrect quoting of the var name on SQL server
+    # date_var <- rlang::expr(dbplyr::sql(dbplyr::escape_ansi(dbplyr::ident(!!date_var))))
+    date_var <- rlang::expr(dbplyr::sql(glue::glue_sql("{`date`}", .con = dbplyr::remote_con(result), date = !!date_var)))
+>>>>>>> b6ffd14d0569e85d0a24a7d6d27aa34c3d5192aa
   }
+  #browser()
 
   # replacing slice_ function in expression
   if (keep != "all") {
