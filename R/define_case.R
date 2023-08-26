@@ -105,12 +105,13 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")
   # fixing sql translation failed when using .data with slice_min/max
   if (is.data.frame(result)) {
-    date_var <- rlang::expr(.data[[date_var]])
+    date_var <- rlang::expr(.data[[!!date_var]])
   } else {
     # incorrect quoting of the var name on SQL server
     # date_var <- rlang::expr(dbplyr::sql(dbplyr::escape_ansi(dbplyr::ident(!!date_var))))
-    date_var <- rlang::expr(dbplyr::sql(glue::glue_sql("{`date`}", .con = dbplyr::remote_con(result), date = date_var)))
+    date_var <- rlang::expr(dbplyr::sql(glue::glue_sql("{`date`}", .con = dbplyr::remote_con(result), date = !!date_var)))
   }
+  #browser()
 
   # replacing slice_ function in expression
   if (keep != "all") {
