@@ -90,11 +90,12 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
       "\n   - contains a value", match_msg, match_str, "\n"
     )
 
-    cat(ifelse(is.numeric(result_vals), "\nRange of values in the result", "\nAll unique value(s) in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
+    cat(ifelse(is.numeric(result_vals), "\nSummary of values in the result", "\nAll unique value(s) and frequency in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
 
     switch(match,
-      "between" = print(range(result_vals)),
-      if (is.numeric(result_vals)) print(range(result_vals)) else print(result_vals, max = 100)
+      "between" = {cat("Range: "); print(range(result_vals))},
+      if (is.character(result_vals)) print(summary(factor(result_vals)), max = 100)
+      else print(summary(result_vals))
     )
   }
 
