@@ -17,7 +17,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       keep <- dplyr::collect(data) %>%
         dplyr::group_by(.data[[clnt_id]]) %>%
         dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
-        dplyr::mutate(temp.nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
+        dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
         dplyr::filter(temp_nm_keep) %>%
         dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
         dplyr::ungroup()
