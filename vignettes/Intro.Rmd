@@ -1,0 +1,44 @@
+---
+title: "Intro"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Motivation (draft)
+
+ - Intended for administrative health data
+ 
+ - These data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
+ 
+ - `dbplyr` not only translate of dplyr syntax to SQL but also make nesting sub-queries easy with the pipe operator. With dbplyr, complex query script can be built from re-using sub-queries instead of writing temporary tables at a cost of performance (sub-queries have to be ran again and again if it was called multiple times). Nevertheless, building complex queries with dbplyr is a useful approach to push computation onto the SQL server that is often much more efficient and resourceful than the user's machine. 
+ 
+ - However, dbplyr SQL translations failed frequently for the intended use case and needs fixing. 
+
+## What it does and why
+
+  - Interactive functions based on dplyr::filter and joins that works for both database and data.frame. Methods for data.frame use `data.table` package to speed up processing time for large data.
+  
+  - Functions implemented for identifying disease cases from admin data for epidemiological studies. These implementations focused on re-usability and code readability.
+
+## Installation
+
+Simply run
+```{r, eval = FALSE}
+devtools::install_github("kevinHzq/odcfun", build_vignettes = TRUE)
+```
+
+
+```{r setup}
+library(odcfun)
+```
+

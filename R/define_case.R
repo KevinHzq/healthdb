@@ -1,5 +1,6 @@
 #' Identify diseases/events from administrative records
 #'
+#' @md
 #' @description
 #' This function is a composite of identify_rows, exclude, and restrict_. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates()
 #'
