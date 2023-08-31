@@ -169,6 +169,7 @@ Here's how you could use `odcfun` to achieve these steps:
       area_code = sample(0:200, 50, replace = TRUE))
 
     # get year from dates for matching 
+
     result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates)))
 
     #note that keys must be present in all tables
