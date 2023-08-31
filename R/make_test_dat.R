@@ -54,9 +54,10 @@ make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noi
     dplyr::arrange(.data[["clnt_id"]], .data[["dates"]])
 
   if (type == "database") {
-    con <- DBI::dbConnect(RSQLite::SQLite(), path = ":memory:")
-    copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
-    test_dat <- tbl(con, "db")
+    con <- dbplyr::src_memdb()
+    dplyr::copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
+    test_dat <- dplyr::tbl(con, "db")
+
   }
 
   return(test_dat)
