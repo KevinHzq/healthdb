@@ -145,17 +145,18 @@ Here's how you could use `odcfun` to achieve these steps:
     Up to this point, the result is only a query and have not been downloaded. Hopefully, it has been shrunken to a manageable size for collection.
 
     ```{r}
-    cat("Class of result4:\n")
+    # Class of result4
     class(result4)
 
-    #execute query and download the result
+    # execute query and download the result
     result_df <- result4 %>% collect()
 
-    #nNumber of rows in source
+    # Number of rows in source
     nrow(claim_db %>% collect())
 
-    #Number of rows in the current result
+    # Number of rows in the current result
     nrow(result_df)
+
     ```
 
     Our data now only contains diagnoses that are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join` calls. Here we provide the `fetch_var` function to make the codes more concise.
@@ -185,7 +186,7 @@ Here's how you could use `odcfun` to achieve these steps:
 
 ## Call-building functions
 
-To complete the definition, we need to repeat the process shown above with hospitalization data. Some studies may use more than a handful data sources to define their sample. We packed steps 1-4 in one function `define_case`, and provide tools to perform batch execution with different data and parameters to meet those needs.
+To complete the definition, we need to repeat the process shown above with hospitalization data. Some studies may use more than a handful of data sources to define their sample. We packed steps 1-4 in one function `define_case`, and provide tools to perform batch execution with different data and parameters to meet those needs.
 
 ```{r}
 # build the full definition of SUD
@@ -212,13 +213,13 @@ sud_def <- build_def(
 sud_def
 ```
 
-Let's look inside the fn_call list column. Two calls of `define_case` have been made with different parameters. The data arguments are left empty on purpose for re-usability. For example, theses calls can be executed again if there are newer data available, and you want to update your analysis.
+Let's look inside the fn_call list column. Two calls of `define_case` have been made with different parameters. The data arguments are left empty on purpose for re-usability. For example, you may want to repeat the analysis with data from different regions or study periods.
 
 ```{r}
 sud_def$fn_call
 ```
 
-Executing the definition is simple. If verbose option is not turned off by `options(odcfun.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def` outputs together and execute all at once. Definition and source labels will be added to the result to identify outputs from different calls.
+Executing the definition is simple. If verbose option is not turned off by `options(odcfun.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def` outputs together and execute them all at once. Definition and source labels will be added to the result to identify outputs from different calls.
 
 ```{r}
 # execute the definition
