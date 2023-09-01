@@ -170,7 +170,7 @@ Here's how you could use `odcfun` to achieve these steps:
 
     # get year from dates for matching 
 
-    result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates)))
+    result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
 
     #note that keys must be present in all tables
     result_df %>% 
