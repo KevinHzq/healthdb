@@ -35,7 +35,7 @@ report_n <- function(..., on, force_proceed = getOption("odcfun.force_proceed"))
 
   if (any(!purrr::map_lgl(col_nm, function(x) on %in% x))) stop("All data must have the ", on, " column.")
 
-  sapply(dat, function(x) {
+  purrr::map_int(dat, function(x) {
     # ask for user input if data is remote
     if (!force_proceed & !is.data.frame(x)) {
       proceed <- readline(prompt = "\nThe data is not a data.frame. The query has to be executed (may be slow) in order to be summarized. Proceed? [y/n]")
