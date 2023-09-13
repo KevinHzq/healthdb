@@ -9,4 +9,4 @@
 library(testthat)
 library(odcfun)
 
-#test_check("odcfun")
+test_check("odcfun")
