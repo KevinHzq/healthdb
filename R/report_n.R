@@ -22,16 +22,21 @@
 #' # get the difference at each step
 #' diff(n)
 report_n <- function(..., on, force_proceed = getOption("odcfun.force_proceed")) {
+  dat <- rlang::list2(...)
+
+  if (rlang::is_empty(dat)) stop("No data supplied.")
+
   rlang::check_required(on)
 
-  on <- rlang::as_name(rlang::enquo(on))
+  on <- rlang::try_fetch(rlang::as_name(rlang::enquo(on)),
+                  error = function(cnd) rlang::abort("Failed to convert `on` to a variable name. It has to be a single quoted or unquoted name.", parent = cnd))
 
-  col_nm <- sapply(list(...), function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else names(x)})
+  col_nm <- purrr::map(dat, function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else names(x)})
 
-  if (all(sapply(col_nm, function(x) on %in% x))) stop("All data must have the ", on, " column.")
+  if (any(!purrr::map_lgl(col_nm, function(x) on %in% x))) stop("All data must have the ", on, " column.")
 
-  sapply(list(...), function(x) {
-    #ask for user input if data is remote
+  sapply(dat, function(x) {
+    # ask for user input if data is remote
     if (!force_proceed & !is.data.frame(x)) {
       proceed <- readline(prompt = "\nThe data is not a data.frame. The query has to be executed (may be slow) in order to be summarized. Proceed? [y/n]")
 
