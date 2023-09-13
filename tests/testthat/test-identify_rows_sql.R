@@ -1,9 +1,3 @@
-# test_that("dataframe input works", {
-#   df <- make_test_dat(vals_kept = letters, answer_id = "ans")
-#   out_df <- identify_rows(df, starts_with("diagx"), "in", letters, verbose = FALSE)
-#   expect_equal(out_df, subset(df, ans %in% c("all", "any")), ignore_attr = "row.names")
-# })
-
 test_that("match by in works", {
   db <- letters_n(type = "database")
   df <- dplyr::collect(db)
@@ -65,8 +59,30 @@ test_that("match by glue_sql works", {
   expect_equal(out_df, subset(df, ans %in% c("all", "any")), ignore_attr = "row.names")
 })
 
-test_that("type conflict warning", {
-  db <- letters_n()
-  expect_warning(identify_rows(db, starts_with("diagx"), "in", 1:10, verbose = FALSE), "not the same type")
+test_that("type conflict warning works", {
+  db <- letters_n(type = "database")
+  expect_warning(identify_rows(db, starts_with("diagx"), "in", 1:10), "not the same type")
 })
 
+test_that("edge case - character vars works", {
+  db <- letters_n(type = "database")
+  df <- dplyr::collect(db)
+  var_nm <- c("diagx", "diagx_1", "diagx_2")
+  out_df <- identify_rows(db, any_of(var_nm), "in", letters, query_only = FALSE)
+  expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
+})
+
+test_that("edge case - unquoted vars works", {
+  db <- letters_n(type = "database")
+  df <- dplyr::collect(db)
+  out_df <- identify_rows(db, c(diagx, diagx_1, diagx_2), "in", letters, query_only = FALSE)
+  expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
+})
+
+test_that("edge case - vals in an external vector works", {
+  db <- letters_n(type = "database")
+  df <- dplyr::collect(db)
+  val <- letters
+  out_df <- identify_rows(db, c(diagx, diagx_1, diagx_2), "in", val, query_only = FALSE)
+  expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
+})
