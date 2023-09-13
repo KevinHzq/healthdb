@@ -48,11 +48,11 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
     # Note that SQL does not support regular expression. The match is done by collecting all distinct possible values locally then using regex in R. The result is plugged into subseqent query as: WHERE var_nm IN (match_result).
     all_val <- data %>%
       tidyr::pivot_longer(
-        cols = vars,
+        cols = dplyr::all_of(vars),
         names_to = "position",
         values_to = "temp_val"
       ) %>%
-      dplyr::select(dplyr::all_of("temp_val")) %>%
+      dplyr::select("temp_val") %>%
       dplyr::distinct() %>%
       dplyr::pull("temp_val")
     vals <- all_val[data.table::like(all_val, match_str)]
@@ -66,20 +66,20 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
     # left start empty so getting action from like
     "start" = ,
     "like" = act_expr <- rlang::expr({
-      like_list <- lapply(vals, function(x) data %>% dplyr::filter(dplyr::if_any(vars, ~ stringr::str_like(., dbplyr::sql(dbplyr::escape_ansi(x))))))
+      like_list <- lapply(vals, function(x) data %>% dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ stringr::str_like(., dbplyr::sql(dbplyr::escape_ansi(x))))))
       q_match <- Reduce(dplyr::union, like_list)
     }),
     "regex" = ,
     "in" = act_expr <- rlang::expr({
       q_match <- data %>%
-        dplyr::filter(dplyr::if_any(vars, ~ . %in% dbplyr::sql(dbplyr::escape_ansi(vals, collapse = ",", parens = TRUE))))
+        dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ . %in% dbplyr::sql(dbplyr::escape_ansi(vals, collapse = ",", parens = TRUE))))
     }),
     "between" = act_expr <- rlang::expr({
       stopifnot(
         length(vals) == 2,
         vals[1] <= vals[2]
       )
-      q_match <- data %>% dplyr::filter(dplyr::if_any(vars, ~ dplyr::between(., dbplyr::sql(dbplyr::escape_ansi(vals[1])), dbplyr::sql(dbplyr::escape_ansi(vals[2])))))
+      q_match <- data %>% dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ dplyr::between(., dbplyr::sql(dbplyr::escape_ansi(vals[1])), dbplyr::sql(dbplyr::escape_ansi(vals[2])))))
     }),
     "glue_sql" = act_expr <- rlang::expr({
       q_match <- data %>% dplyr::filter(dbplyr::sql(match_str))
