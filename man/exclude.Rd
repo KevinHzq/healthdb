@@ -21,7 +21,7 @@ exclude(
 
 \item{by}{Column names that should be matched by anti_join or dplyr::join_by expressions. See anti_join's `by` argument for detail. Default NULL is the same as setdiff(data, excl).}
 
-\item{condition}{An expression that will be negated then passed to dplyr::filter, so the rows that satisfy `condition` are those to be removed from `data`.}
+\item{condition}{An expression that will be passed to dplyr::filter. The rows that satisfy `condition` are those to be removed from `data`.}
 
 \item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
 
@@ -33,7 +33,7 @@ exclude(
 A data frame or remote table that is a subset of `data`.
 }
 \description{
-This function combines `dplyr::anti_join` and the opposite of `dplyr::filter`. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with negation of the expression given via the `condition` argument.
+This function combines `dplyr::anti_join` and the opposite of `dplyr::filter`. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with the expression given via the `condition` argument, and the filter result would in turn be removed using `dplyr::setdiff`.
 }
 \examples{
 # exclude with condition
