@@ -90,7 +90,9 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
     if (verbose) cat("\n--------------Exclusion step--------------\n")
     # allow overwriting arguments for identifying exclusion values
     excl <- rlang::call_modify(incl, !!!excl_args, vals = excl_vals, .homonyms = "last")
-    result <- rlang::inject(result %>% exclude(!!excl, by = !!clnt_id, report_on = !!clnt_id, verbose = verbose))
+    if (is.data.frame(result)) if_report <- clnt_id
+    else if_report <- NULL
+    result <- rlang::inject(result %>% exclude(!!excl, by = !!clnt_id, report_on = !!if_report, verbose = verbose))
   }
 
   if (n_per_clnt > 1) {
@@ -108,9 +110,10 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (is.data.frame(result)) {
     date_var <- rlang::expr(.data[[!!date_var]])
   } else {
-    date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
+    # date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
+    # changed from above because translating slice_max failed
+    date_var <- rlang::expr(!!date_var)
   }
-  #browser()
 
   # replacing slice_ function in expression
   if (keep != "all") {
@@ -128,38 +131,3 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   return(result)
 }
-
-
-# pmap(list(data = list(db, test_dat), vars = exprs(starts_with("diagx")), match = c("in", "start"), vals = list(c("304"), c("305")),  clnt_id = exprs(clnt_id, clnt_id), n_per_clnt = c(2, 3), excl_vals = list(c("50B"), c("304")), excl_args = list(list(if_all = TRUE), list(if_all = FALSE))), define_case)
-
-# define_case_per_source <- function(..., source, clnt_id_nm, from_var_nm, incl_vals, n_per_clnt, excl_vals, date_nm, dates_apart, dates_within, multi_var_cols, verbose) {
-#
-#   rlang::enexprs(...)
-#
-# }
-#
-# define_case <- function(..., .fn_identify_incl, .fn_identify_excl, .fn_excl, .fn_restrict)
-#
-# define_across <- function(..., clnt_id_nm, from_var_nm, incl_vals, excl_vals, n_per_clnt, date_nm, dates_apart, dates_within, multi_var_cols, verbose) {
-#   sources <- list(...)
-#   stopifnot(sapply(sources, function(x) class(x) %in% c("tbl_sql", "data.frame")))
-#   n_sources <- length(sources)
-#   stopifnot(lengths(list(from_var_nm, incl_vals, excl_vals, n_per_clnt, date_nm, dates_apart, dates_within, multi_var_cols)) %in% c(1, n_sources))
-#   purrr::walk(list(from_var_nm, incl_vals, excl_vals, n_per_clnt, date_nm, dates_apart, dates_within, multi_var_cols), process_largs)
-#
-# }
-#
-# process_largs <- function(arg, len, verbose) {
-#   if (is.list(arg)) {
-#     if (length(arg) != len) stop("Argument ", deparse(substitute(arg)), " is not of the same lenght as the sources. Unlist it if you want to repeat a single value/vector for all the sources.")
-#   }
-#   else {
-#     if (verbose) cat("\nArgument", deparse(substitute(arg)), "is not a list and treated as the same value for each source.\n")
-#     assign(deparse(substitute(arg)), rep(list(arg), len), envir = parent.frame())
-#   }
-# }
-#
-# test_f <- function(what, len, verbose) {
-#   process_args(what, len, verbose)
-#   print(what)
-# }

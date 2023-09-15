@@ -1,0 +1,77 @@
+test_that("identify-only works", {
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+})
+
+test_that("identify+exclude works", {
+  excl_vals <- c("a", "b")
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, excl_vals = excl_vals, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+})
+
+test_that("identify+restrict_n works", {
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, n_per_clnt = 2, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+})
+
+test_that("identify+exclude+restrict_n works", {
+  excl_vals <- c("a", "b")
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, excl_vals = excl_vals, n_per_clnt = 2, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+})
+
+test_that("identify+restrict_n+restrict_dates works", {
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, n_per_clnt = 2, date_var = dates, apart = 2, within = 365, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+})
+
+test_that("output is correct for database", {
+  n <- 2
+  apart <- 30
+  within <- 365
+  db <- make_test_dat(type = "database", answer_id = "ans")
+  df <- dplyr::collect(db)
+  ans_df <- df %>% filter(ans != "noise")
+  out_df <- df %>% filter(if_any(starts_with("diagx"), ~ . %in% "999"))
+  ans_df <- ans_df %>% anti_join(out_df, by = "clnt_id")
+  ans_id <- test_apart_within(ans_df, n, apart, within)
+  output_df <- define_case(db, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, n_per_clnt = n, date_var = dates, apart = apart, within = within, force_collect = TRUE)
+  expect_setequal(output_df$clnt_id, ans_id)
+})
+
+test_that("output is correct for data.frame", {
+  n <- 2
+  apart <- 30
+  within <- 365
+  df <- make_test_dat(answer_id = "ans")
+  ans_df <- df %>% filter(ans != "noise")
+  out_df <- df %>% filter(if_any(starts_with("diagx"), ~ . %in% "999"))
+  ans_df <- ans_df %>% anti_join(out_df, by = "clnt_id")
+  ans_id <- test_apart_within(ans_df, n, apart, within)
+  output_df <- define_case(df, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, n_per_clnt = n, date_var = dates, apart = apart, within = within)
+  expect_setequal(output_df$clnt_id, ans_id)
+})
+
+test_that("SQL slice_max translation works", {
+  db <- letters_n(type = "database")
+  df <- db %>% dplyr::group_by(clnt_id) %>% dplyr::slice_max(dates, n = 1, with_ties = FALSE) %>% dplyr::collect()
+  expect_s3_class(df, "data.frame")
+})
+
+test_that("keep first/last works", {
+  db <- letters_n(type = "database", IDs = 1:10)
+  df_list <- sapply(c("all", "first", "last"), function(x) define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
+  expect_true(nrow(df_list[["all"]]) > nrow(df_list[["first"]]))
+  expect_true(nrow(df_list[["all"]]) > nrow(df_list[["last"]]))
+  expect_s3_class(df_list[["first"]], "data.frame")
+  expect_s3_class(df_list[["last"]], "data.frame")
+  # also check missing date_var
+  expect_error(define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, keep = "last"), "must be supplied")
+  expect_error(define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, within = 365), "must be supplied")
+})
+

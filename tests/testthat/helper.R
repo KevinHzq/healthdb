@@ -1,7 +1,7 @@
-letters_n <- function(nrows = 25, type = "data.frame") {
+letters_n <- function(nrows = 25, type = "data.frame", ...) {
   n_any <- nrows %/% 2
   n_all <- n_any %/% 3
-  make_test_dat(vals_kept = letters, nrows = nrows, n_any = n_any, n_all = n_all, answer_id = "ans", type = type)
+  make_test_dat(vals_kept = letters, nrows = nrows, n_any = n_any, n_all = n_all, answer_id = "ans", type = type, ...)
 }
 
 xnum_n <- function(x, nrows = 25, type = "data.frame") {
