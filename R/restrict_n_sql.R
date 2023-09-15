@@ -7,8 +7,6 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbo
   # place holder for temp var names
   temp_n_collapsed <- temp_n_collapsed_id <- NULL
 
-  # dt <- data.table::as.data.table(data)
-
   # count differently if unit id is supplied by count_by
   has_count_by <- !rlang::quo_is_null(rlang::enquo(count_by))
 

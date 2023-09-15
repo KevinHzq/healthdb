@@ -32,7 +32,11 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = ge
     out_rows <- dplyr::filter(data, {{ condition }}, ...)
     keep_rows <- dplyr::setdiff(data, out_rows)
 
-    if (verbose) cat("\nExclude a subset of `data` that satisfies condition:", deparse(substitute(condition)), ifelse("tbl_sql" %in% class(data), "\nCheck NAs in the result; SQL handles missing value differently compared to R.\n", "\n"))
+    cnd_txt <- deparse(substitute(condition))
+
+    if (verbose) cat("\nExclude a subset of `data` that satisfies condition:", cnd_txt, ifelse("tbl_sql" %in% class(data), "\nCheck NAs in the result; SQL handles missing value differently compared to R.\n", "\n"))
+
+    if (verbose & !stringr::str_detect(cnd_txt, "is.na")) cat("Consider being explicit about NA, e.g., condition = var == 'val' | is.na(var)\n")
   } else if (any(dplyr::intersect(class(data), class(excl)) %in% c("data.frame", "tbl_sql"))) {
     # if two data sets, do anti_join
     if (verbose) cat("\nExclude records in `data` through anti_join with `excl` matching on (by argument):", deparse(substitute(by)), "\n")
