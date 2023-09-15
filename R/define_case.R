@@ -77,13 +77,16 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_rows calls
-  arg <- rlang::enexprs(data, vars, match, vals, if_all, verbose)
-  names(arg) <- purrr::map_chr(rlang::exprs(data, vars, match, vals, if_all, verbose), rlang::as_label)
-  incl <- rlang::call2("identify_rows", !!!arg)
+  arg <- rlang::enexprs(vars, match, vals, if_all, verbose)
+  names(arg) <- purrr::map_chr(rlang::exprs(vars, match, vals, if_all, verbose), rlang::as_label)
+  # data is included separately since the call should be evaluate on the data already assigned to `data`,
+  # instead of the original symbol of data in the global environment
+  incl <- rlang::call2("identify_rows", data = rlang::expr(data), !!!arg)
   incl <- rlang::call_modify(incl, ... = rlang::zap(), .homonyms = "first")
 
   # body
   if (verbose) cat("\n--------------Inclusion step--------------\n")
+  #browser()
   result <- eval(incl)
 
   if (!is.null(excl_vals)) {
