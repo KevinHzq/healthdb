@@ -22,3 +22,39 @@ btw_n <- function(date_range, n_ans = 5, type = "data.frame") {
   }
   return(all)
 }
+
+iclnt_jdates <- function(i, j, dup, date_range = c(as.Date("2015-01-01"), as.Date("2021-01-31")), type = "data.frame") {
+  dat <- purrr::map2(i, j, ~ tidyr::expand_grid(clnt_id = .x, dates = seq(date_range[1], date_range[2], length.out = .y)))
+  dat <- append(dat, purrr::map2(i, dup, ~ dplyr::tibble(clnt_id = rep(.x, each = .y), dates = date_range[1])))
+
+  test_dat <- purrr::list_rbind(dat)
+
+  if (type == "database") {
+    con <- dbplyr::src_memdb()
+    dplyr::copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
+    test_dat <- dplyr::tbl(con, "db")
+  }
+
+  return(test_dat)
+}
+
+# internal test function that should be ran on make_test_dat() output
+test_apart_within <- function(data, n, apart = 0, within = Inf) {
+  data <- data %>%
+    dplyr::group_by(.data[["clnt_id"]]) %>%
+    dplyr::filter(dplyr::n_distinct(.data[["dates"]]) >= n)
+
+  keep <- data %>%
+    dplyr::summarise(met = utils::combn(.data[["dates"]] %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any())
+
+  keep <- keep %>%
+    dplyr::filter(met) %>%
+    dplyr::pull(.data[["clnt_id"]])
+
+  return(keep)
+}
+
+test_if_dates <- function(x, n, apart = 0, within = Inf, dup.rm = TRUE) {
+  if (dup.rm) utils::combn(x %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any()
+  else utils::combn(x, n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any()
+}
