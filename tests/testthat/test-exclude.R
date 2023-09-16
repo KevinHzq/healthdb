@@ -33,6 +33,8 @@ test_that("condition on database works", {
   df <- dplyr::collect(db)
   out_db <- exclude(db, condition = ans == "noise")
   expect_equal(out_db %>% dplyr::collect(), subset(df, ans != "noise"), ignore_attr = "row.names")
+  # also test console output
+  expect_output(exclude(db, condition = ans == "noise", verbose = TRUE), "Consider")
 })
 
 test_that("report_on on data.frames works", {
