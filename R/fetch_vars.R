@@ -88,19 +88,19 @@ fetch_vars <- function(data, keys, linkage, verbose = getOption("odcfun.verbose"
   # make df for parsing the formulas by sources (y)
   df <- dplyr::tibble(lhs = purrr::map(linkage, rlang::f_lhs), rhs = purrr::map_chr(linkage, rlang::f_text))
 
-  rhs_split <- stringr::str_split(df[["rhs"]], "\\|", simplify = TRUE)
+  rhs_split <- stringr::str_split_fixed(df[["rhs"]], "\\|", n = 2)
 
   df <- df %>% dplyr::mutate(
     vars = rhs_split[, 1],
     vars = rlang::parse_exprs(vars),
     keys_y = purrr::map(rhs_split[, 2], function(x) stringr::str_split_1(x, "\\+") %>% stringr::str_trim()),
-    keys_y = purrr::map(keys_y, function(x) dplyr::case_when(x == "" ~ keys, .default = x) %>% unique()),
+    keys_y = purrr::map(keys_y, function(x) if (all(x == "")) keys else x),
     keys_y_expr = purrr::map_chr(keys_y, function(x) glue::glue_collapse(x, ", ")),
     keys_y_len = purrr::map_dbl(keys_y, length)
   )
 
   if (max(df[["keys_y_len"]]) > length(keys)) stop("The length of variables supplied after '|' cannot be larger than the length of keys")
-  if (!all(df[["keys_y"]] %>% unlist() %in% keys)) stop("The variables supplied after '|' should be a subset of keys")
+  if (any(!(df[["keys_y"]] %>% unlist() %in% keys))) stop("The variables supplied after '|' should be a subset of keys")
 
   # make join calls
   df <- df %>%
