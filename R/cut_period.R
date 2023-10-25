@@ -5,7 +5,7 @@
 #' @param start Record start date column (unquoted)
 #' @param end Record end date column (unquoted)
 #' @param len An integer, the interval that would be used to divide the record duration
-#' @param unit One of "day" (default), "week", "month", or "year" used in combination of len to specify the time length of the interval.
+#' @param unit One of "day" (default), "week", "month", "quarter, or "year" used in combination of len to specify the time length of the interval.
 #' @param .dt_trans Function to transform start/end, such as lubridate::ymd. Default is NULL.
 #'
 #' @return Data frame that each row is now a segment of the period defined by (start, end) in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.
@@ -27,8 +27,10 @@
 #'   breaks = c(0, 1, 2, Inf),
 #'   labels = c("< 1 month", "1 - 2 months", "Remainder")
 #' )
-cut_period <- function(dat, start, end, len, unit = "day", .dt_trans = NULL) {
+cut_period <- function(dat, start, end, len, unit = c("day", "week", "month", "quarter", "year"), .dt_trans = NULL) {
   # input checks
+  unit <- rlang::arg_match0(unit, c("day", "week", "month", "quarter", "year"))
+
   new_cols <- c("segment_start", "segment_end", "segment_id")
   dat <- dat %>% dplyr::rename_with(~ paste(.x, "og", sep = "_", recycle0 = TRUE), dplyr::any_of(new_cols))
 

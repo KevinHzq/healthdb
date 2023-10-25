@@ -14,7 +14,7 @@ test_that("basic use works", {
 test_that("date transform works", {
   df <- letters_n()
   ans_rows <- sample(1:5, size = nrow(df), replace = TRUE)
-  unt <- "week"
+  unt <- "month"
   df <- df %>%
     dplyr::mutate(
       add = ans_rows,
