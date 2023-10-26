@@ -44,5 +44,5 @@ cut_period <- function(dat, start, end, len, unit = c("day", "week", "month", "q
       segment_end = purrr::map2(.data$segment_start, {{ end }}, ~ .x %>% dplyr::lead(, default = .y + lubridate::days(1)) - lubridate::days(1)),
       segment_id = purrr::map(.data$segment_start, ~ seq_along(lengths(.x)))
     ) %>%
-    tidyr::unnest(cols = any_of(new_cols))
+    tidyr::unnest(cols = dplyr::any_of(new_cols))
 }

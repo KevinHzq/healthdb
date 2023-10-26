@@ -4,7 +4,14 @@
 \alias{cut_period}
 \title{Cut the time period in one row into multiple rows by interval}
 \usage{
-cut_period(dat, start, end, len, unit = "day", .dt_trans = NULL)
+cut_period(
+  dat,
+  start,
+  end,
+  len,
+  unit = c("day", "week", "month", "quarter", "year"),
+  .dt_trans = NULL
+)
 }
 \arguments{
 \item{dat}{Input dataframe that each row has start and end dates}
@@ -15,7 +22,7 @@ cut_period(dat, start, end, len, unit = "day", .dt_trans = NULL)
 
 \item{len}{An integer, the interval that would be used to divide the record duration}
 
-\item{unit}{One of "day" (default), "week", "month", or "year" used in combination of len to specify the time length of the interval.}
+\item{unit}{One of "day" (default), "week", "month", "quarter, or "year" used in combination of len to specify the time length of the interval.}
 
 \item{.dt_trans}{Function to transform start/end, such as lubridate::ymd. Default is NULL.}
 }
