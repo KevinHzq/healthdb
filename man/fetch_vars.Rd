@@ -11,7 +11,7 @@ fetch_vars(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...)
 
 \item{keys}{A vector of quoted/unquoted variable names, or tidyselect expression. These variables must be present in \code{data} and would be used as the \code{by} argument in left_join. The y tables must have a subset of these if not all.}
 
-\item{linkage}{A list of formulas in the form of:
+\item{linkage}{A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 \itemize{
 \item source table on the left-hand-side
 \item variables on the right-hand-side

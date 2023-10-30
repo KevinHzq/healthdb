@@ -7,7 +7,7 @@
 #'
 #' @param data A local data.frame, or tibble. It would be used as the x argument in left_join.
 #' @param keys A vector of quoted/unquoted variable names, or tidyselect expression. These variables must be present in `data` and would be used as the `by` argument in left_join. The y tables must have a subset of these if not all.
-#' @param linkage A list of formulas in the form of:
+#' @param linkage A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 #'  - source table on the left-hand-side
 #'  - variables on the right-hand-side
 #'  - If a source table does not have all the variables in `keys`, use "|" on RHS to specify the subset of `keys` to be used.
