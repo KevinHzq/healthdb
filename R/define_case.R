@@ -86,15 +86,18 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   # body
   if (verbose) cat("\n--------------Inclusion step--------------\n")
-  #browser()
+  # browser()
   result <- eval(incl)
 
   if (!is.null(excl_vals)) {
     if (verbose) cat("\n--------------Exclusion step--------------\n")
     # allow overwriting arguments for identifying exclusion values
     excl <- rlang::call_modify(incl, !!!excl_args, vals = excl_vals, .homonyms = "last")
-    if (is.data.frame(result)) if_report <- clnt_id
-    else if_report <- NULL
+    if (is.data.frame(result)) {
+      if_report <- clnt_id
+    } else {
+      if_report <- NULL
+    }
     result <- rlang::inject(result %>% exclude(!!excl, by = !!clnt_id, report_on = !!if_report, verbose = verbose))
   }
 
@@ -109,23 +112,28 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   }
 
   if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")
+  # switch to filter(date = min/max(date)) instead of problematic slice_min/max
   # fixing sql translation failed when using .data with slice_min/max
-  if (is.data.frame(result)) {
-    date_var <- rlang::expr(.data[[!!date_var]])
-  } else {
-    # date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
-    # changed from above because translating slice_max failed
-    date_var <- rlang::expr(!!date_var)
-  }
+  # if (is.data.frame(result)) {
+  #   date_var <- rlang::expr(.data[[!!date_var]])
+  # } else {
+  #   date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
+  #   # changed from above because translating slice_max failed
+  #   # reversed to above again as of dbplyr 2.4.0
+  #   # date_var <- rlang::expr(!!date_var)
+  # }
 
   # replacing slice_ function in expression
   if (keep != "all") {
     expr_slice <- rlang::expr(result <- result %>%
-                                dplyr::group_by(.data[[!!clnt_id]]) %>%
-                                dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
-                                dplyr::ungroup()) %>%
+      dplyr::group_by(.data[[!!clnt_id]]) %>%
+      # dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
+      # switch to filter(date = min/max(date)) instead of problematic slice_min/max
+      dplyr::filter(.data[[!!date_var]] == min(.data[[!!date_var]], na.rm = TRUE)) %>%
+      dplyr::filter(dplyr::row_number() == 1) %>%
+      dplyr::ungroup()) %>%
       rlang::expr_text()
-    if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("slice_min", "slice_max")
+    if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("min", "max")
     expr_slice <- expr_slice %>% rlang::parse_expr()
     eval(expr_slice)
   }

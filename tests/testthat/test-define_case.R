@@ -48,11 +48,11 @@ test_that("output is correct for database", {
   expect_setequal(output_df2$clnt_id, ans_id)
 })
 
-test_that("SQL slice_max translation works", {
-  db <- letters_n(type = "database")
-  df <- db %>% dplyr::group_by(clnt_id) %>% dplyr::slice_max(dates, n = 1, with_ties = FALSE) %>% dplyr::collect()
-  expect_s3_class(df, "data.frame")
-})
+# test_that("SQL slice_max translation works", {
+#   db <- letters_n(type = "database")
+#   df <- db %>% dplyr::group_by(clnt_id) %>% dplyr::slice_max(dates, n = 1, with_ties = FALSE) %>% dplyr::collect()
+#   expect_s3_class(df, "data.frame")
+# })
 
 test_that("keep first/last works", {
   db <- letters_n(type = "database", id = 1:10)
@@ -66,3 +66,11 @@ test_that("keep first/last works", {
   expect_error(define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, within = 365), "must be supplied")
 })
 
+test_that("keep first/last works on df", {
+  df <- letters_n(type = "data.frame", id = 1:10)
+  df_list <- sapply(c("all", "first", "last"), function(x) define_case(df, starts_with("diagx"), "in", letters, clnt_id = clnt_id, date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
+  expect_true(nrow(df_list[["all"]]) > nrow(df_list[["first"]]))
+  expect_true(nrow(df_list[["all"]]) > nrow(df_list[["last"]]))
+  expect_s3_class(df_list[["first"]], "data.frame")
+  expect_s3_class(df_list[["last"]], "data.frame")
+})
