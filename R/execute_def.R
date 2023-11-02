@@ -118,7 +118,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
     return(result)
   } else if (bind | force_collect) {
     # if not all remote, also collect the remote ones before binding
-    result <- purrr::map_if(def[["result"]], !is_local, dplyr::as_tibble, .progress = TRUE)
+    result <- purrr::map_if(def[["result"]], !is_local, dplyr::collect, .progress = TRUE)
   } else {
     result <- def[["result"]]
   }
