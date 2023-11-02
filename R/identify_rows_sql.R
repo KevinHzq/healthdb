@@ -123,7 +123,7 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
   # job done
 
   if (!query_only) {
-    q_match <- q_match %>% dplyr::collect(cte = TRUE)
+    q_match <- q_match %>% dplyr::collect()
     # convert dates
   } else if (verbose) {
     cat(

@@ -7,7 +7,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_lead <- temp_nm_drank_gap <- NULL
+  temp_uid <- temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_lead <- temp_nm_drank_gap <- NULL
 
   if (!is.null(apart)) {
     if (!force_collect) {
@@ -19,15 +19,16 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
         dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
         dplyr::filter(temp_nm_keep) %>%
-        dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
+        dplyr::select(-dplyr::starts_with("temp_")) %>%
         dplyr::ungroup()
     }
   } else {
     # same logic as rollapply for within only in if_dates
     stopifnot(is.wholenumber(within))
     keep <- data %>%
+      dplyr::mutate(temp_uid = dplyr::row_number()) %>%
       dplyr::group_by(.data[[clnt_id]]) %>%
-      dbplyr::window_order(.data[[date_var]]) %>%
+      dbplyr::window_order(.data[[date_var]], temp_uid) %>%
       dplyr::mutate(
         temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1),
         temp_nm_drank = dplyr::dense_rank(.data[[date_var]]),
@@ -64,7 +65,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         )
       ) %>%
       dplyr::filter(temp_nm_keep == 1) %>%
-      dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
+      dplyr::select(-dplyr::starts_with("temp_")) %>%
       dplyr::ungroup()
   }
 
