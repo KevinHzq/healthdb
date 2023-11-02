@@ -7,7 +7,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- NULL
+  temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_lead <- temp_nm_drank_gap <- NULL
 
   if (!is.null(apart)) {
     if (!force_collect) {
@@ -29,7 +29,10 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::group_by(.data[[clnt_id]]) %>%
       dbplyr::window_order(.data[[date_var]]) %>%
       dplyr::mutate(
-        temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1)
+        temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1),
+        temp_nm_drank = dplyr::dense_rank(.data[[date_var]]),
+        temp_nm_drank_lead = dplyr::lead(temp_nm_drank, n - 1),
+        temp_nm_drank_gap = temp_nm_drank_lead - temp_nm_drank
       )
 
     # SQL server does not accept subtracting dates
@@ -50,10 +53,15 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::mutate(
         # the translation for any() failed on SQL server again
         # temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
-        temp_nm_keep = max(dplyr::case_when(temp_nm_gap <= within ~ 1,
-                                     is.na(temp_nm_gap) ~ NA,
-                                     .default = 0),
-                           na.rm = TRUE)
+        temp_nm_keep = max(
+          dplyr::case_when(
+            temp_nm_gap == 0 ~ 0,
+            temp_nm_gap <= within & temp_nm_drank_gap == n - 1 ~ 1,
+            is.na(temp_nm_gap) ~ NA,
+            .default = 0
+          ),
+          na.rm = TRUE
+        )
       ) %>%
       dplyr::filter(temp_nm_keep == 1) %>%
       dplyr::select(-dplyr::starts_with("temp_nm_")) %>%
