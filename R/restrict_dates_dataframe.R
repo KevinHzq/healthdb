@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
   date_var <- rlang::as_name(rlang::enquo(date_var))

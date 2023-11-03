@@ -10,6 +10,7 @@
 #' @param n An integer for the size of a draw.
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
+#' @param uid Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
@@ -29,7 +30,7 @@
 #'
 #' #Keep clients with 2 records that were 1 week apart within 1 month
 #' restrict_dates(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
-restrict_dates <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose")
+restrict_dates <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose")
 , ...) {
   rlang::check_required(clnt_id)
   rlang::check_required(date_var)

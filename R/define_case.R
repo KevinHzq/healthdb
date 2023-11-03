@@ -13,6 +13,7 @@
 #' @param date_var Variable name (quoted/unquoted) for the dates to be interpreted. If present, it would be used as the count_by argument for `restrict_n()`.
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw. See `restrict_dates()`.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
+#' @param uid Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.
 #' @param excl_vals Same as `vals` but groups with these values are going to be removed from the result.
 #' @param excl_args A named list of arguments for the second `identify_rows()` call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
 #' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default).
@@ -62,16 +63,20 @@
 #'   ),
 #'   define_case
 #' )
-define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)
 
   # capture variable names
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
+
   has_date_var <- !rlang::quo_is_null(rlang::enquo(date_var))
   if (has_date_var) date_var <- rlang::as_name(rlang::enquo(date_var))
   if (!has_date_var & any(!is.null(apart), !is.null(within))) stop("'date_var' must be supplied if 'within'/'apart' is not NULL")
+
+  has_uid <- !rlang::quo_is_null(rlang::enquo(uid))
+  if (has_uid) uid <- rlang::as_name(rlang::enquo(uid))
 
   keep <- rlang::arg_match0(keep, c("all", "first", "last"))
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
@@ -108,7 +113,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
     if (verbose) cat("\n--------------Time span restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, force_collect = force_collect, verbose = verbose, ...))
+    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, force_collect = force_collect, verbose = verbose, ...))
   }
 
   if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")

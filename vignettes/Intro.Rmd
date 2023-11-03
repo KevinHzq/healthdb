@@ -137,7 +137,8 @@ Here's how you could use `odcfun` to achieve these steps:
     result4 <- result3 %>% restrict_dates(clnt_id = clnt_id,
                                           date_var = dates,
                                           n = 2, 
-                                          within = 365)
+                                          within = 365,
+                                          uid = uid)
     ```
 
 5.  Fetch variables from other tables by matching common keys
@@ -206,6 +207,7 @@ sud_def <- build_def(
     n_per_clnt = c(2, 1),
     date_var = dates,
     within = c(365, NULL),
+    uid = uid,
     keep = "first" # keeping the first diagnosis per client
   )
 )

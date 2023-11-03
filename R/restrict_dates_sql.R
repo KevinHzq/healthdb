@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(n > 1, is.wholenumber(n))
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
@@ -25,12 +25,20 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         dplyr::ungroup()
     }
   } else {
-    within <- as.integer(within)
+    has_uid <- !rlang::quo_is_null(rlang::enquo(uid))
+    if (!has_uid) {
+      stop("`uid` must be supplied for database input to produce deterministic result")
+    } else {
+      uid <- rlang::as_name(rlang::enquo(uid))
+    }
+
     # same logic as rollapply for within only in if_dates
     stopifnot(is.wholenumber(within))
+    within <- as.integer(within)
+
     keep <- data %>%
       dplyr::group_by(.data[[clnt_id]]) %>%
-      dbplyr::window_order(.data[[date_var]]) %>%
+      dbplyr::window_order(.data[[date_var]], .data[[uid]]) %>%
       dplyr::mutate(
         temp_nm_lead = dplyr::lead(.data[[date_var]], n - 1L),
         temp_nm_drank = dplyr::dense_rank(.data[[date_var]]),

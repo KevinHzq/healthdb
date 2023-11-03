@@ -14,6 +14,7 @@ define_case(
   date_var = NULL,
   apart = NULL,
   within = NULL,
+  uid = NULL,
   excl_vals = NULL,
   excl_args = NULL,
   keep = c("all", "first", "last"),
@@ -41,6 +42,8 @@ define_case(
 \item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw. See \code{restrict_dates()}.}
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
+
+\item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
 \item{excl_vals}{Same as \code{vals} but groups with these values are going to be removed from the result.}
 

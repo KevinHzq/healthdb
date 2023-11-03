@@ -26,7 +26,7 @@ test_that("identify+exclude+restrict_n works", {
 
 test_that("identify+restrict_n+restrict_dates works", {
   db <- letters_n(type = "database")
-  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, n_per_clnt = 2, date_var = dates, apart = 2, within = 365, force_collect = TRUE)
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, n_per_clnt = 2, date_var = dates, apart = 2, within = 365, uid = uid, force_collect = TRUE)
   expect_s3_class(output_df, "data.frame")
 })
 

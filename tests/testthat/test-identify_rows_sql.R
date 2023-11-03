@@ -26,7 +26,7 @@ test_that("match by like works", {
   start <- paste0("F", 1:9) %>% rep(each = 9)
   pattern <- paste0("F", 1:9, "%")
   db <- xnum_n(x = start, type = "database")
-  df <- dplyr::collect(db)
+  df <- dplyr::collect(db) %>% dplyr::arrange(uid)
   out_df <- identify_rows(db, starts_with("diagx"), "like", pattern, query_only = FALSE)
   expect_equal(out_df, subset(df, ans %in% c("all", "any")), ignore_attr = "row.names")
 })

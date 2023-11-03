@@ -21,9 +21,10 @@
 #' @examples
 #' make_test_dat()
 make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noise_val = "999", IDs = 1:50, date_range = seq(as.Date("2015-01-01"), as.Date("2020-12-31"), by = 1), nrows = 100, n_any = 50, n_all = 10, seed = 2023, answer_id = NULL, type = c("data.frame", "database")) {
-
-  stopifnot(n_all <= n_any,
-            nrows >= n_any)
+  stopifnot(
+    n_all <= n_any,
+    nrows >= n_any
+  )
 
   type <- rlang::arg_match(type)
 
@@ -31,26 +32,32 @@ make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noi
 
   n_noise <- nrows - n_any
 
-  #contruct the answer rows and noise separately then combine
+  # contruct the answer rows and noise separately then combine
 
   df_any <- data.frame(
     diagx = sample(vals_kept, size = n_any - n_all, replace = TRUE),
     diagx_1 = sample(c(NA, vals_kept, noise_val), size = n_any - n_all, replace = TRUE),
-    diagx_2 = sample(c(NA, noise_val), size = n_any - n_all, replace = TRUE))
+    diagx_2 = sample(c(NA, noise_val), size = n_any - n_all, replace = TRUE)
+  )
 
   df_all <- data.frame(
     diagx = sample(vals_kept, size = n_all, replace = TRUE),
     diagx_1 = sample(vals_kept, size = n_all, replace = TRUE),
-    diagx_2 = sample(vals_kept, size = n_all, replace = TRUE))
+    diagx_2 = sample(vals_kept, size = n_all, replace = TRUE)
+  )
 
   df_noise <- data.frame(
     diagx = sample(c(noise_val), size = n_noise, replace = TRUE),
     diagx_1 = sample(c(noise_val, NA), size = n_noise, replace = TRUE),
-    diagx_2 = sample(c(noise_val, NA), size = n_noise, replace = TRUE))
+    diagx_2 = sample(c(noise_val, NA), size = n_noise, replace = TRUE)
+  )
 
   test_dat <- dplyr::bind_rows(any = df_any, all = df_all, noise = df_noise, .id = answer_id) %>%
-    dplyr::mutate(clnt_id = sample(IDs, size = nrows, replace = TRUE),
-           dates = sample(date_range, size = nrows, replace = TRUE), .before = 0) %>%
+    dplyr::mutate(
+      uid = dplyr::row_number(),
+      clnt_id = sample(IDs, size = nrows, replace = TRUE),
+      dates = sample(date_range, size = nrows, replace = TRUE), .before = 0
+    ) %>%
     dplyr::arrange(.data[["clnt_id"]], .data[["dates"]])
 
   if (type == "database") {
@@ -61,5 +68,3 @@ make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noi
 
   return(test_dat)
 }
-
-

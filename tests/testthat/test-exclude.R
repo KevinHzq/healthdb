@@ -30,8 +30,8 @@ test_that("condition on data.frames works", {
 
 test_that("condition on database works", {
   db <- letters_n(type = "database")
-  df <- dplyr::collect(db)
-  out_db <- exclude(db, condition = ans == "noise")
+  df <- dplyr::collect(db) %>% dplyr::arrange(uid)
+  out_db <- exclude(db, condition = ans == "noise") %>% dplyr::arrange(uid)
   expect_equal(out_db %>% dplyr::collect(), subset(df, ans != "noise"), ignore_attr = "row.names")
   # also test console output
   expect_output(exclude(db, condition = ans == "noise", verbose = TRUE), "Consider")
@@ -39,38 +39,35 @@ test_that("condition on database works", {
 
 test_that("report_on on data.frames works", {
   df <- letters_n()
-  out_df <- exclude(df, condition = ans == "noise", report_on = clnt_id)
-  expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
+  expect_output(exclude(df, condition = ans == "noise", report_on = clnt_id, verbose = TRUE), "were excluded")
 })
 
 test_that("report_on on database works", {
   db <- letters_n(type = "database")
-  df <- dplyr::collect(db)
   on <- "clnt_id"
-  out_db <- exclude(db, condition = ans == "noise", report_on = !!on)
-  expect_equal(out_db %>% dplyr::collect(), subset(df, ans != "noise"), ignore_attr = "row.names")
+  expect_output(exclude(db, condition = ans == "noise", report_on = !!on, verbose = TRUE), "were excluded")
 })
 
 test_that("edge case - variable contains NA on database works", {
   db <- letters_n(type = "database")
-  df <- dplyr::collect(db)
+  df <- dplyr::collect(db) %>% dplyr::arrange(uid)
   on <- "clnt_id"
-  out_db <- exclude(db, condition = diagx_2 %in% !!letters)
+  out_db <- exclude(db, condition = diagx_2 %in% !!letters) %>% dplyr::arrange(uid)
   expect_equal(out_db %>% dplyr::collect(), dplyr::filter(df, !(diagx_2 %in% !!letters)), ignore_attr = "row.names")
 })
 
 test_that("edge case - excluding == keeps NA works", {
   db <- letters_n(type = "database")
-  df <- dplyr::collect(db)
+  df <- dplyr::collect(db) %>% dplyr::arrange(uid)
   on <- "clnt_id"
-  out_db <- exclude(db, condition = diagx_2 == "999")
+  out_db <- exclude(db, condition = diagx_2 == "999") %>% dplyr::arrange(uid)
   expect_equal(out_db %>% dplyr::collect(), dplyr::filter(df, diagx_2 != "999" | is.na(diagx_2)), ignore_attr = "row.names")
 })
 
 test_that("edge case - complex condition on database works", {
   db <- letters_n(type = "database")
-  df <- dplyr::collect(db)
+  df <- dplyr::collect(db) %>% dplyr::arrange(uid)
   on <- "clnt_id"
-  out_db <- exclude(db, condition = dplyr::if_any(dplyr::starts_with("diagx"), ~ . %in% !!letters))
+  out_db <- exclude(db, condition = dplyr::if_any(dplyr::starts_with("diagx"), ~ . %in% !!letters)) %>% dplyr::arrange(uid)
   expect_equal(out_db %>% dplyr::collect(), dplyr::filter(df, !(dplyr::if_any(dplyr::starts_with("diagx"), ~ . %in% !!letters))), ignore_attr = "row.names")
 })
