@@ -40,3 +40,11 @@ test_that("straight false due to no gap < within works", {
   dates <- c(as.Date("2023-01-01"), as.Date("2023-03-01"), as.Date("2023-05-01"))
   expect_false(if_dates(dates, 2, apart = 7, within = 30))
 })
+
+test_that("detail works", {
+  x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
+  ans <- c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE)
+  w <- 365
+  out <- if_dates(x, n = 2, within = 365, detail = TRUE)
+  expect_equal(out, ans)
+})

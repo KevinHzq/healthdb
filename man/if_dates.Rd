@@ -4,7 +4,7 @@
 \alias{if_dates}
 \title{Interpret if n dates drawn from a vector could be some days apart within some years}
 \usage{
-if_dates(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...)
+if_dates(x, n, apart = NULL, within = NULL, detail = FALSE, dup.rm = TRUE, ...)
 }
 \arguments{
 \item{x}{A character or Date vector}
@@ -15,12 +15,14 @@ if_dates(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...)
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
+\item{detail}{Logical for whether return result break down by each element, e.g., if periods of length 'within' starting from each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().}
+
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
 \item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
 }
 \value{
-Single logical for whether there is any draw from x satisfied the conditions
+Single or a vector of logical for whether there is any draw from x satisfied the conditions
 }
 \description{
 Given a vector of dates x, interpret if there could be at least one set of n elements taken from x satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations in x.

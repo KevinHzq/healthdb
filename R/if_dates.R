@@ -7,10 +7,11 @@
 #' @param n An integer for the size of a draw
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
+#' @param detail Logical for whether return result break down by each element, e.g., if periods of length 'within' starting from each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param ... Additional argument passing to data.table::as.IDate for date conversion.
 #'
-#' @return Single logical for whether there is any draw from x satisfied the conditions
+#' @return Single or a vector of logical for whether there is any draw from x satisfied the conditions
 #' @export
 #'
 #' @examples
@@ -22,10 +23,10 @@
 #' # specified either apart or within or both
 #' if_dates(dates_of_records, n = 2, within = 365)
 #'
-if_dates <- function(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...) {
+if_dates <- function(x, n, apart = NULL, within = NULL, detail = FALSE, dup.rm = TRUE, ...) {
   if (all(is.null(apart), is.null(within))) stop("apart and within cannot both be NULL")
 
-  #stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
+  # stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
   stopifnot(is.wholenumber(n))
 
   # place holder for var names
@@ -52,7 +53,13 @@ if_dates <- function(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...) {
     stopifnot(is.wholenumber(within))
 
     x_roll <- data.table::frollapply(x = sort(x), n = n, align = "left", FUN = function(x) sum(diff(x)) <= within)
-    return(any(x_roll == 1, na.rm = TRUE))
+    dtx <- data.table::data.table(x = as.numeric(x_roll == 1))
+    data.table::setnafill(dtx, "locf", cols = )
+    if (detail) {
+      return(as.logical(dtx[, x]))
+    } else {
+      return(any(as.logical(dtx[, x]), na.rm = TRUE))
+    }
   } else {
     stopifnot(is.wholenumber(c(apart, within)))
     if (apart * (n - 1) >= within) stop("Condition is impossible as apart*(n - 1) cannot be greater than within")
@@ -63,15 +70,20 @@ if_dates <- function(x, n, apart = NULL, within = NULL, dup.rm = TRUE, ...) {
     overlap <- data.table::foverlaps(dtx, dty)[, y := NULL]
     data.table::setorder(overlap, period_id, x)
     overlap[, N := .N, by = period_id]
-    overlap <- overlap[N >= n]
+    # filters with if (!start_valid) is used for reducing compute
+    if (!detail) overlap <- overlap[N >= n]
     overlap[, real_end := data.table::last(x), by = period_id]
-    overlap <- overlap[, len_enough := (real_end - start) >= apart * (n - 1)][len_enough == TRUE]
-    # print(overlap)
+    if (!detail) overlap <- overlap[, len_enough := (real_end - start) >= apart * (n - 1)][len_enough == TRUE]
     if (nrow(overlap) == 0) {
       return(FALSE)
     }
 
     overlap <- overlap[, list(incl = all_apart(x, n, apart)), by = period_id]
-    return(any(overlap[["incl"]], na.rm = TRUE))
+
+    if (detail) {
+      return(overlap[["incl"]])
+    } else {
+      return(any(overlap[["incl"]], na.rm = TRUE))
+    }
   }
 }

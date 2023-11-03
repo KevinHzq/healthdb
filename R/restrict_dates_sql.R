@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(n > 1, is.wholenumber(n))
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
@@ -7,7 +7,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  temp_nm_keep <- temp_nm_lead <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_lead <- temp_nm_drank_gap <- NULL
+  temp_nm_keep <- temp_nm_keep_max <- temp_nm_keep_cum <- temp_nm_lead <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_lead <- temp_nm_drank_gap <- NULL
 
   n <- as.integer(n)
 
@@ -17,12 +17,13 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     } else {
       # see if_dates for detail
       keep <- dplyr::collect(data) %>%
-        dplyr::group_by(.data[[clnt_id]]) %>%
-        dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
-        dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
-        dplyr::filter(temp_nm_keep) %>%
-        dplyr::select(-dplyr::starts_with("temp_")) %>%
-        dplyr::ungroup()
+        restrict_dates.data.frame(!!clnt_id, !!date_var, n, apart, within, start_valid, dup.rm, ...)
+      # dplyr::group_by(.data[[clnt_id]]) %>%
+      # dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
+      # dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
+      # dplyr::filter(temp_nm_keep) %>%
+      # dplyr::select(-dplyr::starts_with("temp_")) %>%
+      # dplyr::ungroup()
     }
   } else {
     has_uid <- !rlang::quo_is_null(rlang::enquo(uid))
@@ -64,17 +65,25 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::mutate(
         # the translation for any() failed on SQL server again
         # temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
-        temp_nm_keep = max(
-          dplyr::case_when(
-            temp_nm_gap == 0L ~ 0L,
-            temp_nm_gap <= within & temp_nm_drank_gap == n - 1L ~ 1L,
-            is.na(temp_nm_gap) ~ NA,
-            .default = 0L
-          ),
-          na.rm = TRUE
+        temp_nm_keep = dplyr::case_when(
+          temp_nm_gap == 0L ~ 0L,
+          temp_nm_gap <= within & temp_nm_drank_gap == n - 1L ~ 1L,
+          is.na(temp_nm_gap) ~ 0L,
+          .default = 0L
         )
-      ) %>%
-      dplyr::filter(temp_nm_keep >= 1L) %>%
+      )
+
+    if (start_valid) {
+      keep <- keep %>%
+        dplyr::mutate(temp_nm_keep_cum = cummax(temp_nm_keep)) %>%
+        dplyr::filter(temp_nm_keep_cum > 0L)
+    } else {
+      keep <- keep %>%
+        dplyr::mutate(temp_nm_keep_max = max(temp_nm_keep, na.rm = TRUE)) %>%
+        dplyr::filter(temp_nm_keep_max >= 1L)
+    }
+
+    keep <- keep %>%
       dplyr::select(-dplyr::starts_with("temp_")) %>%
       dplyr::ungroup()
   }
@@ -83,7 +92,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     # disable report_n to save the extra execution
     # initial_n <- report_n(data, on = {{ clnt_id }})
     # cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(keep, on = {{ clnt_id }}), "were excluded by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
-    cat("\nApply restriction that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
+    cat("\nApply restriction that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days. ", ifelse(start_valid, "Records before the earliest entries that met the condition are removed.", ""), "\n")
   }
 
   return(keep)

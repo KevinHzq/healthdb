@@ -12,6 +12,7 @@ restrict_dates(
   apart = NULL,
   within = NULL,
   uid = NULL,
+  start_valid = TRUE,
   dup.rm = TRUE,
   force_collect = FALSE,
   verbose = getOption("odcfun.verbose"),
@@ -32,6 +33,8 @@ restrict_dates(
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
+
+\item{start_valid}{A logical for whether removing rows before the earliest entry that met the conditions.}
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
