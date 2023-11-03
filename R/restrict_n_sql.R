@@ -5,18 +5,19 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbo
   clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
 
   # place holder for temp var names
-  temp_n_collapsed <- temp_n_collapsed_id <- temp_uid <- NULL
+  temp_n_collapsed <- temp_n_collapsed_id <- NULL
 
   # count differently if unit id is supplied by count_by
   has_count_by <- !rlang::quo_is_null(rlang::enquo(count_by))
+
+  n_per_clnt <- as.integer(n_per_clnt)
 
   if (has_count_by) {
     count_by_nm <- rlang::as_name(rlang::enquo(count_by))
     # SQL doesn't have native n_distinct like functions, use dense_rank trick instead
     db <- data %>%
-      dplyr::mutate(temp_uid = dplyr::row_number()) %>%
       dplyr::group_by(.data[[clnt_id_nm]]) %>%
-      dbplyr::window_order(.data[[count_by_nm]], temp_uid) %>%
+      dbplyr::window_order(.data[[count_by_nm]]) %>%
       dplyr::mutate(
         temp_n_collapsed_id = dplyr::dense_rank(.data[[count_by_nm]]),
         temp_n_collapsed = max(temp_n_collapsed_id, na.rm = TRUE)
