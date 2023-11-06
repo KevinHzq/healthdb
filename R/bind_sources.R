@@ -2,6 +2,7 @@
 #'
 #' @param data A list of data.frame.
 #' @param ... Variables in the output. The argument name should be the new name in the output, and the right hand side of argument is a character vector of the original names. The name vector and the data will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., 'var' only come from the second out of three sources, var = c(NA, 'nm_in_src2', NA).
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.
 #'
 #' @return A data.frame contains combined rows of the input list with variables specified by ...
 #' @export
@@ -12,17 +13,25 @@
 #' df3 <- subset(iris, Species == "virginica")
 #'
 #' bind_sources(list(df1, df2, df3),
-#'  s_l = "Sepal.Length",
-#'  s_w = "Sepal.Width",
-#'  p_l_setosa = c("Petal.Length", NA, NA),
-#'  p_l_virginica = c(NA, NA, "Petal.Length")
+#'   s_l = "Sepal.Length",
+#'   s_w = "Sepal.Width",
+#'   p_l_setosa = c("Petal.Length", NA, NA),
+#'   p_l_virginica = c(NA, NA, "Petal.Length")
 #' )
-bind_sources <- function(data, ...) {
+bind_sources <- function(data, ..., force_proceed = getOption("odcfun.force_proceed")) {
   # capture data names in the original env before any eval
   data_quo <- rlang::enquo(data)
-  data_expr <- data_quo %>% rlang::call_args()
+  is_list_obj <- rlang::quo_is_symbol(data_quo)
+  if (is_list_obj) {
+    data_expr <- rlang::quo_get_expr(data_quo) %>% rlang::as_name()
+    n_data <- length(data)
+    data_expr <- lapply(1:n_data, function(x) glue::glue("{data_expr}[[{x}]]") %>% rlang::parse_expr())
+  } else {
+    data_expr <- data_quo %>% rlang::call_args()
+    n_data <- length(data_expr)
+  }
   data_env <- data_quo %>% rlang::quo_get_env()
-  n_data <- length(data_expr)
+
 
   # input checks
   stopifnot(
@@ -39,6 +48,31 @@ bind_sources <- function(data, ...) {
   var_arg <- lapply(1:nrow(var_tab), function(i) as.list(var_tab[i]))
   var_arg <- lapply(1:nrow(var_tab), function(i) var_arg[[i]][!is.na(var_arg[[i]])])
   select_calls <- lapply(1:length(data), function(j) rlang::call2("select", .data = data_expr[[j]], !!!var_arg[[j]], .ns = "dplyr"))
+
   result <- purrr::map(select_calls, function(x) eval(x, envir = data_env))
-  dplyr::bind_rows(result, .id = "src_id")
+
+  # ask user input to proceed as collecting remote table may be slow
+  # don't ask if all table is remote/local
+  is_local <- purrr::map_lgl(result, is.data.frame)
+  any_remote <- any(!is_local)
+
+  if (!force_proceed & any_remote) {
+    proceed <- readline(prompt = "Remote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
+
+    if (proceed == "n") stop("\n Cancel by user.\n")
+  }
+  if (any_remote) {
+    # if not all remote, also collect the remote ones before binding
+    result <- purrr::map_if(result, !is_local, dplyr::collect, .progress = TRUE)
+  }
+
+  #dplyr::bind_rows(result, .id = "src_id")
+  result <- rlang::try_fetch(purrr::list_rbind(result, names_to = "src_id") %>% dplyr::distinct(),
+                             error = function(cnd) {
+                               rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources", parent = cnd)
+                               return(result)
+                             }
+  )
+
+  return(result)
 }

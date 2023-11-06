@@ -12,6 +12,12 @@ test_that("basic use works", {
   result <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df))
   expect_s3_class(result[[1]], "tbl_sql")
   expect_s3_class(result[[2]], "data.frame")
+
+  #also test list object input works
+  dat_list <- list(msp = msp_db, dad = dad_df)
+  result <- execute_def(def, with_data = dat_list)
+  expect_s3_class(result[[1]], "tbl_sql")
+  expect_s3_class(result[[2]], "data.frame")
 })
 
 test_that("incompatible binding works", {

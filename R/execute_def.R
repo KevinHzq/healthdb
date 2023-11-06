@@ -52,8 +52,20 @@
 execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption("odcfun.force_proceed"), force_collect = FALSE) {
   # capture data names in the original env before any eval
   with_data_quo <- rlang::enquo(with_data)
-  with_data_expr <- with_data_quo %>% rlang::call_args()
+
+  is_list_obj <- rlang::quo_is_symbol(with_data_quo)
+  if (is_list_obj) {
+    with_data_expr <- rlang::quo_get_expr(with_data_quo) %>% rlang::as_name()
+    n_data <- length(with_data)
+    stopifnot(rlang::is_named(with_data))
+    with_data_expr <- sapply(names(with_data), function(x) glue::glue('{with_data_expr}[["{x}"]]') %>% rlang::parse_expr(), simplify = FALSE, USE.NAMES = TRUE)
+  } else {
+    with_data_expr <- with_data_quo %>% rlang::call_args()
+    n_data <- length(with_data_expr)
+  }
+  #with_data_expr <- with_data_quo %>% rlang::call_args()
   with_data_env <- with_data_quo %>% rlang::quo_get_env()
+
 
   # input checks
   stopifnot(
@@ -75,7 +87,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
   any_remote <- any(!is_local)
 
   if (!force_proceed & bind & any_local & any_remote) {
-    proceed <- readline(prompt = "\nRemote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
+    proceed <- readline(prompt = "Remote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
 
     if (proceed == "n") stop("\nTry bind = FALSE, or supply data from the same source (i.e., either all local or all remote).")
   }
@@ -86,9 +98,13 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
       fn_call = purrr::map2(
         .data[["fn_call"]], .data[["src_labs"]],
         function(x, y) rlang::call_modify(x, data = with_data_expr[[y]])
-      ),
+      )
+    )
+
+  def <- def %>%
+    dplyr::mutate(
       result = purrr::map2(.data[["fn_call"]], .data[["src_labs"]], function(x, y) {
-        if (getOption("odcfun.verbose")) cat("\nProcessing source:", with_data_expr[[y]])
+        if (getOption("odcfun.verbose")) cat("\nProcessing source:", rlang::expr_deparse(with_data_expr[[y]]))
         eval(x, envir = with_data_env)
       }, .progress = TRUE),
       result = purrr::pmap(
