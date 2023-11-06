@@ -1,11 +1,13 @@
 #' @export
-restrict_n.data.frame <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbose = getOption("odcfun.verbose")
+restrict_n.data.frame <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode = c("flag", "filter"), verbose = getOption("odcfun.verbose")
 ) {
-    # as_name(enquo(arg)) converts both quoted and unquoted column name to string
-    clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
+  mode <- rlang::arg_match0(mode, c("flag", "filter"))
+
+  # as_name(enquo(arg)) converts both quoted and unquoted column name to string
+  clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
 
   # place holder for temp var names
-  temp_keep_rid <- NULL
+  temp_keep_rid <- flag_restrict_n <- NULL
 
   dt <- data.table::as.data.table(data)
 
@@ -19,7 +21,10 @@ restrict_n.data.frame <- function(data, clnt_id, n_per_clnt, count_by = NULL, ve
     n_filter <- dt[, list(temp_keep_rid = .I[.N >= n_per_clnt]), by = clnt_id_nm]$temp_keep_rid
   }
 
-  dt <- dt[n_filter]
+  switch (mode,
+    "flag" = dt[, flag_restrict_n := ifelse(.I %in% n_filter, 1, 0)],
+    "filter" = {dt <- dt[n_filter]}
+  )
 
   if (verbose) {
     initial_n <- report_n(data, on = {{ clnt_id }})

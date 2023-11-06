@@ -1,11 +1,12 @@
 #' @export
-restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbose = getOption("odcfun.verbose")
-) {
+restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode = c("flag", "filter"), verbose = getOption("odcfun.verbose")) {
+  mode <- rlang::arg_match0(mode, c("flag", "filter"))
+
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
 
   # place holder for temp var names
-  temp_n_collapsed <- temp_n_collapsed_id <- NULL
+  temp_n_collapsed <- flag_restrict_n <- temp_n_collapsed_id <- NULL
 
   # count differently if unit id is supplied by count_by
   has_count_by <- !rlang::quo_is_null(rlang::enquo(count_by))
@@ -21,13 +22,33 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, verbo
       dplyr::mutate(
         temp_n_collapsed_id = dplyr::dense_rank(.data[[count_by_nm]]),
         temp_n_collapsed = max(temp_n_collapsed_id, na.rm = TRUE)
-      ) %>%
-      dplyr::filter(temp_n_collapsed >= n_per_clnt) %>%
+      )
+    switch(mode,
+      "flag" = {
+        db <- db %>% dplyr::mutate(flag_restrict_n = ifelse(temp_n_collapsed >= n_per_clnt, 1L, 0L))
+      },
+      "filter" = {
+        db <- db %>% dplyr::filter(temp_n_collapsed >= n_per_clnt)
+      }
+    )
+    db <- db %>%
       dplyr::select(-dplyr::starts_with("temp_"))
   } else {
     db <- data %>%
-      dplyr::group_by(.data[[clnt_id_nm]]) %>%
-      dplyr::filter(dplyr::n() >= n_per_clnt)
+      dplyr::group_by(.data[[clnt_id_nm]])
+    switch(mode,
+      "flag" = {
+        db <- db %>%
+          dplyr::mutate(
+            temp_n_collapsed = dplyr::n(),
+            flag_restrict_n = ifelse(temp_n_collapsed >= n_per_clnt, 1L, 0L)
+          ) %>%
+          dplyr::select(-dplyr::starts_with("temp_"))
+      },
+      "filter" = {
+        db <- db %>% dplyr::filter(dplyr::n() >= n_per_clnt)
+      }
+    )
   }
 
   if (verbose) {

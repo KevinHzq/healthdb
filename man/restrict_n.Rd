@@ -9,11 +9,12 @@ restrict_n(
   clnt_id,
   n_per_clnt,
   count_by = NULL,
+  mode = c("flag", "filter"),
   verbose = getOption("odcfun.verbose")
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from dbplyr)}
+\item{data}{Data frames or remote tables (e.g., from `dbplyr`)}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -21,10 +22,12 @@ restrict_n(
 
 \item{count_by}{Another variable dictating the counting unit of n_per_clnt. The default is NULL meaning the inclusion criteria is the number of row, i.e., dplyr::n() >= n_per_clnt. If it is not NULL, the criteria becomes dplyr::n_distinct(count_by) >= n_per_clnt.}
 
+\item{mode}{Either "flag" - add a new column "flag_restrict_n" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data.}
+
 \item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 }
 \value{
-A subset of input data satisfied the group size requirement.
+A subset of input data satisfied the group size requirement, or raw input data with an new flag column.
 }
 \description{
 In a grouped data frame or remote table, remove groups that have less than some number of rows or some number of distinct values in a variable. For example, it can be used to remove clients that had less than n visits to some service on different dates from some administrative records.
