@@ -4,7 +4,7 @@ test_that("basic use works", {
   within <- 365
   db <- make_test_dat(type = "database")
   df <- dplyr::collect(db)
-  output_df <- restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid, force_collect = TRUE)
+  output_df <- restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid, force_collect = TRUE, mode = "filter")
   ans_id <- test_apart_within(df, n, apart, within)
   expect_setequal(output_df$clnt_id, ans_id)
 })
@@ -14,11 +14,15 @@ test_that("within only works", {
   within <- 365
   db <- make_test_dat(type = "database")
   df <- dplyr::collect(db)
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid) %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, mode = "filter") %>% dplyr::collect()
   ans_id <- test_apart_within(df, n, within = within)
   expect_setequal(output_df$clnt_id, ans_id)
   #also test uid error
-  expect_error(restrict_dates(db, clnt_id, dates, n, within = within), "uid")
+  expect_error(restrict_dates(db, clnt_id, dates, n, within = within, mode = "filter"), "uid")
+  # also test mode
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid) %>% dplyr::collect() %>%
+    dplyr::filter(flag_restrict_dates > 0)
+  expect_setequal(output_df$clnt_id, ans_id)
 })
 
 test_that("do not count same date works for database", {
@@ -26,7 +30,7 @@ test_that("do not count same date works for database", {
   within <- 365
   df <- data.frame(uid = n*2+1*3, clnt_id = rep(1:3, each = n*2+1), dates = rep(c(rep(as.Date("2020-01-01"),n*2-1), as.Date("2020-01-01")+within+1, as.Date("2020-01-01")+within*2+1), 3))
   db <- dbplyr::memdb_frame(df)
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid) %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, mode = "filter") %>% dplyr::collect()
   ans_id <- test_apart_within(df, n, within = within)
   expect_setequal(output_df$clnt_id, ans_id)
 })
@@ -37,9 +41,12 @@ test_that("start_valid works", {
   within <- 365
   n <- 2
   db <- dbplyr::memdb_frame(clnt_id = 1, dates = x, uid = 1:length(x))
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = TRUE) %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = TRUE, mode = "filter") %>% dplyr::collect()
   ans_dates <- x[cummax(ans) > 0]
   expect_setequal(output_df$dates %>% as.Date(), ans_dates)
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = FALSE) %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = FALSE, mode = "filter") %>% dplyr::collect()
+  expect_setequal(output_df$dates %>% as.Date(), x)
+  # also test mode
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = FALSE, mode = "flag") %>% dplyr::filter(flag_restrict_dates == 1) %>% dplyr::collect()
   expect_setequal(output_df$dates %>% as.Date(), x)
 })

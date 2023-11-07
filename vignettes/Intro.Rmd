@@ -120,25 +120,33 @@ Here's how you could use `odcfun` to achieve these steps:
 
     ```{r}
     result2 <- result1 %>% 
-      exclude(excl = identify_rows(claim_db, starts_with("diagx_"), "in", "111"), by = "clnt_id")
+      exclude(excl = identify_rows(claim_db, starts_with("diagx_"), "in", "111"), 
+              by = "clnt_id")
     ```
 
 3.  Restrict the number of records per client
 
     ```{r}
-    result3 <- result2 %>% restrict_n(clnt_id = clnt_id, n_per_clnt = 2, count_by = dates)
+    result3 <- result2 %>% restrict_n(clnt_id = clnt_id, 
+                                      n_per_clnt = 2, 
+                                      count_by = dates,
+                                      # here we use filter mode to remove records that failed the restriction
+                                      mode = "filter"
+                                      )
     ```
 
 4.  Restrict the temporal pattern of diagnoses
 
-    \`restrict_dates\` also supports more complicated patterns like having n diagnoses at least i days apart within j years, but the "apart" feature requires relatively expensive computation and implemented for local data.frames only.
+    \`restrict_dates\` also supports more complicated patterns like having n diagnoses at least i days apart within j years, but the "apart" feature requires relatively expensive computation and implemented for local data.frames only. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id colume (uid) has to be supplied to get consistent result.
 
     ```{r}
     result4 <- result3 %>% restrict_dates(clnt_id = clnt_id,
                                           date_var = dates,
                                           n = 2, 
                                           within = 365,
-                                          uid = uid)
+                                          uid = uid,
+                                          # here we use flag mode to flag records that met the restriction instead of removing those
+                                          mode = "flag")
     ```
 
 5.  Fetch variables from other tables by matching common keys
@@ -208,7 +216,7 @@ sud_def <- build_def(
     date_var = dates,
     within = c(365, NULL),
     uid = uid,
-    keep = "first" # keeping the first diagnosis per client
+    mode = "flag" 
   )
 )
 
@@ -233,5 +241,4 @@ result_list <- sud_def %>%
 
 # view the results
 purrr::walk(result_list, ~ head(.) %>% print)
-
 ```
