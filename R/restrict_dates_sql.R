@@ -1,6 +1,8 @@
 #' @export
-restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, mode = c("flag", "filter"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(n > 1, is.wholenumber(n))
+
+  mode <- rlang::arg_match0(mode, c("flag", "filter"))
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
@@ -17,7 +19,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     } else {
       # see if_dates for detail
       keep <- dplyr::collect(data) %>%
-        restrict_dates.data.frame(!!clnt_id, !!date_var, n, apart, within, start_valid, dup.rm, ...)
+        restrict_dates.data.frame(clnt_id = !!clnt_id, date_var = !!date_var, n = n, apart = apart, within = within, start_valid = start_valid, mode = mode, dup.rm = dup.rm, ...)
       # dplyr::group_by(.data[[clnt_id]]) %>%
       # dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
       # dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
@@ -75,12 +77,28 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
 
     if (start_valid) {
       keep <- keep %>%
-        dplyr::mutate(temp_nm_keep_cum = cummax(temp_nm_keep)) %>%
-        dplyr::filter(temp_nm_keep_cum > 0L)
+        dplyr::mutate(temp_nm_keep_cum = cummax(temp_nm_keep))
+      switch(mode,
+        "flag" = {
+          keep <- keep %>%
+            dplyr::mutate(flag_restrict_dates = temp_nm_keep_cum)
+        },
+        "filter" = {
+          keep <- keep %>% dplyr::filter(temp_nm_keep_cum > 0L)
+        }
+      )
     } else {
       keep <- keep %>%
-        dplyr::mutate(temp_nm_keep_max = max(temp_nm_keep, na.rm = TRUE)) %>%
-        dplyr::filter(temp_nm_keep_max >= 1L)
+        dplyr::mutate(temp_nm_keep_max = max(temp_nm_keep, na.rm = TRUE))
+      switch(mode,
+        "flag" = {
+          keep <- keep %>%
+            dplyr::mutate(flag_restrict_dates = temp_nm_keep_max)
+        },
+        "filter" = {
+          keep <- keep %>% dplyr::filter(temp_nm_keep_max >= 1L)
+        }
+      )
     }
 
     keep <- keep %>%

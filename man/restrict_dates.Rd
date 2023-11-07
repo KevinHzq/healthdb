@@ -13,6 +13,7 @@ restrict_dates(
   within = NULL,
   uid = NULL,
   start_valid = TRUE,
+  mode = c("flag", "filter"),
   dup.rm = TRUE,
   force_collect = FALSE,
   verbose = getOption("odcfun.verbose"),
@@ -36,6 +37,8 @@ restrict_dates(
 
 \item{start_valid}{A logical for whether removing rows before the earliest entry that met the conditions.}
 
+\item{mode}{Either "flag" - add a new column "flag_restrict_dates" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
+
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
 \item{force_collect}{A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
@@ -45,7 +48,7 @@ restrict_dates(
 \item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
 }
 \value{
-A subset of input data satisfied the dates requirement.
+A subset of input data satisfied the dates requirement, or raw input data with an new flag column.
 }
 \description{
 In a vector of dates `date_var`, interpret if there could be at least one set of n elements taken from the date vector satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations. Dates are interpret within `clnt_id` groups, and groups failed to meet the conditions are removed from the data.

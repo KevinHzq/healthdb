@@ -18,6 +18,7 @@
 #' @param excl_args A named list of arguments for the second `identify_rows()` call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
 #' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default).
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
+#' @param mode Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both 'restrict_n' and 'restrict_dates'. Default is "flag".
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
 #' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
 #' @param ... Additional arguments passing to `restrict_dates()`.
@@ -42,6 +43,9 @@
 #'   vars = starts_with("diagx"), "in", vals = letters[1:4],
 #'   clnt_id = clnt_id, date_var = service_dt,
 #'   excl_args = list(if_all = TRUE),
+#'   # remove non-case
+#'   mode = "filter",
+#'   # keeping the first record
 #'   keep = "first"
 #' )
 #'
@@ -63,13 +67,15 @@
 #'   ),
 #'   define_case
 #' )
-define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, mode = c("flag", "filter"), force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)
 
   # capture variable names
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
+
+  mode <- rlang::arg_match0(mode, c("flag", "filter"))
 
   has_date_var <- !rlang::quo_is_null(rlang::enquo(date_var))
   if (has_date_var) date_var <- rlang::as_name(rlang::enquo(date_var))
@@ -79,6 +85,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   if (has_uid) uid <- rlang::as_name(rlang::enquo(uid))
 
   keep <- rlang::arg_match0(keep, c("all", "first", "last"))
+  if (mode == "flag" & keep != "all") stop("'flag' mode does not allow subsetting with 'keep'.")
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_rows calls
@@ -108,12 +115,12 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   if (n_per_clnt > 1) {
     if (verbose) cat("\n--------------No. rows restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), verbose = verbose))
+    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), mode = mode, verbose = verbose))
   }
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
     if (verbose) cat("\n--------------Time span restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, force_collect = force_collect, verbose = verbose, ...))
+    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, mode = mode, force_collect = force_collect, verbose = verbose, ...))
   }
 
   if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")
@@ -143,7 +150,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
     eval(expr_slice)
   }
 
-  if (force_collect) result <- dplyr::collect(result, cte = TRUE)
+  if (force_collect) result <- dplyr::collect(result)
 
   return(result)
 }

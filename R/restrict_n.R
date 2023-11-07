@@ -7,7 +7,7 @@
 #' @param clnt_id Grouping variable (quoted/unquoted).
 #' @param n_per_clnt A single number specifying the minimum number of group size.
 #' @param count_by Another variable dictating the counting unit of n_per_clnt. The default is NULL meaning the inclusion criteria is the number of row, i.e., dplyr::n() >= n_per_clnt. If it is not NULL, the criteria becomes dplyr::n_distinct(count_by) >= n_per_clnt.
-#' @param mode Either "flag" - add a new column "flag_restrict_n" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data.
+#' @param mode Either "flag" - add a new column "flag_restrict_n" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #'
 #' @return A subset of input data satisfied the group size requirement, or raw input data with an new flag column.

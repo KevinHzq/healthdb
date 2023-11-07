@@ -19,6 +19,7 @@ define_case(
   excl_args = NULL,
   keep = c("all", "first", "last"),
   if_all = FALSE,
+  mode = c("flag", "filter"),
   force_collect = FALSE,
   verbose = getOption("odcfun.verbose"),
   ...
@@ -53,6 +54,8 @@ define_case(
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
 
+\item{mode}{Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both 'restrict_n' and 'restrict_dates'. Default is "flag".}
+
 \item{force_collect}{A logical for whether force downloading remote table if \code{apart} is not NULL. For remote table only, because \code{apart} is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
 \item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
@@ -82,6 +85,9 @@ define_case(df,
   vars = starts_with("diagx"), "in", vals = letters[1:4],
   clnt_id = clnt_id, date_var = service_dt,
   excl_args = list(if_all = TRUE),
+  # remove non-case
+  mode = "filter",
+  # keeping the first record
   keep = "first"
 )
 

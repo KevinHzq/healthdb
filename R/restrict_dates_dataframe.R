@@ -1,11 +1,13 @@
 #' @export
-restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, mode = c("flag", "filter"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+  mode <- rlang::arg_match0(mode, c("flag", "filter"))
+
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  temp.nm_keep <- temp.nm_keep_cum <- NULL
+  flag_restrict_dates <- temp.nm_keep <- temp.nm_keep_cum <- NULL
 
   # see if_dates for detail
   keep <- dplyr::collect(data) %>%
@@ -15,10 +17,26 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
 
   if (start_valid) {
     keep <- keep %>%
-      dplyr::mutate(temp.nm_keep_cum = cummax(temp.nm_keep) %>% as.logical()) %>%
-      dplyr::filter(temp.nm_keep_cum)
+      dplyr::mutate(temp.nm_keep_cum = cummax(temp.nm_keep))
+    switch(mode,
+      "flag" = {
+        keep <- keep %>%
+          dplyr::mutate(flag_restrict_dates = temp.nm_keep_cum)
+      },
+      "filter" = {
+        keep <- keep %>% dplyr::filter(temp.nm_keep_cum %>% as.logical())
+      }
+    )
   } else {
-    keep <- keep %>% dplyr::filter(temp.nm_keep)
+    switch(mode,
+      "flag" = {
+        keep <- keep %>%
+          dplyr::mutate(flag_restrict_dates = as.numeric(temp.nm_keep))
+      },
+      "filter" = {
+        keep <- keep %>% dplyr::filter(temp.nm_keep)
+      }
+    )
   }
   keep <- keep %>%
     dplyr::select(-dplyr::starts_with("temp.nm_")) %>%
