@@ -37,7 +37,7 @@ restrict_dates(
 
 \item{strict_start}{A logical for whether removing (or flag as 0 in "flag" mode) the rows before the earliest entry that met the conditions.}
 
-\item{mode}{Either "flag" - add a new column `flag_restrict_dates` indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
+\item{mode}{Either "flag" - add a new column 'flag_restrict_dates' indicating if the client met the condition (all rows from a qualified client would have flag = 1, unless `strict_start` = TRUE), or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 

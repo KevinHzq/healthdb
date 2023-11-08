@@ -12,7 +12,7 @@
 #' @param within An integer specifying the maximum time span (in days) of a draw.
 #' @param uid Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.
 #' @param strict_start A logical for whether removing (or flag as 0 in "flag" mode) the rows before the earliest entry that met the conditions.
-#' @param mode Either "flag" - add a new column `flag_restrict_dates` indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".
+#' @param mode Either "flag" - add a new column 'flag_restrict_dates' indicating if the client met the condition (all rows from a qualified client would have flag = 1, unless `strict_start` = TRUE), or "filter" - remove clients that did not meet the condition from the data. Default is "flag".
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
