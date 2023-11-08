@@ -20,7 +20,7 @@ test_that("basic use works", {
   expect_s3_class(result[[2]], "data.frame")
 })
 
-test_that("incompatible binding works", {
+test_that("mixed binding works", {
   msp_db <- letters_n(type = "database")
   dad_df <- xnum_n("F")
   def <- build_def("SUD",
@@ -33,6 +33,9 @@ test_that("incompatible binding works", {
                    ))
   # this give a warning for incompatible types
   expect_warning(execute_def(def, with_data = list(msp = msp_db, dad = dad_df), bind = TRUE), "incompatible")
+  dad_df <- dad_df %>% dplyr::mutate(dates = as.numeric(dates))
+  out_df <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df), bind = TRUE)
+  expect_s3_class(out_df, "data.frame")
 })
 
 test_that("binding dbs works", {
@@ -49,7 +52,7 @@ test_that("binding dbs works", {
   expect_s3_class(execute_def(def, with_data = list(msp = msp_db, dad = dad_db), bind = TRUE), "tbl_sql")
 })
 
-test_that("binding dbs works", {
+test_that("binding dfs works", {
   msp_df <- letters_n()
   dad_df <- xnum_n("F")
   def <- build_def("SUD",

@@ -54,22 +54,37 @@ bind_sources <- function(data, ..., force_proceed = getOption("odcfun.force_proc
   # ask user input to proceed as collecting remote table may be slow
   # don't ask if all table is remote/local
   is_local <- purrr::map_lgl(result, is.data.frame)
+  any_local <- any(is_local)
   any_remote <- any(!is_local)
 
-  if (!force_proceed & any_remote) {
+  if (!force_proceed & any_remote & any_local) {
     proceed <- readline(prompt = "Remote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
 
-    if (proceed == "n") stop("\n Cancel by user.\n")
+    if (proceed == "n") stop("\n Cancel by user. Try supply data from the same source (i.e., either all local or all remote).\n")
   }
+
+  if (!any_local) {
+    # if the data are all remote, do union in SQL;
+    # union_all not necessary as already labeled by def and src; rows would not collapse across srcs
+    result <- rlang::try_fetch(purrr::reduce(result, dplyr::union),
+                               error = function(cnd) {
+                                 rlang::warn("Returned unbinded result. Binding failed probably due to combining tables from different databases, which cannot be binded without collecting. Use force_collect = TRUE. Actual error message:\n", parent = cnd)
+                                 return(result)
+                               }
+    )
+    # manual return here to simplify the subsequent if logic
+    return(result)
+  }
+
   if (any_remote) {
     # if not all remote, also collect the remote ones before binding
     result <- purrr::map_if(result, !is_local, dplyr::collect, .progress = TRUE)
   }
 
   #dplyr::bind_rows(result, .id = "src_id")
-  result <- rlang::try_fetch(purrr::list_rbind(result, names_to = "src_id") %>% dplyr::distinct(),
+  result <- rlang::try_fetch(purrr::list_rbind(result, names_to = "src_No") %>% dplyr::distinct(),
                              error = function(cnd) {
-                               rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources", parent = cnd)
+                               rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources. Actual error message:\n", parent = cnd)
                                return(result)
                              }
   )
