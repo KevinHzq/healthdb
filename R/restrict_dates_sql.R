@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, start_valid = TRUE, mode = c("flag", "filter"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, strict_start = TRUE, mode = c("flag", "filter"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   stopifnot(n > 1, is.wholenumber(n))
 
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
@@ -19,7 +19,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     } else {
       # see if_dates for detail
       keep <- dplyr::collect(data) %>%
-        restrict_dates.data.frame(clnt_id = !!clnt_id, date_var = !!date_var, n = n, apart = apart, within = within, start_valid = start_valid, mode = mode, dup.rm = dup.rm, ...)
+        restrict_dates.data.frame(clnt_id = !!clnt_id, date_var = !!date_var, n = n, apart = apart, within = within, strict_start = strict_start, mode = mode, dup.rm = dup.rm, ...)
       # dplyr::group_by(.data[[clnt_id]]) %>%
       # dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
       # dplyr::mutate(temp_nm_keep = if_dates(.data[[date_var]], n, apart, within, dup.rm, ...)) %>%
@@ -75,7 +75,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         )
       )
 
-    if (start_valid) {
+    if (strict_start) {
       keep <- keep %>%
         dplyr::mutate(temp_nm_keep_cum = cummax(temp_nm_keep))
       switch(mode,
@@ -110,7 +110,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     # disable report_n to save the extra execution
     # initial_n <- report_n(data, on = {{ clnt_id }})
     # cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(keep, on = {{ clnt_id }}), "were excluded by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days.\n")
-    cat("\nApply restriction that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days. ", ifelse(start_valid, "Records before the earliest entries that met the condition are removed.", ""), "\n")
+    cat("\nApply restriction that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days. ", ifelse(strict_start, "Records before the earliest entries that met the condition are removed.", ""), "\n")
   }
 
   return(keep)

@@ -35,18 +35,18 @@ test_that("do not count same date works for database", {
   expect_setequal(output_df$clnt_id, ans_id)
 })
 
-test_that("start_valid works", {
+test_that("strict_start works", {
   x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
   ans <- c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE)
   within <- 365
   n <- 2
   db <- dbplyr::memdb_frame(clnt_id = 1, dates = x, uid = 1:length(x))
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = TRUE, mode = "filter") %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, strict_start = TRUE, mode = "filter") %>% dplyr::collect()
   ans_dates <- x[cummax(ans) > 0]
   expect_setequal(output_df$dates %>% as.Date(), ans_dates)
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = FALSE, mode = "filter") %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, strict_start = FALSE, mode = "filter") %>% dplyr::collect()
   expect_setequal(output_df$dates %>% as.Date(), x)
   # also test mode
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, start_valid = FALSE, mode = "flag") %>% dplyr::filter(flag_restrict_dates == 1) %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, strict_start = FALSE, mode = "flag") %>% dplyr::filter(flag_restrict_dates == 1) %>% dplyr::collect()
   expect_setequal(output_df$dates %>% as.Date(), x)
 })

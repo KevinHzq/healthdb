@@ -12,7 +12,7 @@ restrict_dates(
   apart = NULL,
   within = NULL,
   uid = NULL,
-  start_valid = TRUE,
+  strict_start = TRUE,
   mode = c("flag", "filter"),
   dup.rm = TRUE,
   force_collect = FALSE,
@@ -21,7 +21,7 @@ restrict_dates(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from dbplyr)}
+\item{data}{Data frames or remote tables (e.g., from `vignette("dbplyr")`)}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -35,7 +35,7 @@ restrict_dates(
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{start_valid}{A logical for whether removing rows before the earliest entry that met the conditions.}
+\item{strict_start}{A logical for whether removing (or flag as 0 in 'flag' mode) the rows before the earliest entry that met the conditions.}
 
 \item{mode}{Either "flag" - add a new column "flag_restrict_dates" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
 
@@ -45,7 +45,7 @@ restrict_dates(
 
 \item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
-\item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
+\item{...}{Additional argument passing to [data.table::as.IDate()] for date conversion.}
 }
 \value{
 A subset of input data satisfied the dates requirement, or raw input data with an new flag column.
