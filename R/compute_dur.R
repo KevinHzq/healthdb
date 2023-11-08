@@ -1,16 +1,16 @@
 #' Title Compute duration between two dates
 #'
 #' @description
-#' This function is meant to be used with `dplyr::mutate` to compute age/duration between two character or Date columns.
+#' This function is meant to be used with [dplyr::mutate()] to compute age/duration between two character or Date columns.
 #'
 #' @param from A character or Date vector for start dates.
 #' @param to A character or Date vector for end dates.
-#' @param lower_brks A numeric vector for lower breaks passing to the base `cut` function to convert the numeric result to a factor. The level will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).
+#' @param lower_brks A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).
 #' @param unit A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".
 #' @param trans A logical for whether transform both `from` and `to` with the `.transfn` function
-#' @param .transfn A function for transforming the inputs. Default is `lubridate::ymd`.
+#' @param .transfn A function for transforming the inputs. Default is [lubridate::ymd()].
 #' @param verbose A logical for whether print summary of the out and warning for missing values.
-#' @param ... Additional arguments passing to `cut`.
+#' @param ... Additional arguments passing to [cut()].
 #'
 #' @return A numeric or factor vector of the duration.
 #' @export

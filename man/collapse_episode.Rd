@@ -31,7 +31,7 @@ collapse_episode(
 
 \item{gap_overwrite}{A different gap value used for related records. The default is Inf, which means all records with the same overwrite variable will be collapsed.}
 
-\item{.dt_trans}{Function to transform start_dt/end_dt. Default is data.table::as.IDate.}
+\item{.dt_trans}{Function to transform start_dt/end_dt. Default is [data.table::as.IDate()].}
 
 \item{...}{Additional arguments passing to the .dt_trans function.}
 }

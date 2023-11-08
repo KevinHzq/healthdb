@@ -2,26 +2,20 @@
 #'
 #' @md
 #' @description
-#' This function is a composite of identify_rows, exclude, and restrict_. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates()
+#' This function is a composite of [identify_rows()], [exclude()], [restrict_n()], and [restrict_dates()]. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates()
 #'
-#' @param data Data frames or remote tables (e.g., from dbplyr)
-#' @param vars An expression passing to `dplyr::select()`. It can be Quoted/unquoted column names, or `tidyselect` helper functions, such as `starts_with()`.
-#' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See `identify_rows()` for detail.
-#' @param vals Depending on `match`, it takes different input. See `identify_rows()`.
-#' @param clnt_id Grouping variable (quoted/unquoted).
-#' @param n_per_clnt A single number specifying the minimum number of group size. See `restrict_n()` for detail. It would also be used as the n argument for `restrict_dates()`.
-#' @param date_var Variable name (quoted/unquoted) for the dates to be interpreted. If present, it would be used as the count_by argument for `restrict_n()`.
-#' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw. See `restrict_dates()`.
-#' @param within An integer specifying the maximum time span (in days) of a draw.
-#' @param uid Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.
+#' @inheritParams identify_rows
+#' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_rows()] for detail.
+#' @param vals Depending on `match`, it takes different input. See [identify_rows()].
+#' @inheritParams restrict_n
+#' @inheritParams restrict_dates
 #' @param excl_vals Same as `vals` but groups with these values are going to be removed from the result.
-#' @param excl_args A named list of arguments for the second `identify_rows()` call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
-#' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default).
-#' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
-#' @param mode Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both 'restrict_n' and 'restrict_dates'. Default is "flag".
-#' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
+#' @param excl_args A named list of arguments for the second [identify_rows()] call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
+#' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default). Note that "first"/"last" should not be used with "flag" mode.
+#' @param mode Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both [restrict_n()] AND [restrict_dates()]. Default is "flag".
+#' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
 #' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
-#' @param ... Additional arguments passing to `restrict_dates()`.
+#' @param ... Additional arguments, e.g., `mode`, passing to [restrict_dates()].
 #'
 #' @return A subset of input data satisfied the specified case definition.
 #' @export
@@ -150,7 +144,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
     eval(expr_slice)
   }
 
-  if (force_collect) result <- dplyr::collect(result)
+  if (force_collect & !is.data.frame(result)) result <- dplyr::collect(result)
 
   return(result)
 }

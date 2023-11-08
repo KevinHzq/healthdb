@@ -2,11 +2,11 @@
 #'
 #' @md
 #' @description
-#' This function calls `dplyr::left_join` multiple times with different source tables (y argument of the join) to gather variables. It is not intended to replace left_join but simplify syntax for the situation that you need to get variables from multiple tables, and the tables can be linked by common IDs, which is often the case when working with relational databases. That said, this function is only meant for simple joins and only allows one-to-one matching.
+#' This function calls [dplyr::left_join()] multiple times with different source tables (y argument of the join) to gather variables. It is not intended to replace left_join but simplify syntax for the situation that you need to get variables from multiple tables, and the tables can be linked by common IDs, which is often the case when working with relational databases. That said, this function is only meant for simple joins and only allows one-to-one matching.
 #'
 #'
 #' @param data A local data.frame, or tibble. It would be used as the x argument in left_join.
-#' @param keys A vector of quoted/unquoted variable names, or tidyselect expression. These variables must be present in `data` and would be used as the `by` argument in left_join. The y tables must have a subset of these if not all.
+#' @param keys A vector of quoted/unquoted variable names, or tidyselect expression (see [dplyr::select()]). These variables must be present in `data` and would be used as the `by` argument in left_join. The y tables must have a subset of these if not all.
 #' @param linkage A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 #'  - source table on the left-hand-side
 #'  - variables on the right-hand-side

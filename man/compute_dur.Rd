@@ -20,23 +20,23 @@ compute_dur(
 
 \item{to}{A character or Date vector for end dates.}
 
-\item{lower_brks}{A numeric vector for lower breaks passing to the base `cut` function to convert the numeric result to a factor. The level will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).}
+\item{lower_brks}{A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).}
 
 \item{unit}{A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".}
 
 \item{trans}{A logical for whether transform both `from` and `to` with the `.transfn` function}
 
-\item{.transfn}{A function for transforming the inputs. Default is `lubridate::ymd`.}
+\item{.transfn}{A function for transforming the inputs. Default is [lubridate::ymd()].}
 
 \item{verbose}{A logical for whether print summary of the out and warning for missing values.}
 
-\item{...}{Additional arguments passing to `cut`.}
+\item{...}{Additional arguments passing to [cut()].}
 }
 \value{
 A numeric or factor vector of the duration.
 }
 \description{
-This function is meant to be used with `dplyr::mutate` to compute age/duration between two character or Date columns.
+This function is meant to be used with [dplyr::mutate()] to compute age/duration between two character or Date columns.
 }
 \examples{
 # toy data

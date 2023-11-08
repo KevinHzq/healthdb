@@ -8,7 +8,7 @@
 #' @param gap A number in days that will be used to separate episodes. It should be the inclusive upper bound + 1. For example, gap = 8 means collapsing records no more than 7 days apart.
 #' @param overwrite Column name of a grouping variable determining whether the consecutive records are related and should have a different gap value. For example, dispensing records may have the same original prescription number, and a different gap value can be assigned for situation, e.g., the days between two records is > gap, but these records still belong to the same prescription.
 #' @param gap_overwrite A different gap value used for related records. The default is Inf, which means all records with the same overwrite variable will be collapsed.
-#' @param .dt_trans Function to transform start_dt/end_dt. Default is data.table::as.IDate.
+#' @param .dt_trans Function to transform start_dt/end_dt. Default is [data.table::as.IDate()].
 #' @param ... Additional arguments passing to the .dt_trans function.
 #'
 #' @return The original data.frame with new columns indicating episode grouping

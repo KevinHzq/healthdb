@@ -2,22 +2,22 @@
 % Please edit documentation in R/bind_sources.R
 \name{bind_sources}
 \alias{bind_sources}
-\title{Row-bind a list of data.frames into one}
+\title{Row-bind a list of data.frames or remote tables}
 \usage{
 bind_sources(data, ..., force_proceed = getOption("odcfun.force_proceed"))
 }
 \arguments{
-\item{data}{A list of data.frame.}
+\item{data}{A list of data.frame or remote tables, e.g., output from [execute_def()].}
 
 \item{...}{Variables in the output. The argument name should be the new name in the output, and the right hand side of argument is a character vector of the original names. The name vector and the data will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., 'var' only come from the second out of three sources, var = c(NA, 'nm_in_src2', NA).}
 
 \item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
 }
 \value{
-A data.frame contains combined rows of the input list with variables specified by ...
+A data.frame or remote table containing combined rows of the input list with variables specified by ...
 }
 \description{
-Row-bind a list of data.frames into one
+Row-bind a list of data.frames or remote tables
 }
 \examples{
 df1 <- subset(iris, Species == "setosa")

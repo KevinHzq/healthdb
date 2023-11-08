@@ -16,9 +16,9 @@ identify_rows(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from dbplyr)}
+\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
 
-\item{vars}{An expression passing to \code{dplyr::select()}. It can be Quoted/unquoted column names, or \code{tidyselect} helper functions, such as \code{starts_with()}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be Quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
 
 \item{match}{One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
 \itemize{
@@ -36,7 +36,7 @@ identify_rows(
 \item "start" ~ a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "\%" at the end
 \item "regex"/"like" ~ a string of the expression
 \item "between" ~ a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
-\item "glue_sql" ~ a string of the part of query after WHERE, which will be passed to glue::glue_sql(). See ?glue_sql and example for detail.
+\item "glue_sql" ~ a string of the part of query after WHERE, which will be passed to \code{\link[glue:glue_sql]{glue::glue_sql()}}. See examples in \code{\link[glue:glue_sql]{glue::glue_sql()}} for detail.
 }}
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
@@ -45,13 +45,13 @@ identify_rows(
 
 \item{query_only}{A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.}
 
-\item{...}{For remote table method only. Additional arguments passing to \code{glue::glue_sql()} for parameterized queries.}
+\item{...}{For remote table method only. Additional arguments passing to \code{\link[glue:glue_sql]{glue::glue_sql()}} for parameterized queries.}
 }
 \value{
-A data.frame or dplyr::tbl() object depending on the input.
+A data.frame or tbl_sql object depending on the input.
 }
 \description{
-Filter rows which values satisfy the specified conditions. The function is similar to dplyr::filter(if_any/if_all(...)), but it used \code{data.table} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often have no regex and LIKE with multiple patterns support.
+Filter rows which values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:across]{dplyr::if_any()}} or dplyr::if_all(), but it used the \code{data.table} package \code{vignette("datatable-intro", package = "data.table")} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often have no regex and LIKE with multiple patterns support.
 }
 \examples{
 #applying to data.frame; both sepal length and width in range 3-5

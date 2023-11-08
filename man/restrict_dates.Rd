@@ -21,7 +21,7 @@ restrict_dates(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from `vignette("dbplyr")`)}
+\item{data}{Data frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -35,9 +35,9 @@ restrict_dates(
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{strict_start}{A logical for whether removing (or flag as 0 in 'flag' mode) the rows before the earliest entry that met the conditions.}
+\item{strict_start}{A logical for whether removing (or flag as 0 in "flag" mode) the rows before the earliest entry that met the conditions.}
 
-\item{mode}{Either "flag" - add a new column "flag_restrict_dates" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
+\item{mode}{Either "flag" - add a new column `flag_restrict_dates` indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
@@ -64,4 +64,7 @@ df <- data.frame(clnt_id = sample(1:sample_size, sample_size, replace = TRUE),
 
 #Keep clients with 2 records that were 1 week apart within 1 month
 restrict_dates(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
+}
+\seealso{
+[if_dates()]
 }

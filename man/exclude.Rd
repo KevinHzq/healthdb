@@ -15,25 +15,25 @@ exclude(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from dbplyr). A subset will be removed from this data.}
+\item{data}{Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`). A subset will be removed from this data.}
 
-\item{excl}{Data frames or remote tables (e.g., from dbplyr). Rows/values present in it will be removed from `data` if there is a match. This will be passed to dplyr::anti_join as the second argument.}
+\item{excl}{Data frames or remote tables (e.g., from dbplyr). Rows/values present in it will be removed from `data` if there is a match. This will be passed to [dplyr::anti_join()] as the second argument.}
 
-\item{by}{Column names that should be matched by anti_join or dplyr::join_by expressions. See anti_join's `by` argument for detail. Default NULL is the same as setdiff(data, excl).}
+\item{by}{Column names that should be matched by anti_join or [dplyr::join_by()] expressions. See anti_join's `by` argument for detail. Default NULL is the same as setdiff(data, excl).}
 
-\item{condition}{An expression that will be passed to dplyr::filter. The rows that satisfy `condition` are those to be removed from `data`.}
+\item{condition}{An expression that will be passed to [dplyr::filter()]. The rows that satisfy `condition` are those to be removed from `data`.}
 
 \item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
 
 \item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.}
 
-\item{...}{Additional arguments passing to filter/anti_join for finer control of matching, e.g., na action, by-group filtering, etc.}
+\item{...}{Additional arguments passing to [dplyr::filter()]/[dplyr::anti_join()] for finer control of matching, e.g., na action, by-group filtering, etc.}
 }
 \value{
 A data frame or remote table that is a subset of `data`.
 }
 \description{
-This function combines `dplyr::anti_join` and the opposite of `dplyr::filter`. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with the expression given via the `condition` argument, and the filter result would in turn be removed using `dplyr::setdiff`.
+This function combines [dplyr::anti_join()] and the opposite of [dplyr::filter()]. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with the expression given via the `condition` argument, and the filter result would in turn be removed using [dplyr::setdiff()].
 }
 \examples{
 # exclude with condition

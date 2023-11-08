@@ -19,7 +19,7 @@ if_dates(x, n, apart = NULL, within = NULL, detail = FALSE, dup.rm = TRUE, ...)
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 
-\item{...}{Additional argument passing to data.table::as.IDate for date conversion.}
+\item{...}{Additional argument passing to [data.table::as.IDate()] for date conversion.}
 }
 \value{
 Single or a vector of logical for whether there is any draw from x satisfied the conditions
@@ -36,4 +36,7 @@ if_dates(dates_of_records, n = 3, apart = 30, within = 365 * 2)
 # specified either apart or within or both
 if_dates(dates_of_records, n = 2, within = 365)
 
+}
+\seealso{
+[restrict_dates()]
 }

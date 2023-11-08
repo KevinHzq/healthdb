@@ -8,26 +8,23 @@ execute_def(
   def,
   with_data,
   bind = FALSE,
-  force_proceed = getOption("odcfun.force_proceed"),
-  force_collect = FALSE
+  force_proceed = getOption("odcfun.force_proceed")
 )
 }
 \arguments{
-\item{def}{A tibble created by build_def().}
+\item{def}{A tibble created by [build_def()].}
 
-\item{with_data}{A named list which the elements are in the form of src_lab = data, where `src_lab` corresponds to the src_labs argument from build_def() and `data` is the data object that will be passed to calls stored in def. The names (and length) of with_data must match the unique values of src_labs in def.}
+\item{with_data}{A named list which the elements are in the form of src_lab = data, where 'src_lab' corresponds to the src_labs argument from [build_def()] and 'data' is the data object that will be passed to calls stored in def. The names (and length) of `with_data` must match the unique values of src_labs in `def`.}
 
 \item{bind}{A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default is FALSE. If TRUE, the behavior is to try and return the unbinded result when failed.}
 
 \item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
-
-\item{force_collect}{A logical for whether collecting remote table as local table regardless of binding. If False (default), remote table would be collected only when bind = TRUE AND the sources are a mix of remote and local data.}
 }
 \value{
 A single (if bind = TRUE) or a list of data.frames or remote tables.
 }
 \description{
-This function executes the function calls stored in the output tibble from build_def() with data objects supplied through a named list and returns the results as a list. It is intended to facilitate re-use of pre-defined calls with different data.
+This function executes the function calls stored in the output tibble from [build_def()] with data objects supplied through a named list and returns the results as a list. It is intended to facilitate re-use of pre-defined calls with different data.
 }
 \examples{
 # toy data
@@ -65,4 +62,7 @@ sud_def <- build_def("SUD", # usually a disease name
 # saveRDS(sud_def, file = some_path)
 
 sud_def \%>\% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = TRUE)
+}
+\seealso{
+[bind_sources()] for binding the output with convenient renaming features.
 }

@@ -14,7 +14,7 @@ restrict_n(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from `dbplyr`)}
+\item{data}{Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -22,7 +22,7 @@ restrict_n(
 
 \item{count_by}{Another variable dictating the counting unit of n_per_clnt. The default is NULL meaning the inclusion criteria is the number of row, i.e., dplyr::n() >= n_per_clnt. If it is not NULL, the criteria becomes dplyr::n_distinct(count_by) >= n_per_clnt.}
 
-\item{mode}{Either "flag" - add a new column "flag_restrict_n" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
+\item{mode}{Either "flag" - add a new column `flag_restrict_n` indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
 
 \item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 }
@@ -38,4 +38,7 @@ restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8)
 
 #remove cyl groups with less than 2 types of gear boxes
 restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear)
+}
+\seealso{
+[dplyr::n()], [dplyr::n_distinct()]
 }

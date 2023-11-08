@@ -9,7 +9,8 @@
 #' @param within An integer specifying the maximum time span (in days) of a draw.
 #' @param detail Logical for whether return result break down by each element, e.g., if periods of length 'within' starting from each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
-#' @param ... Additional argument passing to data.table::as.IDate for date conversion.
+#' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
+#' @seealso [restrict_dates()]
 #'
 #' @return Single or a vector of logical for whether there is any draw from x satisfied the conditions
 #' @export
