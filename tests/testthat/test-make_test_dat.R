@@ -38,3 +38,10 @@ test_that("edge case n_any = n_all = nrows works", {
   expect_equal(subset(test_dat, ans == "noise") %>% nrow(), 0)
   expect_equal(subset(test_dat, ans == "all") %>% nrow(), nrows)
 })
+
+test_that("edge case consecutive calls make unique tables works", {
+  l <- make_test_dat(vals_kept = letters, type = "database")
+  l_expect <- dplyr::collect(l)
+  n <- make_test_dat(vals_kept = as.character(1:9), type = "database")
+  expect_equal(dplyr::collect(l), l_expect)
+})

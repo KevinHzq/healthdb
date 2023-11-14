@@ -16,9 +16,13 @@ btw_n <- function(date_range, n_ans = 5, type = "data.frame") {
   all <- dplyr::bind_rows(keep, out)
 
   if (type == "database") {
-    con <- dbplyr::src_memdb()
-    dplyr::copy_to(con, all, "db", temporary = TRUE, overwrite = TRUE)
-    all <- dplyr::tbl(con, "db")
+    # con <- dbplyr::src_memdb()
+    # dplyr::copy_to(con, all, "db", temporary = TRUE, overwrite = TRUE)
+    # all <- dplyr::tbl(con, "db")
+    # con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+    # all <- dbplyr::copy_inline(con, all) %>%
+    #   dplyr::mutate(dates = julianday(dates))
+    all <- dbplyr::memdb_frame(all)
   }
   return(all)
 }
@@ -30,9 +34,13 @@ iclnt_jdates <- function(i, j, dup, date_range = c(as.Date("2015-01-01"), as.Dat
   test_dat <- purrr::list_rbind(dat)
 
   if (type == "database") {
-    con <- dbplyr::src_memdb()
-    dplyr::copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
-    test_dat <- dplyr::tbl(con, "db")
+    # con <- dbplyr::src_memdb()
+    # dplyr::copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
+    # test_dat <- dplyr::tbl(con, "db")
+    # con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+    # test_dat <- dbplyr::copy_inline(con, test_dat) %>%
+    #   dplyr::mutate(dates = julianday(dates))
+    test_dat <- dbplyr::memdb_frame(test_dat)
   }
 
   return(test_dat)
