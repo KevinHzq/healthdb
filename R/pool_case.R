@@ -143,7 +143,7 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
       dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
 
     # SQL server vs SQLite differences
-    is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(data) %>% class(), "SQL Server|Maria") %>% any()
+    is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(bind_data) %>% class(), "SQL Server|Maria") %>% any()
 
     if (is_mssql_mysql) {
       switch(has_date_var,
