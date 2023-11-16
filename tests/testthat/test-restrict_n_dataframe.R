@@ -17,7 +17,7 @@ test_that("nothing change if n = 1", {
   out_id <- 5:6
   df <- iclnt_jdates(i = list(keep_id, out_id), j = c(keep_n, keep_n - dup_n - 1), dup = c(0, dup_n))
   out_df <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = 1, mode = "filter") %>% dplyr::as_tibble()
-  expect_equal(out_df, df %>% dplyr::arrange(clnt_id))
+  expect_equal(out_df, df %>% dplyr::arrange(clnt_id) %>% dplyr::mutate(flag_restrict_n = 1))
   # also test if the output is grouped
   expect_false(dplyr::is_grouped_df(out_df))
 })
