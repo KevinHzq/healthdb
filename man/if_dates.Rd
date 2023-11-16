@@ -4,7 +4,16 @@
 \alias{if_dates}
 \title{Interpret if n dates drawn from a vector could be some days apart within some years}
 \usage{
-if_dates(x, n, apart = NULL, within = NULL, detail = FALSE, dup.rm = TRUE, ...)
+if_dates(
+  x,
+  n,
+  apart = NULL,
+  within = NULL,
+  detail = FALSE,
+  align = c("left", "right"),
+  dup.rm = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A character or Date vector}
@@ -15,7 +24,9 @@ if_dates(x, n, apart = NULL, within = NULL, detail = FALSE, dup.rm = TRUE, ...)
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
-\item{detail}{Logical for whether return result break down by each element, e.g., if periods of length 'within' starting from each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().}
+\item{detail}{Logical for whether return result break down by each element, e.g., if periods of length 'within' starting/ending at each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().}
+
+\item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left".}
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 

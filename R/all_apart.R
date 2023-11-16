@@ -4,9 +4,18 @@ all_apart <- function(x, n, apart) {
   # searching by sliding apart windows from both ends toward the middle
   # there must be n - i*2 records in between the windows
   # tested against combn(x, n, function(x) all(diff(sort(x)) >= apart)) %>% any()
+  stopifnot(
+    !is.null(x),
+    !is.null(apart),
+    is.wholenumber(n)
+  )
+
+  if (length(x) < n) return(FALSE)
+
   dtx <- data.table::data.table(x = x)
   incl <- c(NULL)
   final_gap <- NULL
+
   for (i in 1:(n %/% 2)) {
     if ((n - i * 2) == 0) {
       if (n == 2) {

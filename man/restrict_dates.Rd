@@ -12,8 +12,8 @@ restrict_dates(
   apart = NULL,
   within = NULL,
   uid = NULL,
-  strict_start = TRUE,
   mode = c("flag", "filter"),
+  align = c("left", "right"),
   dup.rm = TRUE,
   force_collect = FALSE,
   verbose = getOption("odcfun.verbose"),
@@ -35,11 +35,11 @@ restrict_dates(
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{strict_start}{A logical for whether removing (or flag as 0 in "flag" mode) the rows before the earliest entry that met the conditions.}
+\item{mode}{Either "flag" - add a new column 'flag_restrict_dates' indicating if a record met the condition (flag = 1 if the period starting/ending at the current record satisfied the apart-within condition), or "filter" - remove clients without any qualified record from the data. Default is "flag".}
 
-\item{mode}{Either "flag" - add a new column 'flag_restrict_dates' indicating if the client met the condition (all rows from a qualified client would have flag = 1, unless `strict_start` = TRUE), or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
+\item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". Note that this would impact the first/last qualified dates, e.g., using "right" will have the first flag = 1 not at the earliest date. For example, if the condition was 2 records within a year, for c("2023-01-01", "2023-04-01", "2024-05-01"), flag will be c(0, 1, 0) for "right" while c(1,0,0) for "left".}
 
-\item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
+\item{dup.rm}{Logical for whether duplicated dates should be removed before calculation. Default is TRUE.}
 
 \item{force_collect}{A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
@@ -51,7 +51,7 @@ restrict_dates(
 A subset of input data satisfied the dates requirement, or raw input data with an new flag column.
 }
 \description{
-In a vector of dates `date_var`, interpret if there could be at least one set of n elements taken from the date vector satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations. Dates are interpret within `clnt_id` groups, and groups failed to meet the conditions are removed from the data.
+In a vector of dates `date_var`, interpret if there could be at least one set of n elements taken from the date vector satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations.
 }
 \examples{
 sample_size <- 30

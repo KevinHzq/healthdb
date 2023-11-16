@@ -43,8 +43,25 @@ test_that("straight false due to no gap < within works", {
 
 test_that("detail works", {
   x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
-  ans <- c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE)
+  ans <- c(FALSE, FALSE, TRUE, FALSE, TRUE, FALSE)
   w <- 365
-  out <- if_dates(x, n = 2, within = 365, detail = TRUE)
+  out <- if_dates(x, n = 2, within = w, detail = TRUE)
+  expect_equal(out, ans)
+})
+
+test_that("align works", {
+  x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
+  ans <- c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
+  w <- 365
+  out <- if_dates(x, n = 2, within = w, detail = TRUE, align = "right")
+  expect_equal(out, ans)
+})
+
+test_that("align with apart works", {
+  x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
+  ans <- c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE)
+  w <- 365
+  a <- 60
+  out <- if_dates(x, n = 2, apart = a, within = w, detail = TRUE, align = "right")
   expect_equal(out, ans)
 })
