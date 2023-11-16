@@ -15,7 +15,7 @@ test_that("pool databases works", {
                      within = c(365, NULL)
                    ))
   result <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df))
-  pool_result <- pool_cases(result, def, output_lvl = "clnt") %>% dplyr::collect(cte = TRUE)
+  pool_result <- pool_case(result, def, output_lvl = "clnt") %>% dplyr::collect(cte = TRUE)
   expect_gt(nrow(pool_result), 0)
 })
 
@@ -36,7 +36,7 @@ test_that("pool mixed works", {
                      within = c(365, NULL)
                    ))
   result <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df))
-  pool_result <- pool_cases(result, def, output_lvl = "clnt")
+  pool_result <- pool_case(result, def, output_lvl = "clnt")
   expect_gt(nrow(pool_result), 0)
 })
 
@@ -54,7 +54,7 @@ test_that("edge case no date_var works", {
                      # , date_var = dates
                    ))
   result <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df))
-  pool_result <- pool_cases(result, def, output_lvl = "clnt")
+  pool_result <- pool_case(result, def, output_lvl = "clnt")
   expect_gt(nrow(pool_result), 0)
 })
 
@@ -72,6 +72,6 @@ test_that("edge case one date_var works", {
                      , date_var = c(dates, NULL)
                    ))
   result <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df))
-  expect_warning(pool_result <- pool_cases(result, def, output_lvl = "clnt"), "date_var")
+  expect_warning(pool_result <- pool_case(result, def, output_lvl = "clnt"), "date_var")
   expect_gt(nrow(pool_result), 0)
 })

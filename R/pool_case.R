@@ -47,8 +47,8 @@
 #' sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = db, src2 = db))
 #'
 #' # pool results from src1 and src2 together at client level
-#' sud_pooled <- pool_cases(sud_by_src, sud_def, output_lvl = "clnt")
-pool_cases <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
+#' sud_pooled <- pool_case(sud_by_src, sud_def, output_lvl = "clnt")
+pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
   clnt_id <- date_var <- flag_restrict_dates <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
 
   output_lvl <- rlang::arg_match0(output_lvl, c("raw", "clnt"))
