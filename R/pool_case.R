@@ -49,7 +49,7 @@
 #'
 #' # pool results from src1 and src2 together at client level
 #' sud_pooled <- pool_case(sud_by_src, sud_def, output_lvl = "clnt")
-pool_case <- function(data, def, output_lvl = c("raw", "clnt"), valid_src_only = TRUE, ...) {
+pool_case <- function(data, def, output_lvl = c("raw", "clnt"), valid_src_only = FALSE, ...) {
   . <- clnt_id <- date_var <- flag_restrict_dates <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
 
   output_lvl <- rlang::arg_match0(output_lvl, c("raw", "clnt"))
