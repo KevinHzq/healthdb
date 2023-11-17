@@ -71,6 +71,8 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
 
+  dot <- rlang::list2(...)
+
   has_date_var <- !rlang::quo_is_null(rlang::enquo(date_var))
   if (has_date_var) date_var <- rlang::as_name(rlang::enquo(date_var))
   if (!has_date_var & any(!is.null(apart), !is.null(within))) stop("'date_var' must be supplied if 'within'/'apart' is not NULL")
@@ -114,7 +116,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
     if (verbose) cat("\n--------------Time span restriction--------------\n")
-    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, mode = mode, force_collect = force_collect, verbose = verbose, ...))
+    result <- rlang::inject(result %>% restrict_dates(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, mode = mode, force_collect = force_collect, verbose = verbose, !!!dot))
   }
 
   if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")

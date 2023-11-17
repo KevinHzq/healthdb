@@ -7,7 +7,7 @@
 #' @param def_lab A single character label for the definition, e.g., some disease.
 #' @param src_labs A character vector of place-holder names for the data sources that will be used to execute the definition.
 #' @param def_fn A list of functions (default: [define_case()]) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but must put input data as the first argument and name it `data`.
-#' @param fn_args A named list of arguments passing to the `def_fn`. Each element in the list should have the same name as an argument in the source-specific `def_fn`, and the element length should also be either 1 or equal to the number of sources. If you have `def_fn` functions taking different sets of arguments, include the union in one list. Only those that are valid to the source-specific function will be used in the resulted function call.
+#' @param fn_args A named list of arguments passing to the `def_fn`. Each element in the list should have the same name as an argument in the source-specific `def_fn`, and the element length should also be either 1 or equal to the number of sources. If you have `def_fn` functions taking different sets of arguments, include the union in one list.
 #'
 #' @return A tibble with a number of rows equal to the length of `src_labs`, containing the input arguments and the synthetic function call in the `fn_call` column.
 #' @export
@@ -72,7 +72,8 @@ build_def <- function(def_lab, src_labs, def_fn = define_case, fn_args) {
     tidyr::nest(fn_args = dplyr::any_of(names(df_args))) %>%
     dplyr::mutate(
       # use fn_fmls_names to filter valid arguments of the specific function
-      fn_args = purrr::map2(.data[["def_fn"]], .data[["fn_args"]], function(x, y) unlist(y, recursive = FALSE)[names(y) %in% rlang::fn_fmls_names(rlang::parse_expr(x) %>% eval())]),
+      # disable this filter because it blocks passing ...
+      fn_args = purrr::map2(.data[["def_fn"]], .data[["fn_args"]], function(x, y) unlist(y, recursive = FALSE)), # [names(y) %in% rlang::fn_fmls_names(rlang::parse_expr(x) %>% eval())]),
       fn_call = purrr::map2(.data[["def_fn"]], .data[["fn_args"]], function(x, y) rlang::call2(x, data = rlang::missing_arg(), rlang::splice(y)))
     )
 

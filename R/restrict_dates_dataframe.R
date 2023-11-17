@@ -2,6 +2,7 @@
 restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), align = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
   align <- rlang::arg_match0(align, c("left", "right"))
+  rlang::check_dots_used()
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))

@@ -24,24 +24,34 @@ test_that("edge case - arg is external symbol works", {
   expect_true(stringr::str_detect(deparse(def$fn_call[[1]]), "some_vals"))
 })
 
-test_that("removal of invalid arguments works", {
+test_that("error of invalid arguments works", {
+  msp_db <- letters_n(type = "database")
+  dad_df <- xnum_n("F")
   def <- build_def("SUD",
                    src_labs = c("msp", "dad"),
                    fn_args = list(
                      vars = starts_with("diagx"),
-                     what = what
+                     match = "start",
+                     vals = list(letters, "F"),
+                     clnt_id = clnt_id,
+                     uid = uid,
+                     date_var = dates,
+                     n_per_clnt = 2,
+                     within = 365,
+                     what = "w"
                    ))
-  if_call <- purrr::map_lgl(def$fn_call, rlang::is_call)
-  if_invalid <- purrr::map_lgl(def$fn_call, ~ stringr::str_detect(deparse(.), "what"))
-  expect_true(all(if_call))
-  expect_false(any(if_invalid))
-  # also test ... in fn_args
-  expect_error(build_def("SUD",
-                         src_labs = c("msp", "dad"),
-                         fn_args = list(
-                           vars = starts_with("diagx"),
-                           ... = what
-                         )), "...")
+  # if_call <- purrr::map_lgl(def$fn_call, rlang::is_call)
+  # if_invalid <- purrr::map_lgl(def$fn_call, ~ stringr::str_detect(deparse(.), "what"))
+  # expect_true(all(if_call))
+  # expect_false(any(if_invalid))
+  # # also test ... in fn_args
+  # expect_error(build_def("SUD",
+  #                        src_labs = c("msp", "dad"),
+  #                        fn_args = list(
+  #                          vars = starts_with("diagx"),
+  #                          ... = what
+  #                        )), "...")
+  expect_error(execute_def(def, with_data = list(msp = msp_db, dad = dad_df)), "Problematic argument")
 })
 
 test_that("multiple def_fn works", {

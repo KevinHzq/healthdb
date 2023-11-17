@@ -4,6 +4,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
 
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
   align <- rlang::arg_match0(align, c("left", "right"))
+  rlang::check_dots_used()
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
