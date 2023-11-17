@@ -49,7 +49,7 @@
 #' # pool results from src1 and src2 together at client level
 #' sud_pooled <- pool_case(sud_by_src, sud_def, output_lvl = "clnt")
 pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
-  clnt_id <- date_var <- flag_restrict_dates <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
+  . <- clnt_id <- date_var <- flag_restrict_dates <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
 
   output_lvl <- rlang::arg_match0(output_lvl, c("raw", "clnt"))
 
@@ -129,7 +129,8 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
 
   # start with getting the common steps for both data.frame and database
   # including get the last date
-  # then filter valid entries only, and sum first valid date and valid sources
+  # then filter valid entries only
+  # branching by data type to sum first valid date and valid sources
   if (has_date_var == "y") {
     bind_data <- bind_data %>%
       dplyr::mutate(max_date = max(date_var, na.rm = TRUE))
@@ -137,70 +138,103 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
   bind_data <- bind_data %>%
     dplyr::filter(flag_valid_record == 1)
 
+  # getting source indicators
+  src_nm <- unique(def[["src_labs"]])
+  src_formula <- purrr::map(src_nm, function(x) rlang::new_formula(NULL, rlang::expr(. == !!x)))
+  names(src_formula) <- glue::glue("in_{src_nm}")
+  bind_data <- bind_data %>%
+    dplyr::mutate(dplyr::across(src, list(!!!src_formula), .names = "{.fn}"))
+
   if ("tbl_sql" %in% class(bind_data)) {
     win_order <- c("date_var", "src", "uid")
     bind_data <- bind_data %>%
       dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
-
-    # SQL server vs SQLite differences
-    is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(bind_data) %>% class(), "SQL Server|Maria") %>% any()
-
-    if (is_mssql_mysql) {
-      switch(has_date_var,
-        y = {
-          bind_data <- bind_data %>%
-            dplyr::summarise(
-              first_valid_date = min(date_var, na.rm = TRUE),
-              last_entry_date = max(max_date, na.rm = TRUE),
-              from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
-            )
-        },
-        n = {
-          bind_data <- bind_data %>%
-            dplyr::summarise(
-              from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
-            )
-        }
-      )
-    } else {
-      switch(has_date_var,
-        y = {
-          bind_data <- bind_data %>%
-            dplyr::summarise(
-              first_valid_date = min(date_var, na.rm = TRUE),
-              last_entry_date = max(max_date, na.rm = TRUE),
-              from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
-            )
-        },
-        n = {
-          bind_data <- bind_data %>%
-            dplyr::summarise(
-              from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
-            )
-        }
-      )
-    }
   } else {
     bind_data <- bind_data %>%
       dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
-
-    switch(has_date_var,
-      y = {
-        bind_data <- bind_data %>%
-          dplyr::summarise(
-            first_valid_date = min(date_var, na.rm = TRUE),
-            last_entry_date = max(max_date, na.rm = TRUE),
-            from_src = paste(unique(src), collapse = ",")
-          )
-      },
-      n = {
-        bind_data <- bind_data %>%
-          dplyr::summarise(
-            from_src = paste(unique(src), collapse = ",")
-          )
-      }
-    )
   }
+
+  switch(has_date_var,
+         y = {
+           bind_data <- bind_data %>%
+             dplyr::summarise(
+               first_valid_date = min(date_var, na.rm = TRUE),
+               last_entry_date = max(max_date, na.rm = TRUE),
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(., na.rm = TRUE))
+             )
+         },
+         n = {
+           bind_data <- bind_data %>%
+             dplyr::summarise(
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(., na.rm = TRUE))
+             )
+         }
+  )
+
+  # if ("tbl_sql" %in% class(bind_data)) {
+  #   win_order <- c("date_var", "src", "uid")
+  #   bind_data <- bind_data %>%
+  #     dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
+  #
+  #   # SQL server vs SQLite differences
+  #   is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(bind_data) %>% class(), "SQL Server|Maria") %>% any()
+  #
+  #   if (is_mssql_mysql) {
+  #     switch(has_date_var,
+  #       y = {
+  #         bind_data <- bind_data %>%
+  #           dplyr::summarise(
+  #             first_valid_date = min(date_var, na.rm = TRUE),
+  #             last_entry_date = max(max_date, na.rm = TRUE),
+  #             from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
+  #           )
+  #       },
+  #       n = {
+  #         bind_data <- bind_data %>%
+  #           dplyr::summarise(
+  #             from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
+  #           )
+  #       }
+  #     )
+  #   } else {
+  #     switch(has_date_var,
+  #       y = {
+  #         bind_data <- bind_data %>%
+  #           dplyr::summarise(
+  #             first_valid_date = min(date_var, na.rm = TRUE),
+  #             last_entry_date = max(max_date, na.rm = TRUE),
+  #             from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
+  #           )
+  #       },
+  #       n = {
+  #         bind_data <- bind_data %>%
+  #           dplyr::summarise(
+  #             from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
+  #           )
+  #       }
+  #     )
+  #   }
+  # } else {
+  #   bind_data <- bind_data %>%
+  #     dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
+  #
+  #   switch(has_date_var,
+  #     y = {
+  #       bind_data <- bind_data %>%
+  #         dplyr::summarise(
+  #           first_valid_date = min(date_var, na.rm = TRUE),
+  #           last_entry_date = max(max_date, na.rm = TRUE),
+  #           from_src = paste(unique(src), collapse = ",")
+  #         )
+  #     },
+  #     n = {
+  #       bind_data <- bind_data %>%
+  #         dplyr::summarise(
+  #           from_src = paste(unique(src), collapse = ",")
+  #         )
+  #     }
+  #   )
+  # }
 
   return(bind_data %>% dplyr::ungroup())
 }
