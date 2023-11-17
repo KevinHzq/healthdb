@@ -17,6 +17,10 @@ test_that("pool databases works", {
   result <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df))
   pool_result <- pool_case(result, def, output_lvl = "clnt") %>% dplyr::collect(cte = TRUE)
   expect_gt(nrow(pool_result), 0)
+  # also test valid_src_only
+  pool_result2 <- pool_case(result, def, output_lvl = "clnt", valid_src_only = FALSE) %>% dplyr::collect(cte = TRUE)
+  expect_true(any(pool_result2$last_entry_date > pool_result$last_entry_date))
+  expect_false(any(pool_result2$last_entry_date < pool_result$last_entry_date))
 })
 
 test_that("pool mixed works", {
