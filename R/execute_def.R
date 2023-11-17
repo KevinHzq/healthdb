@@ -75,6 +75,11 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
     all(names(with_data) %in% def[["src_labs"]])
   )
 
+  def_check <- def %>%
+    dplyr::select(dplyr::all_of(c("def_lab", "src_labs"))) %>%
+    dplyr::distinct()
+  if (nrow(def_check) < nrow(def)) stop("Duplicates in 'def_lab' + 'src_labs' combinations")
+
   n_source <- dplyr::n_distinct(def[["src_labs"]])
   n_data <- length(with_data_expr)
   if (n_data != n_source) stop("'def' has ", n_source, " sources, but ", n_data, " source datasets are supplied.")
