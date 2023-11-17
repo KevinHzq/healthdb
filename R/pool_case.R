@@ -166,7 +166,7 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
          n = {
            bind_data <- bind_data %>%
              dplyr::summarise(
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.)., na.rm = TRUE))
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE))
              )
          }
   )
