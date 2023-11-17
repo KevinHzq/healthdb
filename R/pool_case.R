@@ -160,13 +160,13 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), ...) {
              dplyr::summarise(
                first_valid_date = min(date_var, na.rm = TRUE),
                last_entry_date = max(max_date, na.rm = TRUE),
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(., na.rm = TRUE))
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE))
              )
          },
          n = {
            bind_data <- bind_data %>%
              dplyr::summarise(
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(., na.rm = TRUE))
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.)., na.rm = TRUE))
              )
          }
   )
