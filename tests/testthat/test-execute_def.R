@@ -78,3 +78,28 @@ test_that("n sources check works", {
                    ))
   expect_error(execute_def(def, with_data = list(msp = msp_df), bind = TRUE), "sources")
 })
+
+test_that("multiple def works", {
+  msp_df <- letters_n()
+  dad_df <- xnum_n("F")
+  def <- build_def("SUD",
+                   src_labs = c("msp", "dad"),
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     match = "start",
+                     vals = list(letters, "F"),
+                     clnt_id = clnt_id
+                   ))
+  def2 <- build_def("SUD2",
+                   src_labs = c("msp_b", "dad"),
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     match = "start",
+                     vals = list(letters, "F"),
+                     clnt_id = clnt_id
+                   ))
+  def <- dplyr::bind_rows(def, def2)
+  out_df <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df, msp_b = msp_df), bind = TRUE)
+  expect_gt(nrow(out_df), 0)
+})
+

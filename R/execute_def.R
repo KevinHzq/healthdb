@@ -66,7 +66,6 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
   #with_data_expr <- with_data_quo %>% rlang::call_args()
   with_data_env <- with_data_quo %>% rlang::quo_get_env()
 
-
   # input checks
   stopifnot(
     rlang::is_named(with_data),
@@ -82,7 +81,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
 
   # ask user input to proceed as collecting remote table may be slow
   # don't ask if all table is remote/local
-  is_local <- purrr::map_lgl(with_data, is.data.frame)
+  is_local <- purrr::map_lgl(def[["src_labs"]], ~ is.data.frame(with_data[[.]]))
   any_local <- any(is_local)
   any_remote <- any(!is_local)
 
