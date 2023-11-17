@@ -15,18 +15,21 @@ def_to_dot <- function(def, add_aux = TRUE) {
   def_long <- def %>%
     tidyr::unnest(fn_args) %>%
     # dplyr::mutate(fn_arg_names = sapply(def$fn_args, function(x) names(x)) %>% c()) %>%
-    dplyr::mutate(fn_arg_names = names(fn_args)) %>%
+    dplyr::mutate(fn_arg_names = names(fn_args),
+                  src_labs = glue::glue("{def_lab}_{src_labs}")) %>%
     dplyr::select(-def_lab, -def_fn, -fn_call) %>%
     dplyr::distinct() %>%
     dplyr::filter(fn_arg_names %in% c(key_args, flag_args))
 
-  # deal with duplicate for multiple def
-  def_long_key <- def_long %>%
-    dplyr::filter(fn_arg_names %in% key_args) %>%
-    dplyr::group_by(src_labs, fn_arg_names) %>%
-    dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
-    dplyr::filter(n > 1L)
-  if (nrow(def_long_key) > 0) stop("Variable names for binding cannot be determined from definition due to multiple ID names (e.g., src1 has two different clnt_id under different def_lab) were assigned to the same source. If that was intended, give different src_lab for the same source, e.g., src1a = df1, src1b = df1, or do manual binding with bind_sources().")
+  # not needed since result from execute_def has a copy of source for each def_src combination
+  # so that variable names in same source can be different as long as the def was successfully executed
+  # # deal with duplicate for multiple def
+  # def_long_key <- def_long %>%
+  #   dplyr::filter(fn_arg_names %in% key_args) %>%
+  #   dplyr::group_by(src_labs, fn_arg_names) %>%
+  #   dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+  #   dplyr::filter(n > 1L)
+  # if (nrow(def_long_key) > 0) stop("Variable names for binding cannot be determined from definition due to multiple ID names (e.g., src1 has two different clnt_id under different def_lab) were assigned to the same source. If that was intended, give different src_lab for the same source, e.g., src1a = df1, src1b = df1, or do manual binding with bind_sources().")
 
   def_wide <- def_long %>% tidyr::pivot_wider(names_from = fn_arg_names, values_from = fn_args, values_fn = list)
 
