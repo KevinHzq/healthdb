@@ -4,7 +4,13 @@
 \alias{pool_case}
 \title{Pooling qualified clients from multiple sources}
 \usage{
-pool_case(data, def, output_lvl = c("raw", "clnt"), valid_src_only = TRUE, ...)
+pool_case(
+  data,
+  def,
+  output_lvl = c("raw", "clnt"),
+  include_src = c("all", "has_valid", "n_per_clnt"),
+  ...
+)
 }
 \arguments{
 \item{data}{A list of data.frame or remote table which should be output from [execute_def()].}
@@ -13,7 +19,7 @@ pool_case(data, def, output_lvl = c("raw", "clnt"), valid_src_only = TRUE, ...)
 
 \item{output_lvl}{Either "raw" - output all records (default), or "clnt" - output one record per client with summarized date of first valid record (`first_valid_date`), date of the latest record (`last_entry_date`), and sources that contain valid records.}
 
-\item{valid_src_only}{A logical for whether remove records from sources which do not contain any record that met the case definition (Defaults to TRUE). For example, src1 and src2 were used in 'def', client1 had valid records only in src1. Then their records in src2 would be removed from the output when valid_src_only. This option will not impact the number of client that would be identified but has impact on the number of records and the latest entry date.}
+\item{include_src}{Character, one of "all" - records from all sources are included; "has_valid" - for each client, records from sources that contain at least one valid record are included; "n_per_clnt" - for each client, if they had fewer than `n_per_clnt` records in a source (see [restrict_n()]), then records from that source are removed. This option will not impact the number of client that would be identified but has impact on the number of records and the latest entry date.}
 
 \item{...}{Additional arguments passing to [bind_sources()]}
 }
