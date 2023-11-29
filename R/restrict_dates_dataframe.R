@@ -53,7 +53,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
 
   if (verbose) {
     initial_n <- report_n(data, on = {{ clnt_id }})
-    cat("\n Of the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged"), "by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days."
+    cat("\n Of the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days."
         # , ifelse(strict_start, "Records before the earliest entries that met the condition are removed.", "")
         , "\n")
   }
