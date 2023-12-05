@@ -30,6 +30,6 @@ test_that("different input type works", {
   dat_list <- list(db, db)
   out_db <- bind_sources(dat_list, clnt_id = "clnt_id", dx_date = "dates", icd9 = "diagx", icd10 = c(NA, "diagx"))
   expect_s3_class(out_db, "tbl_sql")
-  expect_setequal(names(out_db), c("clnt_id", "dx_date", "icd9", "icd10"))
+  expect_setequal(colnames(out_db), c("clnt_id", "dx_date", "icd9", "icd10"))
   # 3. all local have been tested before
 })

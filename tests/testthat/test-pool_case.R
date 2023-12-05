@@ -1,24 +1,23 @@
 test_that("pool databases works", {
-  msp_db <- letters_n(type = "database")
-  dad_df <- xnum_n("F", type = "database")
+  db <- make_test_dat(answer_id = "ans", type = "database")
   def <- build_def("SUD",
                    src_labs = c("msp", "dad"),
                    fn_args = list(
                      vars = starts_with("diagx"),
                      match = "start",
-                     mode = c("flag", "filter"),
-                     vals = list(letters, "F"),
+                     mode = c("flag", "flag"),
+                     vals = c(304, 305),
                      clnt_id = clnt_id,
                      uid = uid,
                      date_var = dates,
-                     n_per_clnt = c(2, 1),
-                     within = c(365, NULL)
+                     n_per_clnt = c(3, 1),
+                     within = c(NULL, NULL)
                    ))
-  result <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df))
-  pool_result <- pool_case(result, def, output_lvl = "clnt", include_src = "n_per_clnt") %>% dplyr::collect(cte = TRUE)
+  result <- execute_def(def, with_data = list(msp = db, dad = db))
+  pool_result <- pool_case(result, def, output_lvl = "clnt", include_src = "n_per_clnt") %>% dplyr::collect()
   expect_gt(nrow(pool_result), 0)
   # also test include_src works
-  pool_result2 <- pool_case(result, def, output_lvl = "clnt", include_src = "all") %>% dplyr::collect(cte = TRUE)
+  pool_result2 <- pool_case(result, def, output_lvl = "clnt", include_src = "all") %>% dplyr::collect()
   expect_true(any(pool_result2$last_entry_date > pool_result$last_entry_date))
   expect_false(any(pool_result2$last_entry_date < pool_result$last_entry_date))
 })

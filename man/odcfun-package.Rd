@@ -6,7 +6,7 @@
 \alias{odcfun-package}
 \title{odcfun: Overdose Cohort Team In-house Functions}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.
 }
 \seealso{
 Useful links:

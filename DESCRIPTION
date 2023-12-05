@@ -4,8 +4,7 @@ Title: Overdose Cohort Team In-house Functions
 Version: 0.1.0
 Author: Kevin Hu
 Maintainer: Kevin Hu <kevin.hu@bccdc.ca>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

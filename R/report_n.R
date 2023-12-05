@@ -31,7 +31,7 @@ report_n <- function(..., on, force_proceed = getOption("odcfun.force_proceed"))
   on <- rlang::try_fetch(rlang::as_name(rlang::enquo(on)),
                   error = function(cnd) rlang::abort("Failed to convert `on` to a variable name. It has to be a single quoted or unquoted name.", parent = cnd))
 
-  col_nm <- purrr::map(dat, function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else names(x)})
+  col_nm <- purrr::map(dat, function(x) {if ("dtplyr_step" %in% class(x)) x[["vars"]] else colnames(x)})
 
   if (any(!purrr::map_lgl(col_nm, function(x) on %in% x))) stop("All data must have the ", on, " column.")
 

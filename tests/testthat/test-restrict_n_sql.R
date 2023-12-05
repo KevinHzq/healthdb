@@ -50,7 +50,7 @@ test_that("mode works", {
   out_id <- 5:6
   db <- iclnt_jdates(i = list(keep_id, out_id), j = c(keep_n, keep_n - dup_n - 1), dup = c(0, dup_n), type = "database")
   output_id <- restrict_n(db, clnt_id = clnt_id, n_per_clnt = keep_n)
-  expect_in("flag_restrict_n", names(output_id))
+  expect_in("flag_restrict_n", colnames(output_id))
   output_id <- output_id %>% dplyr::filter(flag_restrict_n > 0) %>% dplyr::pull(clnt_id)
   expect_setequal(output_id, keep_id)
 })
