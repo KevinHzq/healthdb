@@ -1,0 +1,108 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# odcfun
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of odcfun is to implement disease/event identification algorithms from administrative database for epidemiological studies. The implementation focused on code readability and re-usability.
+
+Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
+
+This package leverages `dbplyr`, particularly its ability to chain subqueries, in order to implement a common disease definition as one-shot big query. Common definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span. 
+
+## Installation
+
+You can install the development version of odcfun from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("KevinHzq/odcfun")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+Case definition: One or more hospitalization with a substance use disorder (SUD) diagnostic code, OR Two or more physician claims with a substance use disorder diagnostic code within one year.
+
+We are going to implement this definition. First, let's make a demo data sets for the two sources:
+
+Physician claims
+```{r example,message=FALSE,warning=FALSE}
+library(odcfun)
+library(tidyverse)
+
+# make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
+claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", str_glue("30{30:59}"), str_glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
+
+# this is a database table
+# note that in-memory SQLite database stores dates as numbers
+claim_db %>% head()
+```
+
+Hospitalization
+```{r}
+hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199}"), noise_val = "999"), type = "data.frame")
+
+# this is a local data.frame/tibble
+hosp_df %>% head()
+```
+
+Here's how you could use `odcfun` to implement the SUD definition above:
+
+1.  Identify rows contains the target codes in the claim database
+
+    ```{r}
+result1 <- claim_db %>%
+  identify_rows(
+    vars = starts_with("diagx_"),
+    match = "start",
+    vals = c(291:292, 303:305)
+  )
+    ```
+
+2.  Restrict the number of records per client
+
+    ```{r}
+result2 <- result1 %>% restrict_n(
+  clnt_id = clnt_id,
+  n_per_clnt = 2,
+  count_by = dates,
+  # here we use filter mode to remove records that failed the restriction
+  mode = "filter"
+)
+result2 %>% head()
+    ```
+
+3.  Restrict the temporal pattern of diagnoses
+
+    ```{r}
+result3 <- result2 %>% restrict_dates(
+  clnt_id = clnt_id,
+  date_var = dates,
+  n = 2,
+  within = 365,
+  uid = uid,
+  # here we use flag mode to flag records that met the restriction instead of removing those
+  mode = "flag"
+)
+result3 %>% head()
+    ```
+
+4. Repeat these steps for hospitalization and row bind the results.
+
+See the "Intro" vignette (`vignette("Intro")`) for detail and functions for batch execution (the 'Call-building functions' section).
