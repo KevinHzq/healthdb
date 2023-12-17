@@ -67,7 +67,7 @@
 <div class="page-header"><h1 id="odcfun">odcfun<a class="anchor" aria-label="anchor" href="#odcfun"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p>The goal of odcfun is to implement disease/event identification algorithms from administrative database for epidemiological studies. The implementation focused on code readability and re-usability.</p>
 <p>Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.</p>
 <p>This package leverages <code>dbplyr</code>, particularly its ability to chain subqueries, in order to implement a common disease definition as one-shot big query. Common definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span.</p>
@@ -226,7 +226,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
