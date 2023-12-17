@@ -12,6 +12,7 @@ Designed for identifying disease cases from admin data for epidemiological studi
 Useful links:
 \itemize{
   \item \url{https://github.com/KevinHzq/odcfun}
+  \item \url{https://kevinhzq.github.io/odcfun/}
   \item Report bugs at \url{https://github.com/KevinHzq/odcfun/issues}
 }
 
