@@ -26,6 +26,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    withr
+    withr,
+    RSQLite
 Config/testthat/edition: 3
 VignetteBuilder: knitr

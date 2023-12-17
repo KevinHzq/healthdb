@@ -44,7 +44,7 @@ Simply run:
 devtools::install_github("kevinHzq/odcfun", build_vignettes = TRUE)
 ```
 
-We will also need the following packagesfor this demo.
+We will also need the following packages for this demo.
 
 ```{r setup, message=FALSE}
 library(dplyr)
