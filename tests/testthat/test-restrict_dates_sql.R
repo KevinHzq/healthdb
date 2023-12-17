@@ -45,5 +45,5 @@ test_that("align works", {
   expect_setequal(output_df$flag_restrict_dates, as.numeric(ans))
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, align = "right", mode = "filter") %>% dplyr::collect()
   ans_right <- c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
-  expect_setequal(output_df$dates[output_df$flag_restrict_dates == 1] %>% as.Date(), x[ans_right])
+  expect_setequal(output_df$dates[output_df$flag_restrict_dates == 1] %>% as.Date(origin = "1970-01-01"), x[ans_right])
 })
