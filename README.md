@@ -4,6 +4,8 @@
 # odcfun
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of odcfun is to implement disease/event identification
