@@ -60,7 +60,7 @@ test_that("output is correct for database", {
 
 test_that("keep first/last works", {
   db <- letters_n(type = "database", id = 1:10)
-  df_list <- sapply(c("all", "first", "last"), function(x) define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, mode = "filter", date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
+  df_list <- sapply(c("all", "first", "last"), function(x) define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, uid = uid, mode = "filter", date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
   expect_true(nrow(df_list[["all"]]) > nrow(df_list[["first"]]))
   expect_true(nrow(df_list[["all"]]) > nrow(df_list[["last"]]))
   expect_s3_class(df_list[["first"]], "data.frame")
@@ -72,7 +72,7 @@ test_that("keep first/last works", {
 
 test_that("keep first/last works on df", {
   df <- letters_n(type = "data.frame", id = 1:10)
-  df_list <- sapply(c("all", "first", "last"), function(x) define_case(df, starts_with("diagx"), "in", letters, clnt_id = clnt_id, mode = "filter", date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
+  df_list <- sapply(c("all", "first", "last"), function(x) define_case(df, starts_with("diagx"), "in", letters, clnt_id = clnt_id, uid = uid, mode = "filter", date_var = dates, keep = x, force_collect = TRUE), USE.NAMES = TRUE, simplify = FALSE)
   expect_true(nrow(df_list[["all"]]) > nrow(df_list[["first"]]))
   expect_true(nrow(df_list[["all"]]) > nrow(df_list[["last"]]))
   expect_s3_class(df_list[["first"]], "data.frame")

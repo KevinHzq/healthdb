@@ -82,7 +82,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   keep <- rlang::arg_match0(keep, c("all", "first", "last"))
   if (mode == "flag" & keep != "all") stop("'flag' mode does not allow subsetting with 'keep'.")
-  if (keep != "all" & (!has_date_var | !has_uid)) stop("`date_var` and `uid` must be supplied for sorting if not keeping all records")
+  if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_rows calls
   arg <- rlang::enexprs(vars, match, vals, if_all, verbose)
@@ -133,19 +133,31 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   # replacing slice_ function in expression
   if (keep != "all") {
-    expr_slice <- rlang::expr(result <- result %>%
-      dplyr::group_by(.data[[!!clnt_id]]) %>%
-      # dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
-      # switch to filter(date = min/max(date)) instead of problematic slice_min/max
-      dplyr::filter(.data[[!!date_var]] == min(.data[[!!date_var]], na.rm = TRUE)) %>%
+    expr_slice <- rlang::expr(
+      result <- result %>%
+        dplyr::group_by(.data[[!!clnt_id]]) %>%
+        # dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
+        # switch to filter(date = min/max(date)) instead of problematic slice_min/max
+        dplyr::filter(.data[[!!date_var]] == min(.data[[!!date_var]], na.rm = TRUE))
       # row_number translation didn't work for MS SQL
       # dplyr::filter(dplyr::row_number() == 1) %>%
-      dplyr::filter(.data[[!!uid]] == min(.data[[!!uid]], na.rm = TRUE)) %>%
-      dplyr::ungroup()) %>%
+    ) %>%
       rlang::expr_text()
+
     if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("min", "max")
     expr_slice <- expr_slice %>% rlang::parse_expr()
     eval(expr_slice)
+
+    if (!is.data.frame(result)) {
+      if (!has_uid) stop("`uid` must be supplied for sorting database if not keeping all records")
+      result <- result %>%
+        dplyr::filter(.data[[!!uid]] == min(.data[[!!uid]], na.rm = TRUE))
+    } else {
+      result <- result %>%
+        dplyr::filter(dplyr::row_number() == 1)
+    }
+
+    result <- ungroup(result)
   }
 
   if (force_collect & !is.data.frame(result)) result <- dplyr::collect(result)

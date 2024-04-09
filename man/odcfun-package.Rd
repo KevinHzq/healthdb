@@ -4,9 +4,9 @@
 \name{odcfun-package}
 \alias{odcfun}
 \alias{odcfun-package}
-\title{odcfun: Overdose Cohort Team In-house Functions}
+\title{odcfun: Using Administrative Database for Epidemiology}
 \description{
-Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.
+Designed for identifying disease cases from administrative database for epidemiological studies. The implementation is based on 'dbplyr' with a focuse on code readability and re-usability.
 }
 \seealso{
 Useful links:

@@ -66,7 +66,7 @@ define_case(
 A subset of input data satisfied the specified case definition.
 }
 \description{
-This function is a composite of \code{\link[=identify_rows]{identify_rows()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_dates]{restrict_dates()}}. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) \%>\% exclude(identify_rows(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_dates()
+This function is a composite of \code{\link[=identify_rows]{identify_rows()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_dates]{restrict_dates()}}. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) \%>\% exclude(identify_rows(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_dates(). Note that if date_var is supplied, n_per_clnt will be counted by distinct dates instead of number of records.
 }
 \examples{
 sample_size <- 30
