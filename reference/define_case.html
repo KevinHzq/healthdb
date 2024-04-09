@@ -180,26 +180,7 @@
 <span class="r-in"><span>  <span class="co"># keeping the first record</span></span></span>
 <span class="r-in"><span>  keep <span class="op">=</span> <span class="st">"first"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------Inclusion step--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identify records with condition(s): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - where at least one of the diagx, diagx_1, diagx_2 column(s) in each record </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value exactly matched values in set: letters[1:4] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    c    d    e    f    g    i    k    l    n    o    q    r    s    u </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    w    z NA's </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------- Output first records--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-01 e     o       b      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-02 n     b       n      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-03 q     d       w      </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in define_case(df, vars = starts_with("diagx"), "in", vals = letters[1:4],     clnt_id = clnt_id, date_var = service_dt, excl_args = list(if_all = TRUE),     mode = "filter", keep = "first"):</span> `date_var` and `uid` must be supplied for sorting if not keeping all records</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple sources with purrr::pmap</span></span></span>
 <span class="r-in"><span><span class="co"># arguments with length = 1 will be recycle to match the number of sources</span></span></span>

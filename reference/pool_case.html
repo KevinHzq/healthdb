@@ -108,7 +108,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># make df a database table</span></span></span>
 <span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">dbplyr</span><span class="fu">::</span><span class="fu"><a href="https://dbplyr.tidyverse.org/reference/memdb_frame.html" class="external-link">tbl_memdb</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in db_copy_to(dest$con, name, df, overwrite = overwrite, types = types,     temporary = temporary, unique_indexes = unique_indexes, indexes = indexes,     analyze = analyze, in_transaction = in_transaction, ...):</span> Can't copy to table <span style="color: #00BB00;">`df`</span>.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in db_copy_to(dest$con, name, df, overwrite = overwrite, types = types,     temporary = temporary, unique_indexes = unique_indexes, indexes = indexes,     analyze = analyze, in_transaction = in_transaction, ...):</span> Can't copy data to table <span style="color: #00BB00;">`df`</span>.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `dplyr::db_write_table()`:</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Can't write table table <span style="color: #00BB00;">`df`</span>.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
