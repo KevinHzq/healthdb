@@ -2,7 +2,7 @@
 #'
 #' @md
 #' @description
-#' This function is a composite of [identify_rows()], [exclude()], [restrict_n()], and [restrict_dates()]. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates()
+#' This function is a composite of [identify_rows()], [exclude()], [restrict_n()], and [restrict_dates()]. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates(). Note that if date_var is supplied, n_per_clnt will be counted by distinct dates instead of number of records.
 #'
 #' @inheritParams identify_rows
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_rows()] for detail.
@@ -82,7 +82,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
 
   keep <- rlang::arg_match0(keep, c("all", "first", "last"))
   if (mode == "flag" & keep != "all") stop("'flag' mode does not allow subsetting with 'keep'.")
-  if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
+  if (keep != "all" & (!has_date_var | !has_uid)) stop("`date_var` and `uid` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_rows calls
   arg <- rlang::enexprs(vars, match, vals, if_all, verbose)
@@ -138,7 +138,9 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
       # dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
       # switch to filter(date = min/max(date)) instead of problematic slice_min/max
       dplyr::filter(.data[[!!date_var]] == min(.data[[!!date_var]], na.rm = TRUE)) %>%
-      dplyr::filter(dplyr::row_number() == 1) %>%
+      # row_number translation didn't work for MS SQL
+      # dplyr::filter(dplyr::row_number() == 1) %>%
+      dplyr::filter(.data[[!!uid]] == min(.data[[!!uid]], na.rm = TRUE)) %>%
       dplyr::ungroup()) %>%
       rlang::expr_text()
     if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("min", "max")

@@ -1,10 +1,10 @@
 Package: odcfun
 Type: Package
-Title: Overdose Cohort Team In-house Functions
+Title: Using Administrative Database for Epidemiology
 Version: 0.1.0
 Author: Kevin Hu
 Maintainer: Kevin Hu <kevin.hu@bccdc.ca>
-Description: Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.
+Description: Designed for identifying disease cases from administrative database for epidemiological studies. The implementation is based on 'dbplyr' with a focuse on code readability and re-usability.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
