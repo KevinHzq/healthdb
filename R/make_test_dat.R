@@ -61,14 +61,18 @@ make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noi
     dplyr::arrange(.data[["clnt_id"]], .data[["dates"]])
 
   if (type == "database") {
-    # this cannot produce unique frame if result was called after another run of the function
+    # these cannot produce unique frame if result was called after another run of the function
     # con <- dbplyr::src_memdb()
     # dplyr::copy_to(con, test_dat, "db", temporary = TRUE, overwrite = TRUE)
     # test_dat <- dplyr::tbl(con, "db")
+
     # con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
     # test_dat <- dbplyr::copy_inline(con, test_dat) %>%
     #   dplyr::mutate(dates = julianday(dates))
-    test_dat <- dbplyr::memdb_frame(test_dat)
+
+    # test_dat <- dbplyr::tbl_memdb(test_dat, name = stringi::stri_rand_strings(1, 20))
+
+    test_dat <- memdb_tbl(test_dat)
   }
 
   return(test_dat)
