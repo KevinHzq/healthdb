@@ -157,7 +157,7 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
         dplyr::filter(dplyr::row_number() == 1)
     }
 
-    result <- ungroup(result)
+    result <- dplyr::ungroup(result)
   }
 
   if (force_collect & !is.data.frame(result)) result <- dplyr::collect(result)
