@@ -1,11 +1,11 @@
 #' Title Compute duration between two dates
 #'
 #' @description
-#' This function is meant to be used with [dplyr::mutate()] to compute age/duration between two character or Date columns.
+#' This function is meant to be for data frame input only and used with [dplyr::mutate()] to compute age or duration between two character or Date columns.
 #'
 #' @param from A character or Date vector for start dates.
 #' @param to A character or Date vector for end dates.
-#' @param lower_brks A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).
+#' @param lower_brks A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).
 #' @param unit A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".
 #' @param trans A logical for whether transform both `from` and `to` with the `.transfn` function
 #' @param .transfn A function for transforming the inputs. Default is [lubridate::ymd()].
@@ -24,14 +24,14 @@
 #'
 #' # get age group at a cut-off
 #' df %>% dplyr::mutate(
-#'  age_grp = compute_dur(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
+#'  age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
 #' )
 #'
 #' # compute gaps between two dates in weeks
 #' df %>% dplyr::mutate(
-#'  gap_wks = compute_dur(start_dt, end_dt, unit = "week")
+#'  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 #' )
-compute_dur <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = TRUE, ...) {
+compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = TRUE, ...) {
   #compute age with lubridate functions (more accurate than /365.25) and built-in transformations
   unit <- rlang::arg_match0(unit, c("year", "day", "week", "month"))
 
