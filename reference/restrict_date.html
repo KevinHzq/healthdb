@@ -63,7 +63,7 @@
 <span>  within <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  uid <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flag"</span>, <span class="st">"filter"</span><span class="op">)</span>,</span>
-<span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>  flag_at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
 <span>  dup.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_collect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"odcfun.verbose"</span><span class="op">)</span>,</span>
@@ -107,8 +107,8 @@
 </ul></dd>
 
 
-<dt>align</dt>
-<dd><p>Character, define if the flag should be placed at the start ("left") or end ("right") of a qualified time period. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for <code>c("2023-01-01", "2023-04-01", "2024-05-01")</code>, flag will be <code>c(0, 1, 0)</code> for "right" while <code>c(1,0,0)</code> for "left".</p></dd>
+<dt>flag_at</dt>
+<dd><p>Character, define if the flag should be placed at the start ("left") or end ("right") of a time period that contains n qualified records. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for <code>c("2023-01-01", "2023-04-01", "2024-05-01")</code>, flag will be <code>c(0, 1, 0)</code> for "right" while <code>c(1,0,0)</code> for "left".</p></dd>
 
 
 <dt>dup.rm</dt>
