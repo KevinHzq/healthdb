@@ -258,7 +258,7 @@ Let's check the results!
 purrr::walk(result_list, ~ head(.) %>% print())
 ```
 
-We row bind the results with `bind_source()`. 
+At this point, the result from the claim database (result[[1]]) has not been collected locally. You could collect it manually, do further filtering, and then combine with the result from hospitalization data in any way you want. If you just need a simple row bind, use [bind_source()] with convenient naming feature. 
 ```{r}
 bind_source(result_list,
   # output_name = c(names in the list elements)

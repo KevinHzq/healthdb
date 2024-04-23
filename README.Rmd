@@ -107,4 +107,4 @@ result3 %>% head()
 
 4. Repeat these steps for hospitalization and row bind the results.
 
-See the "Intro" vignette (`vignette("Intro")`) for detail and functions for batch execution (the 'Call-building functions' section).
+The output of these functions (e.g., [identify_row()], [exclude()], [restrict_n()], [restrict_date()]) can be piped into 'dplyr' functions for further manipulations. Therefore, wrangling with them along with 'dplyr' provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the "Intro" vignette (`vignette("Intro")`) for a much more concise way to work with multiple sources and definitions (the 'Call-building functions' section).
