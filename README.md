@@ -6,11 +6,19 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/KevinHzq/odcfun/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/odcfun?branch=master)
 <!-- badges: end -->
 
-The goal of odcfun is to implement disease/event identification
-algorithms from administrative database for epidemiological studies. The
-implementation focused on code readability and re-usability.
+The goal of odcfun is to provide a set of tools for identifying diseases
+or events from healthcare database and preparing data for
+epidemiological studies. It features abilities that are not natively
+support by database, such as matching strings by ‘stringr’ style regular
+expression and using ‘LIKE’ operator with multiple patterns in a vector.
+Three types of functions are included: interactive functions – for
+customizing complex definitions; call building functions – for batch
+execution of simple definition; miscellaneous functions – for data
+wrangling, computing age and comorbidity index, etc.
 
 Administrative health data data are often stored on database with strict
 security measures which may disable permission to write temporary
@@ -20,11 +28,13 @@ from database into R (i.e., local memory) without some filtering
 process.
 
 This package leverages `dbplyr`, particularly its ability to chain
-subqueries, in order to implement a common disease definition as
-one-shot big query. Common definitions often are in the form of having n
-primary care/hospitalization/prescription records with some
-International Classification of Diseases (ICD) codes within some time
-span.
+subqueries, in order to implement a common disease definition as a
+one-shot big query. Outputs are fully compatible with `dplyr` functions.
+
+Common disease definitions often are in the form of having n primary
+care/hospitalization/prescription records with some International
+Classification of Diseases (ICD) codes within some time span. See below
+for an example of implementing such case definition.
 
 ## Installation
 
@@ -37,8 +47,6 @@ devtools::install_github("KevinHzq/odcfun")
 ```
 
 ## Example
-
-This is a basic example which shows you how to solve a common problem:
 
 Case definition: One or more hospitalization with a substance use
 disorder (SUD) diagnostic code, OR Two or more physician claims with a
@@ -60,7 +68,7 @@ claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", str_g
 # note that in-memory SQLite database stores dates as numbers
 claim_db %>% head()
 #> # Source:   SQL [6 x 6]
-#> # Database: sqlite 3.43.2 [:memory:]
+#> # Database: sqlite 3.45.2 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
 #> 1    51       1 16660 999   999     999    
@@ -93,7 +101,7 @@ Here’s how you could use `odcfun` to implement the SUD definition above:
 
     ``` r
     result1 <- claim_db %>%
-      identify_rows(
+      identify_row(
     vars = starts_with("diagx_"),
     match = "start",
     vals = c(291:292, 303:305)
@@ -121,7 +129,7 @@ Here’s how you could use `odcfun` to implement the SUD definition above:
     #> Apply restriction that each client must have at least 2 records with distinct dates. Clients/groups whichdid not meetthe condition were excluded.
     result2 %>% head()
     #> # Source:     SQL [6 x 7]
-    #> # Database:   sqlite 3.43.2 [:memory:]
+    #> # Database:   sqlite 3.45.2 [:memory:]
     #> # Ordered by: dates
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
@@ -136,7 +144,7 @@ Here’s how you could use `odcfun` to implement the SUD definition above:
 3.  Restrict the temporal pattern of diagnoses
 
     ``` r
-    result3 <- result2 %>% restrict_dates(
+    result3 <- result2 %>% restrict_date(
       clnt_id = clnt_id,
       date_var = dates,
       n = 2,
@@ -149,16 +157,16 @@ Here’s how you could use `odcfun` to implement the SUD definition above:
     #> Apply restriction that each client must have 2 records that were  within 365 days. Records that met the condition were flagged.
     result3 %>% head()
     #> # Source:     SQL [6 x 8]
-    #> # Database:   sqlite 3.43.2 [:memory:]
+    #> # Database:   sqlite 3.45.2 [:memory:]
     #> # Ordered by: dates, uid
-    #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_dates
-    #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>               <int>
-    #> 1    35       7 16810 2913  2923    999                   1                   1
-    #> 2    22       7 16897 3056  2917    999                   1                   1
-    #> 3    47       7 17096 3033  3051    3036                  1                   1
-    #> 4    10       7 17250 2923  3057    999                   1                   0
-    #> 5    41      10 16954 3033  305     2929                  1                   0
-    #> 6    44      10 17788 999   304     292                   1                   0
+    #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
+    #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
+    #> 1    35       7 16810 2913  2923    999                   1                  1
+    #> 2    22       7 16897 3056  2917    999                   1                  1
+    #> 3    47       7 17096 3033  3051    3036                  1                  1
+    #> 4    10       7 17250 2923  3057    999                   1                  0
+    #> 5    41      10 16954 3033  305     2929                  1                  0
+    #> 6    44      10 17788 999   304     292                   1                  0
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.
