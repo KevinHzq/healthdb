@@ -13,7 +13,7 @@ restrict_date(
   within = NULL,
   uid = NULL,
   mode = c("flag", "filter"),
-  align = c("left", "right"),
+  flag_at = c("left", "right"),
   dup.rm = TRUE,
   force_collect = FALSE,
   verbose = getOption("odcfun.verbose"),
@@ -41,7 +41,7 @@ restrict_date(
 \item or "filter" - remove clients without any qualified record from the data. Default is "flag".
 }}
 
-\item{align}{Character, define if the flag should be placed at the start ("left") or end ("right") of a qualified time period. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for \code{c("2023-01-01", "2023-04-01", "2024-05-01")}, flag will be \code{c(0, 1, 0)} for "right" while \code{c(1,0,0)} for "left".}
+\item{flag_at}{Character, define if the flag should be placed at the start ("left") or end ("right") of a time period that contains n qualified records. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for \code{c("2023-01-01", "2023-04-01", "2024-05-01")}, flag will be \code{c(0, 1, 0)} for "right" while \code{c(1,0,0)} for "left".}
 
 \item{dup.rm}{Logical for whether duplicated dates should be removed before calculation. Default is TRUE.}
 

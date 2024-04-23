@@ -9,7 +9,7 @@
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
 #' @param detail Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any().
-#' @param align Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left".
+#' @param align Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". See 'flag_at' argument in [restrict_date()] for detail.
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
 #' @seealso [restrict_date()]
@@ -45,6 +45,7 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
   }
 
   x <- data.table::as.IDate(x, ...)
+  x <- sort(x)
 
   # just interpret apart if no within. see all_part.R for detail
   if (is.null(within)) {
@@ -56,7 +57,7 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     # if just within, the adjacent n has the smallest gaps, if none of the rolling window < within, no other combinations will be so.
     stopifnot(is.wholenumber(within))
 
-    x_roll <- data.table::frollapply(x = sort(x), n = n, align = align, FUN = function(x) sum(diff(x)) <= within)
+    x_roll <- data.table::frollapply(x = x, n = n, align = align, FUN = function(x) sum(diff(x)) <= within)
     dtx <- data.table::data.table(x = as.numeric(x_roll == 1))
 
     # switch (align,

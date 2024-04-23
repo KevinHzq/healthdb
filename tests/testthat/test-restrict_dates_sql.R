@@ -1,7 +1,7 @@
 test_that("basic use works", {
-  n <- 3
-  apart <- 30
-  within <- 365
+  n <- sample(2:5, 1)
+  apart <- sample(7:14, 1)
+  within <- sample(30:365, 1)
   db <- make_test_dat(type = "database")
   df <- dplyr::collect(db)
   output_df <- restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid, force_collect = TRUE, mode = "filter")
@@ -10,8 +10,9 @@ test_that("basic use works", {
 })
 
 test_that("within only works", {
-  n <- 2
-  within <- 365
+  skip_on_cran()
+  n <- sample(2:5, 1)
+  within <- sample(30:365, 1)
   db <- make_test_dat(type = "database")
   df <- dplyr::collect(db)
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, mode = "filter") %>% dplyr::collect()
@@ -35,15 +36,15 @@ test_that("do not count same date works for database", {
   expect_setequal(output_df$clnt_id, ans_id)
 })
 
-test_that("align works", {
+test_that("flag_at works", {
   x <- as.Date(c("2010-01-01", "2012-05-03", "2015-01-07", "2015-02-01", "2017-02-08", "2017-05-07"))
   ans <- c(FALSE, FALSE, TRUE, FALSE, TRUE, FALSE)
   within <- 365
   n <- 2
   db <- dbplyr::memdb_frame(clnt_id = 1, dates = x, uid = 1:length(x))
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, align = "left") %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, flag_at = "left") %>% dplyr::collect()
   expect_setequal(output_df$flag_restrict_date, as.numeric(ans))
-  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, align = "right", mode = "filter") %>% dplyr::collect()
+  output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, flag_at = "right", mode = "filter") %>% dplyr::collect()
   ans_right <- c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
   expect_setequal(output_df$dates[output_df$flag_restrict_date == 1] %>% as.Date(origin = "1970-01-01"), x[ans_right])
 })

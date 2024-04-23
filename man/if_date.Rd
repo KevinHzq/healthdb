@@ -26,7 +26,7 @@ if_date(
 
 \item{detail}{Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any().}
 
-\item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left".}
+\item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". See 'flag_at' argument in \code{\link[=restrict_date]{restrict_date()}} for detail.}
 
 \item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
 

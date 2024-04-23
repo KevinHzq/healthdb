@@ -28,7 +28,7 @@ make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noi
 
   type <- rlang::arg_match(type)
 
-  set.seed(seed)
+  if (!is.null(seed)) set.seed(seed)
 
   n_noise <- nrows - n_any
 

@@ -5,7 +5,7 @@
 \title{Cut the time period in one row into multiple rows by interval}
 \usage{
 cut_period(
-  dat,
+  data,
   start,
   end,
   len,
@@ -14,7 +14,7 @@ cut_period(
 )
 }
 \arguments{
-\item{dat}{Input data.frame that each row has start and end dates}
+\item{data}{Input data.frame that each row has start and end dates}
 
 \item{start}{Record start date column (unquoted)}
 
@@ -38,7 +38,7 @@ df <- data.frame(sample_id = 1, period_id = 1, start_date = "2015-01-01", end_da
 
 # divide period into segments (multiple rows per period)
 df_seg <- cut_period(
-  dat = df, start = start_date, end = end_date,
+  data = df, start = start_date, end = end_date,
   len = 30, .dt_trans = lubridate::ymd
 )
 

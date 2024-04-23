@@ -1,7 +1,7 @@
 #' @export
-restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), align = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
-  align <- rlang::arg_match0(align, c("left", "right"))
+  flag_at <- rlang::arg_match0(flag_at, c("left", "right"))
   rlang::check_dots_used()
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
@@ -15,7 +15,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   keep <- dplyr::collect(data) %>%
     dplyr::group_by(.data[[clnt_id]]) %>%
     dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
-    dplyr::mutate(temp.nm_keep = if_dates(.data[[date_var]], n, apart, within, detail = TRUE, align, dup.rm, ...),
+    dplyr::mutate(temp.nm_keep = if_dates(.data[[date_var]], n, apart, within, detail = TRUE, flag_at, dup.rm, ...),
                   flag_restrict_date = as.numeric(temp.nm_keep))
 
   # if (strict_start) {
@@ -44,7 +44,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   n_kept <- keep %>% dplyr::filter(flag_restrict_date == 1) %>% dplyr::n_groups()
 
   if (mode == "filter") {
-    keep <- keep %>% dplyr::filter(max(flag_restrict_date) > 0)
+    keep <- keep %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
   }
 
   keep <- keep %>%

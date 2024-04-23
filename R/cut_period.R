@@ -2,7 +2,7 @@
 #'
 #' @md
 #' @description This function is for cutting time periods into segments, which could be useful for subsequent overlap joins. Each original period (per row) will be expanded to multiple rows by weeks, months, etc. Only data.frame input is accepted as the output size is greater than the input. Thus, remote tables should be collected before running this function for optimal performance.
-#' @param dat Input data.frame that each row has start and end dates
+#' @param data Input data.frame that each row has start and end dates
 #' @param start Record start date column (unquoted)
 #' @param end Record end date column (unquoted)
 #' @param len An integer, the interval that would be used to divide the record duration
@@ -19,7 +19,7 @@
 #'
 #' # divide period into segments (multiple rows per period)
 #' df_seg <- cut_period(
-#'   dat = df, start = start_date, end = end_date,
+#'   data = df, start = start_date, end = end_date,
 #'   len = 30, .dt_trans = lubridate::ymd
 #' )
 #'
@@ -28,20 +28,25 @@
 #'   breaks = c(0, 1, 2, Inf),
 #'   labels = c("< 1 month", "1 - 2 months", "Remainder")
 #' )
-cut_period <- function(dat, start, end, len, unit = c("day", "week", "month", "quarter", "year"), .dt_trans = NULL) {
+cut_period <- function(data, start, end, len, unit = c("day", "week", "month", "quarter", "year"), .dt_trans = NULL) {
   # input checks
-  stopifnot(is.data.frame(dat))
+  stopifnot(is.data.frame(data))
+
+  err <- data %>%
+    dplyr::filter({{ start }} > {{ end }}) %>%
+    nrow()
+  if (err > 0) stop("Some start date is later than end date.")
 
   unit <- rlang::arg_match0(unit, c("day", "week", "month", "quarter", "year"))
 
   new_cols <- c("segment_start", "segment_end", "segment_id")
-  dat <- dat %>% dplyr::rename_with(~ paste(.x, "og", sep = "_", recycle0 = TRUE), dplyr::any_of(new_cols))
+  data <- data %>% dplyr::rename_with(~ paste(.x, "og", sep = "_", recycle0 = TRUE), dplyr::any_of(new_cols))
 
   if (!is.null(.dt_trans)) {
-    dat <- dat %>% dplyr::mutate(dplyr::across(c({{ start }}, {{ end }}), .dt_trans))
-  } else if (any(!lubridate::is.Date(dplyr::pull(dat, {{ start }})), !lubridate::is.Date(dplyr::pull(dat, {{ end }})))) stop("The class of start/end is not Date. Supply a function such as lubridate::ymd with the .dt_trans argument to transform.")
+    data <- data %>% dplyr::mutate(dplyr::across(c({{ start }}, {{ end }}), .dt_trans))
+  } else if (any(!lubridate::is.Date(dplyr::pull(data, {{ start }})), !lubridate::is.Date(dplyr::pull(data, {{ end }})))) stop("The class of start/end is not Date. Supply a function such as lubridate::ymd with the .dt_trans argument to transform.")
 
-  dat %>%
+  data %>%
     dplyr::mutate(
       segment_start = purrr::map2({{ start }}, {{ end }}, ~ seq(.x, .y, by = paste(len, unit))),
       segment_end = purrr::map2(.data$segment_start, {{ end }}, ~ .x %>% dplyr::lead(, default = .y + lubridate::days(1)) - lubridate::days(1)),
