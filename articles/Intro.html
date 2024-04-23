@@ -495,7 +495,11 @@ outputs from different calls.</p>
 <span><span class="co">#&gt; 4 SUD hosp  29       3 2016-05-27  F130    F164     999</span></span>
 <span><span class="co">#&gt; 5 SUD hosp  10       4 2019-09-12  F138    F120     999</span></span>
 <span><span class="co">#&gt; 6 SUD hosp  30       5 2019-12-18  F192    F100     999</span></span></code></pre></div>
-<p>We row bind the results with <code><a href="../reference/bind_source.html">bind_source()</a></code>.</p>
+<p>At this point, the result from the claim database (result[[1]]) has
+not been collected locally. You could collect it manually, do further
+filtering, and then combine with the result from hospitalization data in
+any way you want. If you just need a simple row bind, use
+[bind_source()] with convenient naming feature.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bind_source.html">bind_source</a></span><span class="op">(</span><span class="va">result_list</span>,</span>
 <span>  <span class="co"># output_name = c(names in the list elements)</span></span>
