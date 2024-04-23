@@ -21,7 +21,7 @@ test_that("within only works", {
   expect_error(restrict_dates(db, clnt_id, dates, n, within = within, mode = "filter"), "uid")
   # also test mode
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid) %>% dplyr::collect() %>%
-    dplyr::filter(flag_restrict_dates > 0)
+    dplyr::filter(flag_restrict_date > 0)
   expect_setequal(output_df$clnt_id, ans_id)
 })
 
@@ -42,8 +42,8 @@ test_that("align works", {
   n <- 2
   db <- dbplyr::memdb_frame(clnt_id = 1, dates = x, uid = 1:length(x))
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, align = "left") %>% dplyr::collect()
-  expect_setequal(output_df$flag_restrict_dates, as.numeric(ans))
+  expect_setequal(output_df$flag_restrict_date, as.numeric(ans))
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, align = "right", mode = "filter") %>% dplyr::collect()
   ans_right <- c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
-  expect_setequal(output_df$dates[output_df$flag_restrict_dates == 1] %>% as.Date(origin = "1970-01-01"), x[ans_right])
+  expect_setequal(output_df$dates[output_df$flag_restrict_date == 1] %>% as.Date(origin = "1970-01-01"), x[ans_right])
 })

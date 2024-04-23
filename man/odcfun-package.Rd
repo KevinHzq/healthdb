@@ -4,9 +4,9 @@
 \name{odcfun-package}
 \alias{odcfun}
 \alias{odcfun-package}
-\title{odcfun: Using Administrative Database for Epidemiology}
+\title{odcfun: Tools for working with healthcare database}
 \description{
-Designed for identifying disease cases from administrative database for epidemiological studies. The implementation is based on 'dbplyr' with a focuse on code readability and re-usability.
+A set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by 'stringr' style regular expression and using 'LIKE' operator with multiple patterns in a vector. The implementation is based on 'dbplyr' with focuses on code readability and re-usability. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definitions; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.
 }
 \seealso{
 Useful links:

@@ -12,7 +12,7 @@
 #' @param align Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left".
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
-#' @seealso [restrict_dates()]
+#' @seealso [restrict_date()]
 #'
 #' @return Single or a vector of logical for whether there is any draw from x satisfied the conditions
 #' @export
@@ -21,12 +21,12 @@
 #' dates_of_records <- sample(seq(as.Date("2015-01-01"), as.Date("2021-12-31"), 7), 10)
 #'
 #' # whether there is any 3 records at least 30 days apart within 2 years
-#' if_dates(dates_of_records, n = 3, apart = 30, within = 365 * 2)
+#' if_date(dates_of_records, n = 3, apart = 30, within = 365 * 2)
 #'
 #' # specified either apart or within or both
-#' if_dates(dates_of_records, n = 2, within = 365)
+#' if_date(dates_of_records, n = 2, within = 365)
 #'
-if_dates <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c("left", "right"), dup.rm = TRUE, ...) {
+if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c("left", "right"), dup.rm = TRUE, ...) {
   if (all(is.null(apart), is.null(within))) stop("apart and within cannot both be NULL")
 
   # stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
@@ -102,3 +102,6 @@ if_dates <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = 
     }
   }
 }
+
+#' @aliases if_date
+if_dates <- if_date

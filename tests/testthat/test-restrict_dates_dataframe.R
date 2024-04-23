@@ -7,7 +7,7 @@ test_that("basic use works", {
   ans_id <- test_apart_within(df, n, apart, within)
   expect_setequal(output_df$clnt_id, ans_id)
   # also test mode
-  output_df <- restrict_dates(df, clnt_id, dates, n, apart, within) %>% dplyr::filter(flag_restrict_dates == 1)
+  output_df <- restrict_dates(df, clnt_id, dates, n, apart, within) %>% dplyr::filter(flag_restrict_date == 1)
   expect_setequal(output_df$clnt_id, ans_id)
 })
 
@@ -30,9 +30,9 @@ test_that("align works", {
   n <- 2
   df <- data.frame(clnt_id = 1, dates = x)
   output_df <- restrict_dates(df, clnt_id, dates, n, apart, within, align = "left", mode = "flag")
-  expect_equal(output_df$flag_restrict_dates, as.numeric(ans))
+  expect_equal(output_df$flag_restrict_date, as.numeric(ans))
   output_df <- restrict_dates(df, clnt_id, dates, n, apart, within, align = "right", mode = "filter")
   ans_right <- c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
   expect_equal(output_df$dates, x)
-  expect_setequal(output_df$dates[output_df$flag_restrict_dates == 1], x[ans_right])
+  expect_setequal(output_df$dates[output_df$flag_restrict_date == 1], x[ans_right])
 })

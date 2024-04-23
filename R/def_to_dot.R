@@ -47,8 +47,8 @@ def_to_dot <- function(def, add_aux = TRUE) {
   }
   if (any(c("apart", "within") %in% names(def_wide_flags))) {
     def_wide_flags <- def_wide_flags %>%
-      dplyr::mutate(dplyr::across(dplyr::any_of(c("apart", "within")), function(x) purrr::map_chr(x, ~ dplyr::if_else(!is.null(unlist(.)), "flag_restrict_dates", NA_character_))),
-        flag_restrict_dates = data.table::fcoalesce(dplyr::pick(dplyr::any_of(c("apart", "within"))))
+      dplyr::mutate(dplyr::across(dplyr::any_of(c("apart", "within")), function(x) purrr::map_chr(x, ~ dplyr::if_else(!is.null(unlist(.)), "flag_restrict_date", NA_character_))),
+        flag_restrict_date = data.table::fcoalesce(dplyr::pick(dplyr::any_of(c("apart", "within"))))
       )
   }
 

@@ -21,7 +21,7 @@ test_that("basic use works", {
     clnt_id = c("clnt_id", "clnt_id"),
     date_var = c("serv_date", "sep_date"),
     #flag_restrict_n = c(NA, NA),
-    flag_restrict_dates = c("flag_restrict_dates", NA)
+    flag_restrict_date = c("flag_restrict_date", NA)
   )
   expect_equal(out_list, ans_list)
   # test def_fn warning
@@ -52,7 +52,7 @@ test_that("presence of mode works", {
     clnt_id = c("clnt_id", "clnt_id"),
     date_var = c("serv_date", "sep_date"),
     flag_restrict_n = c("flag_restrict_n", NA),
-    flag_restrict_dates = c("flag_restrict_dates", "flag_restrict_dates")
+    flag_restrict_date = c("flag_restrict_date", "flag_restrict_date")
   )
   expect_equal(out_list, ans_list)
 })
@@ -80,7 +80,7 @@ test_that("one date_var works", {
     clnt_id = c("clnt_id", "clnt_id"),
     date_var = c("serv_date", NA),
     flag_restrict_n = c("flag_restrict_n", NA),
-    flag_restrict_dates = c(NA, "flag_restrict_dates")
+    flag_restrict_date = c(NA, "flag_restrict_date")
   )
   expect_equal(out_list, ans_list)
 })
@@ -122,7 +122,7 @@ test_that("two def works", {
     clnt_id = c("clnt_id", "clnt_id", "clnt_id", "clnt_id"),
     date_var = c("serv_date", "sep_date", "serv_date", "sep_date"),
     flag_restrict_n = c(NA, NA, "flag_restrict_n", NA),
-    flag_restrict_dates = c(NA, NA, NA, "flag_restrict_dates")
+    flag_restrict_date = c(NA, NA, NA, "flag_restrict_date")
   )
   expect_equal(out_list, ans_list)
 })

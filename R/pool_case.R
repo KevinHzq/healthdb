@@ -56,7 +56,7 @@
 #' # pool results from src1 and src2 together at client level
 #' sud_pooled <- pool_case(sud_by_src, sud_def, output_lvl = "clnt")
 pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c("all", "has_valid", "n_per_clnt"), ...) {
-  . <- clnt_id <- date_var <- flag_restrict_dates <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
+  . <- clnt_id <- date_var <- flag_restrict_date <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
 
   output_lvl <- rlang::arg_match0(output_lvl, c("raw", "clnt"))
   include_src <- rlang::arg_match0(include_src, c("all", "has_valid", "n_per_clnt"), )
@@ -81,12 +81,12 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   # flag calculation
   # if not flag, assume 1
   has_n_flag <- "flag_restrict_n" %in% names(dot)
-  has_date_flag <- "flag_restrict_dates" %in% names(dot)
+  has_date_flag <- "flag_restrict_date" %in% names(dot)
 
   if (has_date_flag) {
     bind_data <- bind_data %>%
-      dplyr::mutate(flag_valid_record = flag_restrict_dates)
-    fill_src <- def$src_labs[which(is.na(dot[["flag_restrict_dates"]]))]
+      dplyr::mutate(flag_valid_record = flag_restrict_date)
+    fill_src <- def$src_labs[which(is.na(dot[["flag_restrict_date"]]))]
   } else if (has_n_flag) {
     bind_data <- bind_data %>%
       dplyr::mutate(flag_valid_record = flag_restrict_n)

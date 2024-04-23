@@ -1,8 +1,9 @@
 #' Identify rows with a match
 #'
 #' @md
+#' @export
 #' @description
-#' Filter rows which values satisfy the specified conditions. The functionality is identical to [dplyr::filter()] combined with [dplyr::if_any()] or [dplyr::if_all()], but it used the 'data.table' package `r vignette("datatable-intro", package = "data.table")` for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
+#' Filter rows which values satisfy the specified conditions. The functionality is identical to [dplyr::filter()] combined with [dplyr::if_any()] or [dplyr::if_all()], but it used the 'data.table' package `vignette("datatable-intro", package = "data.table")` for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
 #'
 #' @param data Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)
 #' @param vars An expression passing to [dplyr::select()]. It can be quoted/unquoted column names, or helper functions, such as [dplyr::starts_with()].
@@ -25,27 +26,30 @@
 #' @param ... For remote table method only. Additional arguments passing to [glue::glue_sql()] for parameterized queries.
 #'
 #' @return A data.frame or tbl_sql object depending on the input.
-#' @export
 #'
 #' @examples
 #' #applying to data.frame; both sepal length and width in range 3-5
-#' identify_rows(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
+#' identify_row(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
 #'
 #' #applying to remote table; species starts with se or ends with ca
 #' iris_db <- dbplyr::memdb_frame(iris)
-#' identify_rows(iris_db, Species, "like", c("se%", "%ca"))
+#' identify_row(iris_db, Species, "like", c("se%", "%ca"))
 #'
 #' #using glue_sql to write the WHERE clause
 #' #use {`vars`} to refer to the variables selected by vars
 #' #supply additional values required in the query through the ...
 #' #note that if you use LIKE here, you cannot supply multiple patterns in what
-#' identify_rows(iris_db, Species, "glue_sql", "{`vars`} LIKE {what}", what = "se%")
+#' identify_row(iris_db, Species, "glue_sql", "{`vars`} LIKE {what}", what = "se%")
 #'
 #' #you could also set query parameters in the global environment
 #' what <- c("setosa", "virginica")
-#' identify_rows(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
-identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
+#' identify_row(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
+identify_row <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
   rlang::check_required(vars)
   rlang::check_required(vals)
   UseMethod("identify_rows")
 }
+
+#' @rdname identify_row
+#' @aliases identify_row
+identify_rows <- identify_row

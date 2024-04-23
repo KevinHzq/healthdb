@@ -11,7 +11,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  flag_restrict_dates <- temp_nm_keep_max <- temp_nm_keep_cum <- temp_nm_diff <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_diff <- temp_nm_drank_gap <- NULL
+  flag_restrict_date <- temp_nm_keep_max <- temp_nm_keep_cum <- temp_nm_diff <- temp_nm_gap <- temp_nm_drank <- temp_nm_drank_diff <- temp_nm_drank_gap <- NULL
 
   n <- as.integer(n)
 
@@ -88,7 +88,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         # the translation for any() failed on SQL server again
         # temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
         temp_nm_drank_gap = abs(temp_nm_drank_diff - temp_nm_drank),
-        flag_restrict_dates = dplyr::case_when(
+        flag_restrict_date = dplyr::case_when(
           temp_nm_gap == 0L ~ 0L,
           temp_nm_gap <= within & temp_nm_drank_gap == n - 1L ~ 1L,
           is.na(temp_nm_gap) ~ 0L,
@@ -102,7 +102,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     #   switch(mode,
     #     "flag" = {
     #       keep <- keep %>%
-    #         dplyr::mutate(flag_restrict_dates = temp_nm_keep_cum)
+    #         dplyr::mutate(flag_restrict_date = temp_nm_keep_cum)
     #     },
     #     "filter" = {
     #       keep <- keep %>% dplyr::filter(temp_nm_keep_cum > 0L)
@@ -114,7 +114,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     #   switch(mode,
     #     "flag" = {
     #       keep <- keep %>%
-    #         dplyr::mutate(flag_restrict_dates = temp_nm_keep_max)
+    #         dplyr::mutate(flag_restrict_date = temp_nm_keep_max)
     #     },
     #     "filter" = {
     #       keep <- keep %>% dplyr::filter(temp_nm_keep_max >= 1L)
@@ -124,7 +124,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     #browser()
 
     if (mode == "filter") {
-      keep <- keep %>% dplyr::filter(max(flag_restrict_dates, na.rm = TRUE) > 0L)
+      keep <- keep %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0L)
     }
 
     keep <- keep %>%

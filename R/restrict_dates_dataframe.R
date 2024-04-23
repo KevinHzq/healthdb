@@ -9,14 +9,14 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # place holder for temp var names
-  flag_restrict_dates <- temp.nm_keep <- temp.nm_keep_cum <- NULL
+  flag_restrict_date <- temp.nm_keep <- temp.nm_keep_cum <- NULL
 
   # see if_dates for detail
   keep <- dplyr::collect(data) %>%
     dplyr::group_by(.data[[clnt_id]]) %>%
     dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
     dplyr::mutate(temp.nm_keep = if_dates(.data[[date_var]], n, apart, within, detail = TRUE, align, dup.rm, ...),
-                  flag_restrict_dates = as.numeric(temp.nm_keep))
+                  flag_restrict_date = as.numeric(temp.nm_keep))
 
   # if (strict_start) {
   #   keep <- keep %>%
@@ -24,7 +24,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   #   switch(mode,
   #     "flag" = {
   #       keep <- keep %>%
-  #         dplyr::mutate(flag_restrict_dates = temp.nm_keep_cum)
+  #         dplyr::mutate(flag_restrict_date = temp.nm_keep_cum)
   #     },
   #     "filter" = {
   #       keep <- keep %>% dplyr::filter(temp.nm_keep_cum %>% as.logical())
@@ -34,17 +34,17 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   #   switch(mode,
   #     "flag" = {
   #       keep <- keep %>%
-  #         dplyr::mutate(flag_restrict_dates = as.numeric(temp.nm_keep))
+  #         dplyr::mutate(flag_restrict_date = as.numeric(temp.nm_keep))
   #     },
   #     "filter" = {
   #       keep <- keep %>% dplyr::filter(temp.nm_keep)
   #     }
   #   )
   # }
-  n_kept <- keep %>% dplyr::filter(flag_restrict_dates == 1) %>% dplyr::n_groups()
+  n_kept <- keep %>% dplyr::filter(flag_restrict_date == 1) %>% dplyr::n_groups()
 
   if (mode == "filter") {
-    keep <- keep %>% dplyr::filter(max(flag_restrict_dates) > 0)
+    keep <- keep %>% dplyr::filter(max(flag_restrict_date) > 0)
   }
 
   keep <- keep %>%
