@@ -72,11 +72,11 @@
 
 
 <dt>vars</dt>
-<dd><p>An expression passing to <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>. It can be Quoted/unquoted column names, or helper functions, such as <code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::starts_with()</a></code>.</p></dd>
+<dd><p>An expression passing to <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>. It can be quoted/unquoted column names, or helper functions, such as <code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::starts_with()</a></code>.</p></dd>
 
 
 <dt>icd_ver</dt>
-<dd><p>One of c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits"). Specify the ICD code version used in <code>data</code>. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (<a href="http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS</a>).</p></dd>
+<dd><p>One of <code>c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")</code>. Specify the ICD code version used in <code>data</code>. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (<a href="http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS</a>).</p></dd>
 
 
 <dt>clnt_id</dt>
@@ -88,7 +88,7 @@
 
 
 <dt>sum_by</dt>
-<dd><p>One of c("row", "clnt"). The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by <code>clnt_id</code>. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.</p></dd>
+<dd><p>One of "row" or "clnt". The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by <code>clnt_id</code>. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.</p></dd>
 
 
 <dt>excl</dt>
@@ -137,7 +137,7 @@
 </ol></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>$1:Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.</p>
+    <p>Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.</p>
     </div>
 
     <div class="section level2">
