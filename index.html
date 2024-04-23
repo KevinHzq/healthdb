@@ -68,9 +68,10 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of odcfun is to implement disease/event identification algorithms from administrative database for epidemiological studies. The implementation focused on code readability and re-usability.</p>
+<p>The goal of odcfun is to provide a set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by ‘stringr’ style regular expression and using ‘LIKE’ operator with multiple patterns in a vector. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definition; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.</p>
 <p>Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.</p>
-<p>This package leverages <code>dbplyr</code>, particularly its ability to chain subqueries, in order to implement a common disease definition as one-shot big query. Common definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span.</p>
+<p>This package leverages <code>dbplyr</code>, particularly its ability to chain subqueries, in order to implement a common disease definition as a one-shot big query. Outputs are fully compatible with <code>dplyr</code> functions.</p>
+<p>Common disease definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span. See below for an example of implementing such case definition.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -82,7 +83,6 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
 <p>Case definition: One or more hospitalization with a substance use disorder (SUD) diagnostic code, OR Two or more physician claims with a substance use disorder diagnostic code within one year.</p>
 <p>We are going to implement this definition. First, let’s make a demo data sets for the two sources:</p>
 <p>Physician claims</p>
@@ -97,7 +97,7 @@
 <span><span class="co"># note that in-memory SQLite database stores dates as numbers</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:   SQL [6 x 6]</span></span>
-<span><span class="co">#&gt; # Database: sqlite 3.43.2 [:memory:]</span></span>
+<span><span class="co">#&gt; # Database: sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
 <span><span class="co">#&gt; 1    51       1 16660 999   999     999    </span></span>
@@ -125,7 +125,7 @@
 <p>Identify rows contains the target codes in the claim database</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result1</span> <span class="op">&lt;-</span> <span class="va">claim_db</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/identify_row.html">identify_rows</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="reference/identify_row.html">identify_row</a></span><span class="op">(</span></span>
 <span>vars <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"diagx_"</span><span class="op">)</span>,</span>
 <span>match <span class="op">=</span> <span class="st">"start"</span>,</span>
 <span>vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">291</span><span class="op">:</span><span class="fl">292</span>, <span class="fl">303</span><span class="op">:</span><span class="fl">305</span><span class="op">)</span></span>
@@ -152,7 +152,7 @@
 <span><span class="co">#&gt; Apply restriction that each client must have at least 2 records with distinct dates. Clients/groups whichdid not meetthe condition were excluded.</span></span>
 <span><span class="va">result2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:     SQL [6 x 7]</span></span>
-<span><span class="co">#&gt; # Database:   sqlite 3.43.2 [:memory:]</span></span>
+<span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt; # Ordered by: dates</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;</span></span>
@@ -166,7 +166,7 @@
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result3</span> <span class="op">&lt;-</span> <span class="va">result2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">restrict_dates</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">result3</span> <span class="op">&lt;-</span> <span class="va">result2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/restrict_date.html">restrict_date</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>,</span>
 <span>  date_var <span class="op">=</span> <span class="va">dates</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -179,16 +179,16 @@
 <span><span class="co">#&gt; Apply restriction that each client must have 2 records that were  within 365 days. Records that met the condition were flagged.</span></span>
 <span><span class="va">result3</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:     SQL [6 x 8]</span></span>
-<span><span class="co">#&gt; # Database:   sqlite 3.43.2 [:memory:]</span></span>
+<span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt; # Ordered by: dates, uid</span></span>
-<span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_dates</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;               &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    35       7 16810 2913  2923    999                   1                   1</span></span>
-<span><span class="co">#&gt; 2    22       7 16897 3056  2917    999                   1                   1</span></span>
-<span><span class="co">#&gt; 3    47       7 17096 3033  3051    3036                  1                   1</span></span>
-<span><span class="co">#&gt; 4    10       7 17250 2923  3057    999                   1                   0</span></span>
-<span><span class="co">#&gt; 5    41      10 16954 3033  305     2929                  1                   0</span></span>
-<span><span class="co">#&gt; 6    44      10 17788 999   304     292                   1                   0</span></span></code></pre></div>
+<span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
+<span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;              &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1    35       7 16810 2913  2923    999                   1                  1</span></span>
+<span><span class="co">#&gt; 2    22       7 16897 3056  2917    999                   1                  1</span></span>
+<span><span class="co">#&gt; 3    47       7 17096 3033  3051    3036                  1                  1</span></span>
+<span><span class="co">#&gt; 4    10       7 17250 2923  3057    999                   1                  0</span></span>
+<span><span class="co">#&gt; 5    41      10 16954 3033  305     2929                  1                  0</span></span>
+<span><span class="co">#&gt; 6    44      10 17788 999   304     292                   1                  0</span></span></code></pre></div>
 </li>
 <li><p>Repeat these steps for hospitalization and row bind the results.</p></li>
 </ol>
@@ -230,6 +230,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/KevinHzq/odcfun?branch=master" class="external-link"><img src="https://codecov.io/gh/KevinHzq/odcfun/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
