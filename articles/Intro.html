@@ -86,7 +86,7 @@
 epidemiological studies. The implementation focused on code readability
 and re-usability.</p></li>
 <li><p>Interactive functions (e.g., <code><a href="../reference/identify_rows.html">identify_rows()</a></code>,
-<code><a href="../reference/exclude.html">exclude()</a></code>, <code><a href="../reference/fetch_vars.html">fetch_vars()</a></code>) based on filter and
+<code><a href="../reference/exclude.html">exclude()</a></code>, <code><a href="../reference/fetch_var.html">fetch_var()</a></code>) based on filter and
 joins from dplyr with tweaks that fix SQL translation or add features
 that are not natively support by SQL. They also work for local
 data.frame, and some use <code>data.table</code> package to speed up
@@ -330,7 +330,7 @@ multiple <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"
 <span></span>
 <span><span class="co">#note that keys must be present in all tables</span></span>
 <span><span class="va">result_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/fetch_vars.html">fetch_vars</a></span><span class="op">(</span>keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">clnt_id</span>, <span class="va">year</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/fetch_var.html">fetch_var</a></span><span class="op">(</span>keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">clnt_id</span>, <span class="va">year</span><span class="op">)</span>,</span>
 <span>             linkage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>               <span class="co"># |clnt_id means matching on clnt_id only</span></span>
 <span>               <span class="va">age_tab</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span><span class="op">|</span><span class="va">clnt_id</span>,</span>
