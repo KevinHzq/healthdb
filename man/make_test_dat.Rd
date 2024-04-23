@@ -39,7 +39,7 @@ make_test_dat(
 \item{type}{Output type, "data.frame" or "database".}
 }
 \value{
-A data.frame or remote table from `dbplyr`.
+A data.frame or remote table from 'dbplyr'.
 }
 \description{
 Make a toy data set for testing and demo. This is for internal use purpose and not intended to be called by users.

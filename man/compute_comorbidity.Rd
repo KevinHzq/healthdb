@@ -17,15 +17,15 @@ compute_comorbidity(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
 
-\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be Quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
 
-\item{icd_ver}{One of c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits"). Specify the ICD code version used in \code{data}. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).}
+\item{icd_ver}{One of \code{c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")}. Specify the ICD code version used in \code{data}. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{sum_by}{One of c("row", "clnt"). The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by \code{clnt_id}. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.}
+\item{sum_by}{One of "row" or "clnt". The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by \code{clnt_id}. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.}
 
 \item{excl}{A character vector of disease categories labels that should be excluded in the total score calculation. This is useful when some of the categories are the exposure/outcome of interest, and the goal is to measure comorbidity excluding these disease. See detail for a list of the categories and labels.}
 }
@@ -98,5 +98,5 @@ compute_comorbidity(df,
 )
 }
 \references{
-${1:Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.}
+Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.
 }

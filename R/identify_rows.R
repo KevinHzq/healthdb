@@ -2,25 +2,25 @@
 #'
 #' @md
 #' @description
-#' Filter rows which values satisfy the specified conditions. The functionality is identical to [dplyr::filter()] combined with [dplyr::if_any()] or dplyr::if_all(), but it used the `data.table` package `vignette("datatable-intro", package = "data.table")` for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often have no regex and LIKE with multiple patterns support.
+#' Filter rows which values satisfy the specified conditions. The functionality is identical to [dplyr::filter()] combined with [dplyr::if_any()] or [dplyr::if_all()], but it used the 'data.table' package `r vignette("datatable-intro", package = "data.table")` for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
 #'
 #' @param data Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)
-#' @param vars An expression passing to [dplyr::select()]. It can be Quoted/unquoted column names, or helper functions, such as [dplyr::starts_with()].
+#' @param vars An expression passing to [dplyr::select()]. It can be quoted/unquoted column names, or helper functions, such as [dplyr::starts_with()].
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
-#'  - "in" ~ var %in% vals (This is default)
-#'  - "regex" ~ var data.table::`%like%` vals. For remote tables, unique values in vars are collected locally before matching (may be slow).
-#'  - "like" ~ stringr::str_like(var, vals). For remote tables, WHERE var LIKE val.
-#'  - "start" ~ same as regex or LIKE with modified vals, e.g., "^val1|^val2" or "va1%|val2%"
-#'  - "between" ~ dplyr::between(var, val1, val2)
-#'  - "glue_sql" ~ For remote table only, this gives full control of the WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
+#'  - "in": var %in% vals (This is default)
+#'  - "regex": stringr::str_detect(var, vals). For remote tables, unique values in vars are collected locally before matching (may be slow).
+#'  - "like": stringr::str_like(var, vals). For remote tables, WHERE var LIKE val.
+#'  - "start": same as regex or LIKE with modified vals, e.g., "^val1|^val2" or "va1%|val2%"
+#'  - "between": dplyr::between(var, val1, val2)
+#'  - "glue_sql": For remote table only, this gives full control of the WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
 #' @param vals Depending on `match`, it takes different input:
-#'  - "in" ~ a vector of values (numeric/character/Date)
-#'  - "start" ~ a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end
-#'  - "regex"/"like" ~ a string of the expression
-#'  - "between" ~ a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
-#'  - "glue_sql" ~ a string of the part of query after WHERE, which will be passed to [glue::glue_sql()]. See examples in [glue::glue_sql()] for detail.
+#'  - "in": a vector of values (numeric/character/Date)
+#'  - "start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end
+#'  - "regex"/"like": a string of the expression
+#'  - "between": a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
+#'  - "glue_sql": a string of the part of query after WHERE, which will be passed to [glue::glue_sql()]. See examples in [glue::glue_sql()] for detail.
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
-#' @param verbose A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
+#' @param verbose A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #' @param query_only A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.
 #' @param ... For remote table method only. Additional arguments passing to [glue::glue_sql()] for parameterized queries.
 #'

@@ -47,7 +47,7 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
     "regex" = {
       match_str <- paste0(vals, collapse = "|")
       match_msg <- "satisfied regular expression:"
-      matched_vals <- all_val[data.table::like(all_val, match_str)]
+      matched_vals <- all_val[stringr::str_detect(all_val, match_str)]
     },
     "like" = {
       match_str <- paste0(vals, collapse = "|")

@@ -1,13 +1,14 @@
 #' Interpret if n dates drawn from a vector could be some days apart within some years
 #'
+#' @md
 #' @description
-#' Given a vector of dates x, interpret if there could be at least one set of n elements taken from x satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations in x.
+#' Given a vector of dates x, interpret if there could be at least one set of n elements taken from x satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations in x. This function does not work with remote table input.
 #'
 #' @param x A character or Date vector
 #' @param n An integer for the size of a draw
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
-#' @param detail Logical for whether return result break down by each element, e.g., if periods of length 'within' starting/ending at each element satisfy the condition.The default is FALSE, which returns one logical summarized by any().
+#' @param detail Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any().
 #' @param align Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left".
 #' @param dup.rm Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.

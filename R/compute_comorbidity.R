@@ -5,8 +5,8 @@
 #' This function computes unweighted Elixhauser Comorbidity Index for both data.frame and remote table input. The ICD codes used to identify the 31 disease categories is from Quan et al. (2005).
 #'
 #' @inheritParams define_case
-#' @param icd_ver One of c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits"). Specify the ICD code version used in `data`. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).
-#' @param sum_by One of c("row", "clnt"). The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by `clnt_id`. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.
+#' @param icd_ver One of `c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")`. Specify the ICD code version used in `data`. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit data (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).
+#' @param sum_by One of "row" or "clnt". The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by `clnt_id`. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.
 #' @param excl A character vector of disease categories labels that should be excluded in the total score calculation. This is useful when some of the categories are the exposure/outcome of interest, and the goal is to measure comorbidity excluding these disease. See detail for a list of the categories and labels.
 #'
 #' @details
@@ -49,7 +49,7 @@
 #' @return A data.frame or remote table with binary indicators for each categories as columns.
 #' @export
 #'
-#' @references ${1:Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.}
+#' @references Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.
 #' @examples
 #' # make ICD-9 toy data
 #' df <- data.frame(

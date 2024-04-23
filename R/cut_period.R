@@ -1,14 +1,15 @@
 #' Cut the time period in one row into multiple rows by interval
 #'
-#' @description This function is useful for cutting time ranges into levels for overlap joins.
-#' @param dat Input dataframe that each row has start and end dates
+#' @md
+#' @description This function is for cutting time periods into segments, which could be useful for subsequent overlap joins. Each original period (per row) will be expanded to multiple rows by weeks, months, etc. Only data.frame input is accepted as the output size is greater than the input. Thus, remote tables should be collected before running this function for optimal performance.
+#' @param dat Input data.frame that each row has start and end dates
 #' @param start Record start date column (unquoted)
 #' @param end Record end date column (unquoted)
 #' @param len An integer, the interval that would be used to divide the record duration
-#' @param unit One of "day" (default), "week", "month", "quarter, or "year" used in combination of len to specify the time length of the interval.
-#' @param .dt_trans Function to transform start/end, such as lubridate::ymd. Default is NULL.
+#' @param unit One of "day" (default), "week", "month", "quarter, or "year" used in combination of `len` to specify the time length of the interval.
+#' @param .dt_trans Function to transform start/end, such as [lubridate::ymd()]. Default is NULL.
 #'
-#' @return Data frame that each row is now a segment of the period defined by (start, end) in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.
+#' @return Data frame that each row is now a segment of the period defined by `c(start, end)` in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.
 #'
 #' @export
 #'
@@ -29,6 +30,8 @@
 #' )
 cut_period <- function(dat, start, end, len, unit = c("day", "week", "month", "quarter", "year"), .dt_trans = NULL) {
   # input checks
+  stopifnot(is.data.frame(dat))
+
   unit <- rlang::arg_match0(unit, c("day", "week", "month", "quarter", "year"))
 
   new_cols <- c("segment_start", "segment_end", "segment_id")

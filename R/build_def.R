@@ -1,7 +1,8 @@
 #' Build case definition function calls
 #'
+#' @md
 #' @description
-#' This function assembles function calls from the supplied functions, their required arguments, leaving the data argument empty for easy re-use of the definition calls with different data and batch execution (see [execute_def()] for detail). It is useful for defining multiple diseases/events across multiple sources.
+#' This function assembles function calls from the supplied functions and their required arguments, leaving the data argument empty for easy re-use of the definition calls with different data and batch execution (see [execute_def()] for detail). It is useful for defining multiple diseases/events across multiple sources.
 #'
 #'
 #' @param def_lab A single character label for the definition, e.g., some disease.

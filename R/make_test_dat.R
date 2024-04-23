@@ -15,7 +15,7 @@
 #' @param answer_id Column name for the indicator of how the row should be identified: any, all, and noise.
 #' @param type Output type, "data.frame" or "database".
 #'
-#' @return A data.frame or remote table from `dbplyr`.
+#' @return A data.frame or remote table from 'dbplyr'.
 #' @export
 #'
 #' @examples

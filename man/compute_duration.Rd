@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_duration.R
 \name{compute_duration}
 \alias{compute_duration}
-\title{Title Compute duration between two dates}
+\title{Compute duration between two dates}
 \usage{
 compute_duration(
   from,
@@ -11,7 +11,7 @@ compute_duration(
   unit = c("year", "day", "week", "month"),
   trans = FALSE,
   .transfn = lubridate::ymd,
-  verbose = TRUE,
+  verbose = getOption("odcfun.verbose"),
   ...
 )
 }
@@ -20,23 +20,23 @@ compute_duration(
 
 \item{to}{A character or Date vector for end dates.}
 
-\item{lower_brks}{A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).}
+\item{lower_brks}{A numeric vector for lower breaks passing to the base \code{\link[base:cut]{base::cut()}} function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are \code{c("<19", "19-24", "25-34", "35-44", "45-54", "55+")} for \code{lower_brks = c(0, 19, 25, 35, 45, 55)}. Default is NULL (no conversion).}
 
 \item{unit}{A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".}
 
-\item{trans}{A logical for whether transform both `from` and `to` with the `.transfn` function}
+\item{trans}{A logical for whether transform both \code{from} and \code{to} with the \code{.transfn} function}
 
-\item{.transfn}{A function for transforming the inputs. Default is [lubridate::ymd()].}
+\item{.transfn}{A function for transforming the inputs. Default is \code{\link[lubridate:ymd]{lubridate::ymd()}}.}
 
-\item{verbose}{A logical for whether print summary of the out and warning for missing values.}
+\item{verbose}{A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
 
-\item{...}{Additional arguments passing to [cut()].}
+\item{...}{Additional arguments passing to \code{\link[base:cut]{base::cut()}}.}
 }
 \value{
 A numeric or factor vector of the duration.
 }
 \description{
-This function is meant to be for data frame input only and used with [dplyr::mutate()] to compute age or duration between two character or Date columns.
+This function is meant to be for data frame input only and used with \code{\link[dplyr:mutate]{dplyr::mutate()}} to compute age or duration between two character or Date columns. If a vector of breaks is given, the output will be converted to factor with labels generated automatically.
 }
 \examples{
 # toy data

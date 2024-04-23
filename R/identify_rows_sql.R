@@ -55,7 +55,7 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
       dplyr::select("temp_val") %>%
       dplyr::distinct() %>%
       dplyr::pull("temp_val")
-    vals <- all_val[data.table::like(all_val, match_str)]
+    vals <- all_val[stringr::str_detect(all_val, match_str)]
     if (length(vals) > 1000) warning("More than 1,000 distinct values were matched by the regular expression. The query including such long list may fail to run. Try using SQL LIKE expression with match_type = 'like'.")
   }
 

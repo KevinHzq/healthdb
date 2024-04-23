@@ -7,17 +7,17 @@
 report_n(..., on, force_proceed = getOption("odcfun.force_proceed"))
 }
 \arguments{
-\item{...}{Data frames or remote tables (e.g., from dbplyr)}
+\item{...}{Data frames or remote tables (e.g., from 'dbplyr')}
 
 \item{on}{The column to report on. It must be present in all data sources.}
 
-\item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is TRUE to let user be aware of that the query execution may be slow. Use options(odcfun.force_proceed = FALSE) to suppress the prompt once and for all.}
+\item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options. Use \code{options(odcfun.force_proceed = FALSE)} to suppress the prompt once and for all.}
 }
 \value{
-A sequence of the number of distinct `on` for each data frames
+A sequence of the number of distinct \code{on} for each data frames
 }
 \description{
-This function is intended to mimic dplyr::n_distinct() for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study.
+This function is intended to mimic \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion steps. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study. It is also useful for inline reporting of Ns in a Rmarkdown document.
 }
 \examples{
 # some exclusions

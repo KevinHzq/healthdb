@@ -1,16 +1,17 @@
-#' Title Compute duration between two dates
+#' Compute duration between two dates
 #'
+#' @md
 #' @description
-#' This function is meant to be for data frame input only and used with [dplyr::mutate()] to compute age or duration between two character or Date columns.
+#' This function is meant to be for data frame input only and used with [dplyr::mutate()] to compute age or duration between two character or Date columns. If a vector of breaks is given, the output will be converted to factor with labels generated automatically.
 #'
 #' @param from A character or Date vector for start dates.
 #' @param to A character or Date vector for end dates.
-#' @param lower_brks A numeric vector for lower breaks passing to the base [cut()] function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are c("<19", "19-24", "25-34", "35-44", "45-54", "55+") for lower_brks = c(0, 19, 25, 35, 45, 55). Default is NULL (no conversion).
+#' @param lower_brks A numeric vector for lower breaks passing to the base [base::cut()] function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are `c("<19", "19-24", "25-34", "35-44", "45-54", "55+")` for `lower_brks = c(0, 19, 25, 35, 45, 55)`. Default is NULL (no conversion).
 #' @param unit A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".
 #' @param trans A logical for whether transform both `from` and `to` with the `.transfn` function
 #' @param .transfn A function for transforming the inputs. Default is [lubridate::ymd()].
-#' @param verbose A logical for whether print summary of the out and warning for missing values.
-#' @param ... Additional arguments passing to [cut()].
+#' @param verbose A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param ... Additional arguments passing to [base::cut()].
 #'
 #' @return A numeric or factor vector of the duration.
 #' @export
@@ -31,7 +32,7 @@
 #' df %>% dplyr::mutate(
 #'  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 #' )
-compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = TRUE, ...) {
+compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = getOption("odcfun.verbose"), ...) {
   #compute age with lubridate functions (more accurate than /365.25) and built-in transformations
   unit <- rlang::arg_match0(unit, c("year", "day", "week", "month"))
 

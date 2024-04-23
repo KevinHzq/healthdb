@@ -2,12 +2,12 @@
 % Please edit documentation in R/lookup.R
 \name{lookup}
 \alias{lookup}
-\title{Title Find value corresponding to input vector using a look-up table}
+\title{Find value corresponding to input vector using a look-up table}
 \usage{
 lookup(x, link, lu, verbose = getOption("odcfun.verbose"))
 }
 \arguments{
-\item{x}{A variable name in a data.frame; this function should be called inside mutate.}
+\item{x}{A variable name in a data.frame; this function should be called inside dplyr::mutate().}
 
 \item{link}{A formula in the form: name_of_x_in_lu ~ name_of_target_value. The left-hand-side can be omitted if x's name is also x in the look-up.}
 
@@ -19,7 +19,7 @@ lookup(x, link, lu, verbose = getOption("odcfun.verbose"))
 A vector of matched values.
 }
 \description{
-Title Find value corresponding to input vector using a look-up table
+Find value corresponding to input vector using a look-up table
 }
 \examples{
 

@@ -15,25 +15,25 @@ exclude(
 )
 }
 \arguments{
-\item{data}{Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`). A subset will be removed from this data.}
+\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)}). A subset will be removed from this data.}
 
-\item{excl}{Data frames or remote tables (e.g., from dbplyr). Rows/values present in it will be removed from `data` if there is a match. This will be passed to [dplyr::anti_join()] as the second argument.}
+\item{excl}{Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from \code{data} if there is a match. This will be passed to \code{\link[dplyr:filter-joins]{dplyr::anti_join()}} as the second argument.}
 
-\item{by}{Column names that should be matched by anti_join or [dplyr::join_by()] expressions. See anti_join's `by` argument for detail. Default NULL is the same as setdiff(data, excl).}
+\item{by}{Column names that should be matched by \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, or a expressions with \code{\link[dplyr:join_by]{dplyr::join_by()}}. See \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}'s \code{by} argument for detail. Default NULL is the same as \code{setdiff(data, excl)}.}
 
-\item{condition}{An expression that will be passed to [dplyr::filter()]. The rows that satisfy `condition` are those to be removed from `data`.}
+\item{condition}{An expression that will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}. The rows that satisfy \code{condition} are those to be removed from \code{data}.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
 
-\item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.}
+\item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from \code{data}, e.g., counting how many client IDs were removed. Default is NULL.}
 
-\item{...}{Additional arguments passing to [dplyr::filter()]/[dplyr::anti_join()] for finer control of matching, e.g., na action, by-group filtering, etc.}
+\item{...}{Additional arguments passing to \code{\link[dplyr:filter]{dplyr::filter()}}/\code{\link[dplyr:filter-joins]{dplyr::anti_join()}} for finer control of matching, e.g., na action, by-group filtering, etc.}
 }
 \value{
-A data frame or remote table that is a subset of `data`.
+A data frame or remote table that is a subset of \code{data}.
 }
 \description{
-This function combines [dplyr::anti_join()] and the opposite of [dplyr::filter()]. When the second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with the expression given via the `condition` argument, and the filter result would in turn be removed using [dplyr::setdiff()].
+This function combines \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, and negation of \code{\link[dplyr:filter]{dplyr::filter()}}. When a second data set is supplied through the \code{excl} argument, anti join would be performed; otherwise, \code{data} would be filtered with the expression given via the \code{condition} argument, and the filter result would in turn be removed using \code{\link[dplyr:setops]{dplyr::setdiff()}}.
 }
 \examples{
 # exclude with condition

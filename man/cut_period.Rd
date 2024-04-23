@@ -14,7 +14,7 @@ cut_period(
 )
 }
 \arguments{
-\item{dat}{Input dataframe that each row has start and end dates}
+\item{dat}{Input data.frame that each row has start and end dates}
 
 \item{start}{Record start date column (unquoted)}
 
@@ -22,15 +22,15 @@ cut_period(
 
 \item{len}{An integer, the interval that would be used to divide the record duration}
 
-\item{unit}{One of "day" (default), "week", "month", "quarter, or "year" used in combination of len to specify the time length of the interval.}
+\item{unit}{One of "day" (default), "week", "month", "quarter, or "year" used in combination of \code{len} to specify the time length of the interval.}
 
-\item{.dt_trans}{Function to transform start/end, such as lubridate::ymd. Default is NULL.}
+\item{.dt_trans}{Function to transform start/end, such as \code{\link[lubridate:ymd]{lubridate::ymd()}}. Default is NULL.}
 }
 \value{
-Data frame that each row is now a segment of the period defined by (start, end) in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.
+Data frame that each row is now a segment of the period defined by \code{c(start, end)} in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.
 }
 \description{
-This function is useful for cutting time ranges into levels for overlap joins.
+This function is for cutting time periods into segments, which could be useful for subsequent overlap joins. Each original period (per row) will be expanded to multiple rows by weeks, months, etc. Only data.frame input is accepted as the output size is greater than the input. Thus, remote tables should be collected before running this function for optimal performance.
 }
 \examples{
 # toy data

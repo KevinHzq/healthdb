@@ -28,7 +28,7 @@ define_case(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
 
-\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be Quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
 
 \item{match}{One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See \code{\link[=identify_rows]{identify_rows()}} for detail.}
 
@@ -40,25 +40,36 @@ define_case(
 
 \item{date_var}{Variable name (quoted/unquoted) for the dates to be interpreted.}
 
-\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw.}
+\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw. This option is only implemented for data.frame input.}
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{excl_vals}{Same as \code{vals} but groups with these values are going to be removed from the result.}
+\item{excl_vals}{Same as \code{vals} but clients/groups with these values are going to be removed from the result. This is intended for exclusion criteria of a case definition.}
 
-\item{excl_args}{A named list of arguments for the second \code{\link[=identify_rows]{identify_rows()}} call for \code{excl_vals}. If not supplied, \code{var}, \code{match} and \code{if_all} of the first call will be re-used.}
+\item{excl_args}{A named list of arguments passing to the second \code{\link[=identify_rows]{identify_rows()}} call for \code{excl_vals}. If not supplied, \code{var}, \code{match} and \code{if_all} of the first call will be re-used.}
 
-\item{keep}{One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default). Note that "first"/"last" should not be used with "flag" mode.}
+\item{keep}{One of:
+\itemize{
+\item "first" (keeping each client's earliest record),
+\item "last" (keeping the latest),
+\item and "all" (keeping all relevant records, default).
+\item Note that "first"/"last" should not be used with "flag" mode.
+}}
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
 
-\item{mode}{Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both \code{\link[=restrict_n]{restrict_n()}} AND \code{\link[=restrict_dates]{restrict_dates()}}. Default is "flag".}
+\item{mode}{Either:
+\itemize{
+\item "flag" - add new columns starting with "flag_" indicating if the client met the condition,
+\item or "filter" - remove clients that did not meet the condition from the data.
+\item This will be passed to both \code{\link[=restrict_n]{restrict_n()}} AND \code{\link[=restrict_dates]{restrict_dates()}}. Default is "flag".
+}}
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.}
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments, e.g., \code{mode}, passing to \code{\link[=restrict_dates]{restrict_dates()}}.}
 }
@@ -66,7 +77,7 @@ define_case(
 A subset of input data satisfied the specified case definition.
 }
 \description{
-This function is a composite of \code{\link[=identify_rows]{identify_rows()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_dates]{restrict_dates()}}. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) \%>\% exclude(identify_rows(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_dates(). Note that if date_var is supplied, n_per_clnt will be counted by distinct dates instead of number of records.
+This function is a composite of \code{\link[=identify_rows]{identify_rows()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_dates]{restrict_dates()}}. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: \code{identify_rows(vals) \%>\% exclude(identify_rows(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_dates()}. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if \code{date_var} is supplied, \code{n_per_clnt} will be counted by distinct dates instead of number of records.
 }
 \examples{
 sample_size <- 30

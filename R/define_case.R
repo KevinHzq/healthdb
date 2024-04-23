@@ -2,19 +2,26 @@
 #'
 #' @md
 #' @description
-#' This function is a composite of [identify_rows()], [exclude()], [restrict_n()], and [restrict_dates()]. It is aimed to implement case definition, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years, in one shot. The component functions are chained in the following order if all arguments were supplied (see the verbose output for what was done if some arguments are missing): identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates(). Note that if date_var is supplied, n_per_clnt will be counted by distinct dates instead of number of records.
+#' This function is a composite of [identify_rows()], [exclude()], [restrict_n()], and [restrict_dates()]. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: `identify_rows(vals) %>% exclude(identify_rows(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_dates()`. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if `date_var` is supplied, `n_per_clnt` will be counted by distinct dates instead of number of records.
 #'
 #' @inheritParams identify_rows
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_rows()] for detail.
 #' @param vals Depending on `match`, it takes different input. See [identify_rows()].
 #' @inheritParams restrict_n
 #' @inheritParams restrict_dates
-#' @param excl_vals Same as `vals` but groups with these values are going to be removed from the result.
-#' @param excl_args A named list of arguments for the second [identify_rows()] call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
-#' @param keep One of "first" (keeping each client's earliest record), "last" (keeping the latest), and "all" (keeping all relevant records, default). Note that "first"/"last" should not be used with "flag" mode.
-#' @param mode Either "flag" - add new columns starting with "flag_" indicating if the client met the condition, or "filter" - remove clients that did not meet the condition from the data. It will be passed to both [restrict_n()] AND [restrict_dates()]. Default is "flag".
+#' @param excl_vals Same as `vals` but clients/groups with these values are going to be removed from the result. This is intended for exclusion criteria of a case definition.
+#' @param excl_args A named list of arguments passing to the second [identify_rows()] call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of the first call will be re-used.
+#' @param keep One of:
+#' * "first" (keeping each client's earliest record),
+#' * "last" (keeping the latest),
+#' * and "all" (keeping all relevant records, default).
+#' * Note that "first"/"last" should not be used with "flag" mode.
+#' @param mode Either:
+#' * "flag" - add new columns starting with "flag_" indicating if the client met the condition,
+#' * or "filter" - remove clients that did not meet the condition from the data.
+#' * This will be passed to both [restrict_n()] AND [restrict_dates()]. Default is "flag".
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
+#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `mode`, passing to [restrict_dates()].
 #'
 #' @return A subset of input data satisfied the specified case definition.

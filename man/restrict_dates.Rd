@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrict_dates.R
 \name{restrict_dates}
 \alias{restrict_dates}
-\title{Removes groups failed to meet conditions based on dates}
+\title{Removes or flags groups failed to meet conditions based on dates}
 \usage{
 restrict_dates(
   data,
@@ -21,7 +21,7 @@ restrict_dates(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)}
+\item{data}{Data frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -29,29 +29,33 @@ restrict_dates(
 
 \item{n}{An integer for the size of a draw.}
 
-\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw.}
+\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw. This option is only implemented for data.frame input.}
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
 \item{uid}{Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.}
 
-\item{mode}{Either "flag" - add a new column 'flag_restrict_dates' indicating if a record met the condition (flag = 1 if the period starting/ending at the current record satisfied the apart-within condition), or "filter" - remove clients without any qualified record from the data. Default is "flag".}
+\item{mode}{Either:
+\itemize{
+\item "flag" - add a new column 'flag_restrict_dates' indicating if the condition was met (flag = 1 if the time period starting or ending at the current record satisfied the apart-within condition),
+\item or "filter" - remove clients without any qualified record from the data. Default is "flag".
+}}
 
-\item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". Note that this would impact the first/last qualified dates, e.g., using "right" will have the first flag = 1 not at the earliest date. For example, if the condition was 2 records within a year, for c("2023-01-01", "2023-04-01", "2024-05-01"), flag will be c(0, 1, 0) for "right" while c(1,0,0) for "left".}
+\item{align}{Character, define if the flag should be placed at the start ("left") or end ("right") of a qualified time period. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for \code{c("2023-01-01", "2023-04-01", "2024-05-01")}, flag will be \code{c(0, 1, 0)} for "right" while \code{c(1,0,0)} for "left".}
 
 \item{dup.rm}{Logical for whether duplicated dates should be removed before calculation. Default is TRUE.}
 
-\item{force_collect}{A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
+\item{force_collect}{A logical for whether force downloading remote table if \code{apart} is not NULL. For remote table only, because \code{apart} is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
-\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use options(odcfun.verbose = FALSE) to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
+\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
-\item{...}{Additional argument passing to [data.table::as.IDate()] for date conversion.}
+\item{...}{Additional argument passing to \code{\link[data.table:IDateTime]{data.table::as.IDate()}} for date conversion.}
 }
 \value{
 A subset of input data satisfied the dates requirement, or raw input data with an new flag column.
 }
 \description{
-In a vector of dates `date_var`, interpret if there could be at least one set of n elements taken from the date vector satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations.
+For each client or group, interpret if they have n records that are at least certain days apart AND within a specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations of dates per client.
 }
 \examples{
 sample_size <- 30
@@ -66,5 +70,5 @@ df <- data.frame(clnt_id = sample(1:sample_size, sample_size, replace = TRUE),
 restrict_dates(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
 }
 \seealso{
-[if_dates()]
+\code{\link[=if_dates]{if_dates()}}
 }

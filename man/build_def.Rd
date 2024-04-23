@@ -11,15 +11,15 @@ build_def(def_lab, src_labs, def_fn = define_case, fn_args)
 
 \item{src_labs}{A character vector of place-holder names for the data sources that will be used to execute the definition.}
 
-\item{def_fn}{A list of functions (default: [define_case()]) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but must put input data as the first argument and name it `data`.}
+\item{def_fn}{A list of functions (default: \code{\link[=define_case]{define_case()}}) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of \code{src_labs}. If length = 1, the same function will be applied to all sources; otherwise, \code{def_fn} should match \code{src_lab} by position. User can supply custom functions but must put input data as the first argument and name it \code{data}.}
 
-\item{fn_args}{A named list of arguments passing to the `def_fn`. Each element in the list should have the same name as an argument in the source-specific `def_fn`, and the element length should also be either 1 or equal to the number of sources. If you have `def_fn` functions taking different sets of arguments, include the union in one list.}
+\item{fn_args}{A named list of arguments passing to the \code{def_fn}. Each element in the list should have the same name as an argument in the source-specific \code{def_fn}, and the element length should also be either 1 or equal to the number of sources. If you have \code{def_fn} functions taking different sets of arguments, include the union in one list.}
 }
 \value{
-A tibble with a number of rows equal to the length of `src_labs`, containing the input arguments and the synthetic function call in the `fn_call` column.
+A tibble with a number of rows equal to the length of \code{src_labs}, containing the input arguments and the synthetic function call in the \code{fn_call} column.
 }
 \description{
-This function assembles function calls from the supplied functions, their required arguments, leaving the data argument empty for easy re-use of the definition calls with different data and batch execution (see [execute_def()] for detail). It is useful for defining multiple diseases/events across multiple sources.
+This function assembles function calls from the supplied functions and their required arguments, leaving the data argument empty for easy re-use of the definition calls with different data and batch execution (see \code{\link[=execute_def]{execute_def()}} for detail). It is useful for defining multiple diseases/events across multiple sources.
 }
 \examples{
 build_def("SUD", # usually a disease name

@@ -2,10 +2,10 @@
 % Please edit documentation in R/collapse_episode.R
 \name{collapse_episode}
 \alias{collapse_episode}
-\title{Title Grouping records into episodes by date range}
+\title{Grouping records into episodes by date range}
 \usage{
 collapse_episode(
-  dat,
+  data,
   clnt_id,
   start_dt,
   end_dt = NULL,
@@ -17,7 +17,7 @@ collapse_episode(
 )
 }
 \arguments{
-\item{dat}{A data.frame that contains the id and date variables.}
+\item{data}{A data.frame that contains the id and date variables.}
 
 \item{clnt_id}{Column name of subject/person ID.}
 

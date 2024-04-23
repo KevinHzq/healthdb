@@ -2,11 +2,11 @@
 #'
 #' @md
 #' @description
-#' This function calls [dplyr::left_join()] multiple times with different source tables (y argument of the join) to gather variables. It is not intended to replace left_join but simplify syntax for the situation that you need to get variables from multiple tables, and the tables can be linked by common IDs, which is often the case when working with relational databases. That said, this function is only meant for simple joins and only allows one-to-one matching.
+#' This function fetches variables from different tables that linked by common IDs. It calls [dplyr::left_join()] multiple times with different source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off a table of study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases. That said, this function is to replace repetitions of simple joins and only allows one-to-one matching.
 #'
 #'
-#' @param data A local data.frame, or tibble. It would be used as the x argument in left_join.
-#' @param keys A vector of quoted/unquoted variable names, or tidyselect expression (see [dplyr::select()]). These variables must be present in `data` and would be used as the `by` argument in left_join. The y tables must have a subset of these if not all.
+#' @param data A local data.frame, or tibble. It would be used as the x argument in left_join().
+#' @param keys A vector of quoted/unquoted variable names, or 'tidyselect' expression (see [dplyr::select()]). These variables must be present in `data` and would be used as the `by` argument in left_join(). The y tables must have a subset of these if not all.
 #' @param linkage A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 #'  - source table on the left-hand-side
 #'  - variables on the right-hand-side
@@ -20,8 +20,8 @@
 #'  meaning:
 #'  1. from table y1 get variables picked by the tidyselect expression matching on all 3 keys;
 #'  2. from table y2 get variables matching on only key1 and key2.
-#' @param verbose A logical for whether report the number of rows after joining for each source. Default is getting from options. Use options(odcfun.verbose = FALSE) to suppress once and for all.
-#' @param ... Additional arguments passing to left_join.
+#' @param verbose A logical for whether report the number of rows after joining for each source. Default is getting from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param ... Additional arguments passing to left_join().
 #'
 #' @return A data.frame or tibble containing all original columns of x and new variables matched from other tables based on the specified linkage.
 #' @export
