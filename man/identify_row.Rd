@@ -11,7 +11,7 @@ identify_row(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
 )
@@ -22,7 +22,7 @@ identify_rows(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
 )
@@ -53,7 +53,7 @@ identify_rows(
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
 
-\item{verbose}{A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
+\item{verbose}{A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
 \item{query_only}{A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.}
 

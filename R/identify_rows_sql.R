@@ -1,5 +1,5 @@
 #' @export
-identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("odcfun.verbose"), query_only = TRUE, ...) {
+identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   # input checks
   match <- rlang::arg_match0(match, c("in", "start", "regex", "between", "like", "glue_sql"))
 

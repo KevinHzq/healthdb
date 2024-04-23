@@ -21,7 +21,7 @@
 #' * or "filter" - remove clients that did not meet the condition from the data.
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `mode`, passing to [restrict_date()].
 #'
 #' @return A subset of input data satisfied the specified case definition.
@@ -68,7 +68,7 @@
 #'   ),
 #'   define_case
 #' )
-define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, mode = c("flag", "filter"), force_collect = FALSE, verbose = getOption("odcfun.verbose"), ...) {
+define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, mode = c("flag", "filter"), force_collect = FALSE, verbose = getOption("healthdb.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)

@@ -4,7 +4,7 @@
 \alias{fetch_var}
 \title{Get variables from multiple tables with common ID columns}
 \usage{
-fetch_var(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...)
+fetch_var(data, keys, linkage, verbose = getOption("healthdb.verbose"), ...)
 }
 \arguments{
 \item{data}{A local data.frame, or tibble. It would be used as the x argument in left_join().}
@@ -29,7 +29,7 @@ meaning:
 \item from table y2 get variables matching on only key1 and key2.
 }}
 
-\item{verbose}{A logical for whether report the number of rows after joining for each source. Default is getting from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether report the number of rows after joining for each source. Default is getting from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments passing to left_join().}
 }

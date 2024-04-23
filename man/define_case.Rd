@@ -21,7 +21,7 @@ define_case(
   if_all = FALSE,
   mode = c("flag", "filter"),
   force_collect = FALSE,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   ...
 )
 }
@@ -69,7 +69,7 @@ define_case(
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments, e.g., \code{mode}, passing to \code{\link[=restrict_date]{restrict_date()}}.}
 }

@@ -20,7 +20,7 @@
 #'  meaning:
 #'  1. from table y1 get variables picked by the tidyselect expression matching on all 3 keys;
 #'  2. from table y2 get variables matching on only key1 and key2.
-#' @param verbose A logical for whether report the number of rows after joining for each source. Default is getting from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether report the number of rows after joining for each source. Default is getting from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments passing to left_join().
 #'
 #' @return A data.frame or tibble containing all original columns of x and new variables matched from other tables based on the specified linkage.
@@ -67,7 +67,7 @@
 #'   ),
 #'   copy = TRUE # pass to left_join for forced collection of remote table
 #' )
-fetch_var <- function(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...) {
+fetch_var <- function(data, keys, linkage, verbose = getOption("healthdb.verbose"), ...) {
   # input checks
   stopifnot(any(purrr::map_lgl(linkage, rlang::is_formula)))
 

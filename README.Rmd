@@ -13,14 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# odcfun
+# healthdb
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/KevinHzq/odcfun/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/odcfun?branch=master)
+[![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master)
 <!-- badges: end -->
 
-The goal of odcfun is to provide a set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by 'stringr' style regular expression and using 'LIKE' operator with multiple patterns in a vector. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definition; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.
+The goal of healthdb is to provide a set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by 'stringr' style regular expression and using 'LIKE' operator with multiple patterns in a vector. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definition; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.
 
 Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
 
@@ -30,11 +30,11 @@ Common disease definitions often are in the form of having n primary care/hospit
 
 ## Installation
 
-You can install the development version of odcfun from [GitHub](https://github.com/) with:
+You can install the development version of healthdb from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("KevinHzq/odcfun")
+devtools::install_github("KevinHzq/healthdb")
 ```
 
 ## Example
@@ -45,7 +45,7 @@ We are going to implement this definition. First, let's make a demo data sets fo
 
 Physician claims
 ```{r example,message=FALSE,warning=FALSE}
-library(odcfun)
+library(healthdb)
 library(tidyverse)
 
 # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
@@ -64,7 +64,7 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 hosp_df %>% head()
 ```
 
-Here's how you could use `odcfun` to implement the SUD definition above:
+Here's how you could use `healthdb` to implement the SUD definition above:
 
 1.  Identify rows contains the target codes in the claim database
 

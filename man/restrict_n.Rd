@@ -10,7 +10,7 @@ restrict_n(
   n_per_clnt,
   count_by = NULL,
   mode = c("flag", "filter"),
-  verbose = getOption("odcfun.verbose")
+  verbose = getOption("healthdb.verbose")
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ restrict_n(
 
 \item{mode}{Either "flag" - add a new column 'flag_restrict_n' indicating if the client met the condition (all rows from a qualified client would have flag = 1), or "filter" - remove clients that did not meet the condition from the data. Default is "flag".}
 
-\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
+\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 }
 \value{
 A subset of input data satisfied the group size requirement, or raw input data with an new flag column.

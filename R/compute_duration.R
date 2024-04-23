@@ -10,7 +10,7 @@
 #' @param unit A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".
 #' @param trans A logical for whether transform both `from` and `to` with the `.transfn` function
 #' @param .transfn A function for transforming the inputs. Default is [lubridate::ymd()].
-#' @param verbose A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments passing to [base::cut()].
 #'
 #' @return A numeric or factor vector of the duration.
@@ -32,7 +32,7 @@
 #' df %>% dplyr::mutate(
 #'  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 #' )
-compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = getOption("odcfun.verbose"), ...) {
+compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = getOption("healthdb.verbose"), ...) {
   #compute age with lubridate functions (more accurate than /365.25) and built-in transformations
   unit <- rlang::arg_match0(unit, c("year", "day", "week", "month"))
 

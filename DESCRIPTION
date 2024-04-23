@@ -1,4 +1,4 @@
-Package: odcfun
+Package: healthdb
 Type: Package
 Title: Tools for working with healthcare database
 Version: 0.1.0
@@ -20,8 +20,8 @@ Imports:
     stringr,
     tidyr
 RoxygenNote: 7.3.1
-URL: https://github.com/KevinHzq/odcfun, https://kevinhzq.github.io/odcfun/
-BugReports: https://github.com/KevinHzq/odcfun/issues
+URL: https://github.com/KevinHzq/healthdb, https://kevinhzq.github.io/healthdb/
+BugReports: https://github.com/KevinHzq/healthdb/issues
 Suggests: 
     knitr,
     rmarkdown,

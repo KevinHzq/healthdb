@@ -41,7 +41,7 @@ However, 'dbplyr' SQL translations failed at some places for the intended use ca
 Simply run:
 
 ```{r, eval = FALSE}
-devtools::install_github("kevinHzq/odcfun", build_vignettes = TRUE)
+devtools::install_github("kevinHzq/healthdb", build_vignettes = TRUE)
 ```
 
 We will also need the following packages for this demo.
@@ -52,7 +52,7 @@ library(dbplyr)
 library(lubridate)
 library(glue)
 library(purrr)
-library(odcfun)
+library(healthdb)
 ```
 
 ## Intended use case {#sec-intended-use-case}
@@ -101,7 +101,7 @@ claim_db %>%
 ## end
 ```
 
-Here's how you could use `odcfun` to achieve these steps:
+Here's how you could use `healthdb` to achieve these steps:
 
 1.  Identify rows contains the target codes
 
@@ -241,7 +241,7 @@ Let's look inside the fn_call list column. Two calls of `define_case()` have bee
 sud_def$fn_call
 ```
 
-Executing the definition is simple. If verbose option is not turned off by `options(odcfun.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def()` outputs together and execute them all at once. Definition and source labels will be added to the result to identify outputs from different calls.
+Executing the definition is simple. If verbose option is not turned off by `options(healthdb.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def()` outputs together and execute them all at once. Definition and source labels will be added to the result to identify outputs from different calls.
 
 ```{r}
 # execute the definition

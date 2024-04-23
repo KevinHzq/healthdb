@@ -4,7 +4,7 @@
 \alias{lookup}
 \title{Find value corresponding to input vector using a look-up table}
 \usage{
-lookup(x, link, lu, verbose = getOption("odcfun.verbose"))
+lookup(x, link, lu, verbose = getOption("healthdb.verbose"))
 }
 \arguments{
 \item{x}{A variable name in a data.frame; this function should be called inside dplyr::mutate().}

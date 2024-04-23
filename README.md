@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# odcfun
+# healthdb
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/odcfun/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/KevinHzq/odcfun/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/odcfun?branch=master)
+coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master)
 <!-- badges: end -->
 
-The goal of odcfun is to provide a set of tools for identifying diseases
+The goal of healthdb is to provide a set of tools for identifying diseases
 or events from healthcare database and preparing data for
 epidemiological studies. It features abilities that are not natively
 support by database, such as matching strings by ‘stringr’ style regular
@@ -38,12 +38,12 @@ for an example of implementing such case definition.
 
 ## Installation
 
-You can install the development version of odcfun from
+You can install the development version of healthdb from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("KevinHzq/odcfun")
+devtools::install_github("KevinHzq/healthdb")
 ```
 
 ## Example
@@ -58,7 +58,7 @@ sets for the two sources:
 Physician claims
 
 ``` r
-library(odcfun)
+library(healthdb)
 library(tidyverse)
 
 # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
@@ -95,7 +95,7 @@ hosp_df %>% head()
 #> 6  74       4 2015-11-21   999    <NA>     999
 ```
 
-Here’s how you could use `odcfun` to implement the SUD definition above:
+Here’s how you could use `healthdb` to implement the SUD definition above:
 
 1.  Identify rows contains the target codes in the claim database
 

@@ -9,7 +9,7 @@ exclude(
   excl = NULL,
   by = NULL,
   condition = NULL,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   report_on = NULL,
   ...
 )
@@ -23,7 +23,7 @@ exclude(
 
 \item{condition}{An expression that will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}. The rows that satisfy \code{condition} are those to be removed from \code{data}.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from \code{data}, e.g., counting how many client IDs were removed. Default is NULL.}
 

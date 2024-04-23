@@ -18,7 +18,7 @@
 #'   # this will work as lu also has drug_code column
 #'   drug_nm = lookup(drug_code, ~ drug_name, lu)
 #' )
-lookup <- function(x, link, lu, verbose = getOption("odcfun.verbose")) {
+lookup <- function(x, link, lu, verbose = getOption("healthdb.verbose")) {
   # input checks
   stopifnot(rlang::is_formula(link),
             is.data.frame(lu))

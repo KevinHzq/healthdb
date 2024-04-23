@@ -11,7 +11,7 @@ compute_duration(
   unit = c("year", "day", "week", "month"),
   trans = FALSE,
   .transfn = lubridate::ymd,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   ...
 )
 }
@@ -28,7 +28,7 @@ compute_duration(
 
 \item{.transfn}{A function for transforming the inputs. Default is \code{\link[lubridate:ymd]{lubridate::ymd()}}.}
 
-\item{verbose}{A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments passing to \code{\link[base:cut]{base::cut()}}.}
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.">
-<title>Overdose Cohort Team In-house Functions • odcfun</title>
+<title>Overdose Cohort Team In-house Functions • healthdb</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -24,7 +24,7 @@
 
     <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
-    <a class="navbar-brand me-2" href="index.html">odcfun</a>
+    <a class="navbar-brand me-2" href="index.html">healthdb</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -51,7 +51,7 @@
 
       <ul class="navbar-nav">
 <li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/KevinHzq/odcfun/" aria-label="github">
+  <a class="external-link nav-link" href="https://github.com/KevinHzq/healthdb/" aria-label="github">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -64,20 +64,20 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="odcfun">odcfun<a class="anchor" aria-label="anchor" href="#odcfun"></a>
+<div class="page-header"><h1 id="healthdb">healthdb<a class="anchor" aria-label="anchor" href="#healthdb"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of odcfun is to implement disease/event identification algorithms from administrative database for epidemiological studies. The implementation focused on code readability and re-usability.</p>
+<p>The goal of healthdb is to implement disease/event identification algorithms from administrative database for epidemiological studies. The implementation focused on code readability and re-usability.</p>
 <p>Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.</p>
 <p>This package leverages <code>dbplyr</code>, particularly its ability to chain subqueries, in order to implement a common disease definition as one-shot big query. Common definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of odcfun from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of healthdb from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"KevinHzq/odcfun"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"KevinHzq/healthdb"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -87,7 +87,7 @@
 <p>We are going to implement this definition. First, let’s make a demo data sets for the two sources:</p>
 <p>Physician claims</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/KevinHzq/odcfun" class="external-link">odcfun</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/KevinHzq/healthdb" class="external-link">healthdb</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later</span></span>
@@ -119,7 +119,7 @@
 <span><span class="co">#&gt; 4  29       3 2016-05-27  F130    F164     999</span></span>
 <span><span class="co">#&gt; 5  83       4 2015-10-04   999     999    &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6  74       4 2015-11-21   999    &lt;NA&gt;     999</span></span></code></pre></div>
-<p>Here’s how you could use <code>odcfun</code> to implement the SUD definition above:</p>
+<p>Here’s how you could use <code>healthdb</code> to implement the SUD definition above:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>Identify rows contains the target codes in the claim database</p>
@@ -198,8 +198,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/KevinHzq/odcfun/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/KevinHzq/odcfun/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/KevinHzq/healthdb/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/KevinHzq/healthdb/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -215,7 +215,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing odcfun</a></li>
+<li><a href="authors.html#citation">Citing healthdb</a></li>
 </ul>
 </div>
 

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(odcfun)
+library(healthdb)
 
-test_check("odcfun")
+test_check("healthdb")

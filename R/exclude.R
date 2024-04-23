@@ -8,7 +8,7 @@
 #' @param excl Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from `data` if there is a match. This will be passed to [dplyr::anti_join()] as the second argument.
 #' @param by Column names that should be matched by [dplyr::anti_join()], or a expressions with [dplyr::join_by()]. See [dplyr::anti_join()]'s `by` argument for detail. Default NULL is the same as `setdiff(data, excl)`.
 #' @param condition An expression that will be passed to [dplyr::filter()]. The rows that satisfy `condition` are those to be removed from `data`.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(odcfun.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param report_on A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.
 #' @param ... Additional arguments passing to [dplyr::filter()]/[dplyr::anti_join()] for finer control of matching, e.g., na action, by-group filtering, etc.
 #'
@@ -21,7 +21,7 @@
 #'
 #' # exclude with another data
 #' exclude(mtcars, cyl4, dplyr::join_by(cyl), report_on = cyl)
-exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = getOption("odcfun.verbose"), report_on = NULL, ...) {
+exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = getOption("healthdb.verbose"), report_on = NULL, ...) {
   rlang::check_exclusive(excl, condition)
   rlang::check_exclusive(by, condition)
 

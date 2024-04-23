@@ -16,7 +16,7 @@ restrict_date(
   flag_at = c("left", "right"),
   dup.rm = TRUE,
   force_collect = FALSE,
-  verbose = getOption("odcfun.verbose"),
+  verbose = getOption("healthdb.verbose"),
   ...
 )
 }
@@ -47,7 +47,7 @@ restrict_date(
 
 \item{force_collect}{A logical for whether force downloading remote table if \code{apart} is not NULL. For remote table only, because \code{apart} is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 
-\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(odcfun.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
+\item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
 \item{...}{Additional argument passing to \code{\link[data.table:IDateTime]{data.table::as.IDate()}} for date conversion.}
 }
