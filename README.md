@@ -27,9 +27,9 @@ is challenging, especially when the data is too large to be downloaded
 from database into R (i.e., local memory) without some filtering
 process.
 
-This package leverages `dbplyr`, particularly its ability to chain
+This package leverages ‘dbplyr’, particularly its ability to chain
 subqueries, in order to implement a common disease definition as a
-one-shot big query. Outputs are fully compatible with `dplyr` functions.
+one-shot big query. Outputs are fully compatible with ‘dplyr’ functions.
 
 Common disease definitions often are in the form of having n primary
 care/hospitalization/prescription records with some International
@@ -171,8 +171,8 @@ Here’s how you could use `odcfun` to implement the SUD definition above:
 
 4.  Repeat these steps for hospitalization and row bind the results.
 
-The output of these functions (e.g., \[identify_row()\], \[exclude()\],
-\[restrict_n()\], \[restrict_date()\]) can be piped into ‘dplyr’
+The output of these functions, including `identify_row()`, `exclude()`,
+`restrict_n()`, `restrict_date()` and more can be piped into ‘dplyr’
 functions for further manipulations. Therefore, wrangling with them
 along with ‘dplyr’ provide the maximum flexibility for implementing
 complex algorithms. However, your code could look repetitive if multiple

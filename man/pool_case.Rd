@@ -36,7 +36,7 @@ pool_case(
 A data.frame or remote table with clients that satisfied the predefined case definition.
 }
 \description{
-Pooling qualified clients from multiple sources
+This function filters and pools, i.e., row bind, qualified clients/groups from different source with an option to summarize by client. Unlike \code{\link[=bind_source]{bind_source()}}, no need to supply variable names; the function will guess what should be included and their names from the supplied definition from \code{\link[=build_def]{build_def()}}. Whether a client is qualified relies on the flag variables set by \code{\link[=define_case]{define_case()}}. Therefore, this function is intended to be use only with the built-in \code{\link[=define_case]{define_case()}} as \code{def_fn} in \code{\link[=build_def]{build_def()}}.
 }
 \examples{
 # toy data
