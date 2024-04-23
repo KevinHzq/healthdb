@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 -   Designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability.
 
--   Interactive functions (e.g., `identify_rows()`, `exclude()`, `fetch_vars()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use `data.table` package to speed up processing time for large data. These functions are not as flexible as dplyr::filter, but they can be applied to analyses outside health research.
+-   Interactive functions (e.g., `identify_rows()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use `data.table` package to speed up processing time for large data. These functions are not as flexible as dplyr::filter, but they can be applied to analyses outside health research.
 
 -   Call-building functions (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of disease case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not ran immediately but can be evaluated with different input data through `execute_def`.
 
@@ -184,7 +184,7 @@ Here's how you could use `odcfun` to achieve these steps:
 
     #note that keys must be present in all tables
     result_df %>% 
-      fetch_vars(keys = c(clnt_id, year),
+      fetch_var(keys = c(clnt_id, year),
                  linkage = list(
                    # |clnt_id means matching on clnt_id only
                    age_tab ~ c(age, sex)|clnt_id,

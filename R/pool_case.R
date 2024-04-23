@@ -10,7 +10,7 @@
 #' * "all" - records from all sources are included;
 #' * "has_valid" - for each client, records from sources that contain at least one valid record are included;
 #' * "n_per_clnt" - for each client, if they had fewer than `n_per_clnt` records in a source (see [restrict_n()]), then records from that source are removed.
-#' @param ... Additional arguments passing to [bind_sources()]
+#' @param ... Additional arguments passing to [bind_source()]
 #'
 #' @return A data.frame or remote table with clients that satisfied the predefined case definition.
 #' @export
@@ -65,7 +65,7 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   dot <- def_to_dot(def)
 
   # bind data with obtained names
-  bind_data <- bind_sources(data, !!!dot, ...)
+  bind_data <- bind_source(data, !!!dot, ...)
 
   # interpret has date_var or not for later whether dates need to be summarized
   has_date_var <- ifelse("date_var" %in% names(dot), "y", "n")

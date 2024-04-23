@@ -13,13 +13,13 @@
 #' df2 <- subset(iris, Species == "versicolor")
 #' df3 <- subset(iris, Species == "virginica")
 #'
-#' bind_sources(list(df1, df2, df3),
+#' bind_source(list(df1, df2, df3),
 #'   s_l = "Sepal.Length",
 #'   s_w = "Sepal.Width",
 #'   p_l_setosa = c("Petal.Length", NA, NA),
 #'   p_l_virginica = c(NA, NA, "Petal.Length")
 #' )
-bind_sources <- function(data, ..., force_proceed = getOption("odcfun.force_proceed")) {
+bind_source <- function(data, ..., force_proceed = getOption("odcfun.force_proceed")) {
   # capture data names in the original env before any eval
   data_quo <- rlang::enquo(data)
   is_list_obj <- rlang::quo_is_symbol(data_quo)

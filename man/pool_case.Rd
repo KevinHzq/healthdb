@@ -30,7 +30,7 @@ pool_case(
 \item "n_per_clnt" - for each client, if they had fewer than \code{n_per_clnt} records in a source (see \code{\link[=restrict_n]{restrict_n()}}), then records from that source are removed.
 }}
 
-\item{...}{Additional arguments passing to \code{\link[=bind_sources]{bind_sources()}}}
+\item{...}{Additional arguments passing to \code{\link[=bind_source]{bind_source()}}}
 }
 \value{
 A data.frame or remote table with clients that satisfied the predefined case definition.

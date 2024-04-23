@@ -47,7 +47,7 @@
 #' # simple joins
 #' # note that for left_join(df1, df2), boths keys have to be used,
 #' # otherwise, error as the relation would not be one-to-one
-#' fetch_vars(df1,
+#' fetch_var(df1,
 #'   keys = c(id, year),
 #'   linkage = list(
 #'     df2 ~ starts_with("s"), # match both keys without '|'
@@ -59,7 +59,7 @@
 #' # make df2 as database table
 #' db2 <- dbplyr::tbl_memdb(df2)
 #'
-#' fetch_vars(df1,
+#' fetch_var(df1,
 #'   keys = c(id, year),
 #'   linkage = list(
 #'     db2 ~ starts_with("s"),
@@ -67,7 +67,7 @@
 #'   ),
 #'   copy = TRUE # pass to left_join for forced collection of remote table
 #' )
-fetch_vars <- function(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...) {
+fetch_var <- function(data, keys, linkage, verbose = getOption("odcfun.verbose"), ...) {
   # input checks
   stopifnot(any(purrr::map_lgl(linkage, rlang::is_formula)))
 
