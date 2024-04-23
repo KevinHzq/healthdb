@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -28,10 +29,12 @@ jobs:
 
       - name: Test coverage
         run: |
+          token <- Sys.getenv("CODECOV_TOKEN", "")
           covr::codecov(
             quiet = FALSE,
             clean = FALSE,
-            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
+            token = if (token != "") token
           )
         shell: Rscript {0}
 
@@ -48,9 +51,3 @@ jobs:
         with:
           name: coverage-test-failures
           path: ${{ runner.temp }}/package
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: KevinHzq/odcfun
