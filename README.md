@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# healthdb \<a href=“<https://kevinhzq.github.io/healthdb/>”<img src="man/figures/logo.png" alt="healthdb website" align="right" height="139"/></a>
+# healthdb <a href="https://kevinhzq.github.io/healthdb/"><img src="man/figures/logo.png" alt="healthdb website" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
@@ -58,8 +58,8 @@ devtools::install_github("KevinHzq/healthdb")
 #> Downloading GitHub repo KevinHzq/healthdb@HEAD
 #> 
 #> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpy2N36w\remotes53b0514b5843\KevinHzq-healthdb-6855b83/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpy2N36w\remotes53b0514b5843\KevinHzq-healthdb-6855b83/DESCRIPTION'
-#>       ─  preparing 'healthdb': (376ms)
+#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpYdPnky\remotes54483fb969a5\KevinHzq-healthdb-d44eedc/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpYdPnky\remotes54483fb969a5\KevinHzq-healthdb-d44eedc/DESCRIPTION'
+#>       ─  preparing 'healthdb': (358ms)
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
 #>       ─  checking for LF line-endings in source and make files and shell scripts
 #>       ─  checking for empty or unneeded directories
@@ -67,7 +67,7 @@ devtools::install_github("KevinHzq/healthdb")
 #>       ─  building 'healthdb_0.1.0.tar.gz'
 #>      
 #> 
-#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c8601a70'
+#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c7b9e6d8d'
 #> (as 'lib' is unspecified)
 ```
 
