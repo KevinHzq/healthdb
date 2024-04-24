@@ -53,18 +53,8 @@ You could also install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
+# install.packages("devtools")
 devtools::install_github("KevinHzq/healthdb")
-#> 
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpoFHSvy\remotes5b0410017c0b\KevinHzq-healthdb-0b59a8f/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpoFHSvy\remotes5b0410017c0b\KevinHzq-healthdb-0b59a8f/DESCRIPTION'
-#>       ─  preparing 'healthdb': (368ms)
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>       ─  checking for LF line-endings in source and make files and shell scripts
-#>       ─  checking for empty or unneeded directories
-#>      Omitted 'LazyData' from DESCRIPTION
-#>       ─  building 'healthdb_0.1.0.tar.gz'
-#>      
-#> 
 ```
 
 ## Usage

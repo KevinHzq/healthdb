@@ -41,7 +41,8 @@ install.packages("healthdb")
 
 You could also install the development version from [GitHub](https://github.com/) with:
 
-```{r github, message=FALSE,warning=FALSE}
+```{r github, eval=FALSE}
+# install.packages("devtools")
 devtools::install_github("KevinHzq/healthdb")
 ```
 
