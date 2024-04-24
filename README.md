@@ -8,10 +8,11 @@
 [![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master)
+
 <!-- badges: end -->
 
-The goal of healthdb is to provide a set of tools for identifying diseases
-or events from healthcare database and preparing data for
+The goal of ‘healthdb’ is to provide a set of tools for identifying
+diseases or events from healthcare database and preparing data for
 epidemiological studies. It features abilities that are not natively
 support by database, such as matching strings by ‘stringr’ style regular
 expression and using ‘LIKE’ operator with multiple patterns in a vector.
@@ -19,6 +20,10 @@ Three types of functions are included: interactive functions – for
 customizing complex definitions; call building functions – for batch
 execution of simple definition; miscellaneous functions – for data
 wrangling, computing age and comorbidity index, etc.
+
+**The package is tested only on SQL Server and SQLite** as we do not
+have access to other SQL dialects. Please report bugs if you encounter
+issues with other dialects.
 
 Administrative health data data are often stored on database with strict
 security measures which may disable permission to write temporary
@@ -38,12 +43,32 @@ for an example of implementing such case definition.
 
 ## Installation
 
-You can install the development version of healthdb from
+Install from CRAN:
+
+``` r
+install.packages("healthdb")
+```
+
+You could also install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
 devtools::install_github("KevinHzq/healthdb")
+#> Using GitHub PAT from the git credential store.
+#> Downloading GitHub repo KevinHzq/healthdb@HEAD
+#> 
+#> ── R CMD build ─────────────────────────────────────────────────────────────────
+#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmp44hDw9\remotes573cdde32d3\KevinHzq-healthdb-41f35a3/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmp44hDw9\remotes573cdde32d3\KevinHzq-healthdb-41f35a3/DESCRIPTION'
+#>       ─  preparing 'healthdb': (354ms)
+#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
+#>       ─  checking for LF line-endings in source and make files and shell scripts
+#>       ─  checking for empty or unneeded directories
+#>      Omitted 'LazyData' from DESCRIPTION
+#>       ─  building 'healthdb_0.1.0.tar.gz'
+#>      
+#> 
+#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c70b42ce4'
+#> (as 'lib' is unspecified)
 ```
 
 ## Example
@@ -95,7 +120,8 @@ hosp_df %>% head()
 #> 6  74       4 2015-11-21   999    <NA>     999
 ```
 
-Here’s how you could use `healthdb` to implement the SUD definition above:
+Here’s how you could use `healthdb` to implement the SUD definition
+above:
 
 1.  Identify rows contains the target codes in the claim database
 
@@ -179,3 +205,8 @@ complex algorithms. However, your code could look repetitive if multiple
 data sources were involved. See the “Intro” vignette
 (`vignette("Intro")`) for a much more concise way to work with multiple
 sources and definitions (the ‘Call-building functions’ section).
+
+\# healthdb \<a
+href=“[https://kevinhzq.github.io/healthdb/”](https://kevinhzq.github.io/healthdb/%22)\<img
+src=”man/figures/logo.png” align=“right” height=“139” alt=“healthdb
+website” /\>\</a\>

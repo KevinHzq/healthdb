@@ -4,9 +4,11 @@
 \name{healthdb-package}
 \alias{healthdb}
 \alias{healthdb-package}
-\title{healthdb: Tools for working with healthcare database}
+\title{healthdb: Tools for Working with Healthcare Database}
 \description{
-A set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by 'stringr' style regular expression and using 'LIKE' operator with multiple patterns in a vector. The implementation is based on 'dbplyr' with focuses on code readability and re-usability. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definitions; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+A system for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not supported by SQL database, such as matching strings by 'stringr' style regular expression. The implementation is based on 'dbplyr' providing full compatibility with 'tidyverse'.
 }
 \seealso{
 Useful links:
@@ -15,6 +17,10 @@ Useful links:
   \item \url{https://kevinhzq.github.io/healthdb/}
   \item Report bugs at \url{https://github.com/KevinHzq/healthdb/issues}
 }
+
+}
+\author{
+\strong{Maintainer}: Kevin Hu \email{kevin.hu@bccdc.ca} (\href{https://orcid.org/0000-0003-0254-5277}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}
