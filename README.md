@@ -58,8 +58,8 @@ devtools::install_github("KevinHzq/healthdb")
 #> Downloading GitHub repo KevinHzq/healthdb@HEAD
 #> 
 #> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpuo6XWu\remotes2f586d4e7489\KevinHzq-healthdb-cc38520/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpuo6XWu\remotes2f586d4e7489\KevinHzq-healthdb-cc38520/DESCRIPTION'
-#>       ─  preparing 'healthdb': (355ms)
+#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpy2N36w\remotes53b0514b5843\KevinHzq-healthdb-6855b83/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpy2N36w\remotes53b0514b5843\KevinHzq-healthdb-6855b83/DESCRIPTION'
+#>       ─  preparing 'healthdb': (376ms)
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
 #>       ─  checking for LF line-endings in source and make files and shell scripts
 #>       ─  checking for empty or unneeded directories
@@ -67,7 +67,7 @@ devtools::install_github("KevinHzq/healthdb")
 #>       ─  building 'healthdb_0.1.0.tar.gz'
 #>      
 #> 
-#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c7c2724df'
+#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c8601a70'
 #> (as 'lib' is unspecified)
 ```
 
