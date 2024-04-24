@@ -3,7 +3,7 @@ pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   Intro: Intro.html
-last_built: 2024-04-23T21:03Z
+last_built: 2024-04-24T00:36Z
 urls:
   reference: https://kevinhzq.github.io/healthdb/reference
   article: https://kevinhzq.github.io/healthdb/articles
