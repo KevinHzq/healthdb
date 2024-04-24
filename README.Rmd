@@ -35,17 +35,17 @@ Common disease definitions often are in the form of having n primary care/hospit
 
 Install from CRAN:
 
-```{r, eval=FALSE}
+```{r cran, eval=FALSE}
 install.packages("healthdb")
 ```
 
 You could also install the development version from [GitHub](https://github.com/) with:
 
-```{r}
+```{r github, message=FALSE,warning=FALSE}
 devtools::install_github("KevinHzq/healthdb")
 ```
 
-## Example
+## Usage
 
 Case definition: One or more hospitalization with a substance use disorder (SUD) diagnostic code, OR Two or more physician claims with a substance use disorder diagnostic code within one year.
 
@@ -53,7 +53,7 @@ We are going to implement this definition. First, let's make a demo data sets fo
 
 Physician claims
 
-```{r example,message=FALSE,warning=FALSE}
+```{r usage,message=FALSE,warning=FALSE}
 library(healthdb)
 library(tidyverse)
 

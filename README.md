@@ -54,12 +54,10 @@ You could also install the development version from
 
 ``` r
 devtools::install_github("KevinHzq/healthdb")
-#> Using GitHub PAT from the git credential store.
-#> Downloading GitHub repo KevinHzq/healthdb@HEAD
 #> 
 #> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpYdPnky\remotes54483fb969a5\KevinHzq-healthdb-d44eedc/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpYdPnky\remotes54483fb969a5\KevinHzq-healthdb-d44eedc/DESCRIPTION'
-#>       ─  preparing 'healthdb': (358ms)
+#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpoFHSvy\remotes5b0410017c0b\KevinHzq-healthdb-0b59a8f/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\RtmpoFHSvy\remotes5b0410017c0b\KevinHzq-healthdb-0b59a8f/DESCRIPTION'
+#>       ─  preparing 'healthdb': (368ms)
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
 #>       ─  checking for LF line-endings in source and make files and shell scripts
 #>       ─  checking for empty or unneeded directories
@@ -67,11 +65,9 @@ devtools::install_github("KevinHzq/healthdb")
 #>       ─  building 'healthdb_0.1.0.tar.gz'
 #>      
 #> 
-#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c7b9e6d8d'
-#> (as 'lib' is unspecified)
 ```
 
-## Example
+## Usage
 
 Case definition: One or more hospitalization with a substance use
 disorder (SUD) diagnostic code, OR Two or more physician claims with a
