@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# healthdb
+# healthdb \<a href=“<https://kevinhzq.github.io/healthdb/>”<img src="man/figures/logo.png" alt="healthdb website" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
@@ -58,8 +58,8 @@ devtools::install_github("KevinHzq/healthdb")
 #> Downloading GitHub repo KevinHzq/healthdb@HEAD
 #> 
 #> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmp44hDw9\remotes573cdde32d3\KevinHzq-healthdb-41f35a3/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmp44hDw9\remotes573cdde32d3\KevinHzq-healthdb-41f35a3/DESCRIPTION'
-#>       ─  preparing 'healthdb': (354ms)
+#>          checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpuo6XWu\remotes2f586d4e7489\KevinHzq-healthdb-cc38520/DESCRIPTION' ...  ✔  checking for file 'C:\Users\kevin.hu\AppData\Local\Temp\Rtmpuo6XWu\remotes2f586d4e7489\KevinHzq-healthdb-cc38520/DESCRIPTION'
+#>       ─  preparing 'healthdb': (355ms)
 #>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
 #>       ─  checking for LF line-endings in source and make files and shell scripts
 #>       ─  checking for empty or unneeded directories
@@ -67,7 +67,7 @@ devtools::install_github("KevinHzq/healthdb")
 #>       ─  building 'healthdb_0.1.0.tar.gz'
 #>      
 #> 
-#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c70b42ce4'
+#> Installing package into 'C:/Users/kevin.hu/AppData/Local/Temp/RtmpeEZNbu/temp_libpath5a6c7c2724df'
 #> (as 'lib' is unspecified)
 ```
 
@@ -205,8 +205,3 @@ complex algorithms. However, your code could look repetitive if multiple
 data sources were involved. See the “Intro” vignette
 (`vignette("Intro")`) for a much more concise way to work with multiple
 sources and definitions (the ‘Call-building functions’ section).
-
-\# healthdb \<a
-href=“[https://kevinhzq.github.io/healthdb/”](https://kevinhzq.github.io/healthdb/%22)\<img
-src=”man/figures/logo.png” align=“right” height=“139” alt=“healthdb
-website” /\>\</a\>

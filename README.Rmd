@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# healthdb
+# healthdb \<a href="<https://kevinhzq.github.io/healthdb/>"<img src="man/figures/logo.png" alt="healthdb website" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
@@ -118,5 +118,3 @@ Here's how you could use `healthdb` to implement the SUD definition above:
 4.  Repeat these steps for hospitalization and row bind the results.
 
 The output of these functions, including `identify_row()`, `exclude()`, `restrict_n()`, `restrict_date()` and more can be piped into 'dplyr' functions for further manipulations. Therefore, wrangling with them along with 'dplyr' provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the "Intro" vignette (`vignette("Intro")`) for a much more concise way to work with multiple sources and definitions (the 'Call-building functions' section).
-
-\# healthdb \<a href="[https://kevinhzq.github.io/healthdb/"](https://kevinhzq.github.io/healthdb/")\<img src="man/figures/logo.png" align="right" height="139" alt="healthdb website" /\>\</a\>
