@@ -66,24 +66,13 @@
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"healthdb.verbose"</span><span class="op">)</span>,</span>
 <span>  query_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">identify_rows</span><span class="op">(</span></span>
-<span>  <span class="va">data</span>,</span>
-<span>  <span class="va">vars</span>,</span>
-<span>  match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"in"</span>, <span class="st">"start"</span>, <span class="st">"regex"</span>, <span class="st">"like"</span>, <span class="st">"between"</span>, <span class="st">"glue_sql"</span><span class="op">)</span>,</span>
-<span>  <span class="va">vals</span>,</span>
-<span>  if_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"healthdb.verbose"</span><span class="op">)</span>,</span>
-<span>  query_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>Data.frames or remote tables (e.g., from <code>vignette("dbplyr", package = "dbplyr)</code>)</p></dd>
+<dd><p>Data.frames or remote tables (e.g., from <code><a href="https://dbplyr.tidyverse.org/reference/tbl_sql.html" class="external-link">dbplyr::tbl_sql()</a></code>)</p></dd>
 
 
 <dt>vars</dt>
@@ -105,7 +94,7 @@
 <li><p>"start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end</p></li>
 <li><p>"regex"/"like": a string of the expression</p></li>
 <li><p>"between": a vector of numeric or date with exactly two elements, e.g., c(lower, upper)</p></li>
-<li><p>"glue_sql": a string of the part of query after WHERE, which will be passed to <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code>. See examples in <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code> for detail.</p></li>
+<li><p>"glue_sql": a string of a SQL WHERE clause, which will be passed to <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code>. See examples for detail.</p></li>
 </ul></dd>
 
 
@@ -199,9 +188,11 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#using glue_sql to write the WHERE clause</span></span></span>
 <span class="r-in"><span><span class="co">#use {`vars`} to refer to the variables selected by vars</span></span></span>
-<span class="r-in"><span><span class="co">#supply additional values required in the query through the ...</span></span></span>
+<span class="r-in"><span><span class="co">#supply additional values required in the query through '...'</span></span></span>
 <span class="r-in"><span><span class="co">#note that if you use LIKE here, you cannot supply multiple patterns in what</span></span></span>
-<span class="r-in"><span><span class="fu">identify_row</span><span class="op">(</span><span class="va">iris_db</span>, <span class="va">Species</span>, <span class="st">"glue_sql"</span>, <span class="st">"{`vars`} LIKE {what}"</span>, what <span class="op">=</span> <span class="st">"se%"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">identify_row</span><span class="op">(</span><span class="va">iris_db</span>, <span class="va">Species</span>, <span class="st">"glue_sql"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"{`vars`} LIKE {what}"</span>,</span></span>
+<span class="r-in"><span>  what <span class="op">=</span> <span class="st">"se%"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Identify records with condition(s): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - where the Species column(s) in each record </span>
@@ -225,12 +216,32 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          4.9         3.1          1.5         0.1 setosa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#you could also set query parameters in the global environment</span></span></span>
-<span class="r-in"><span><span class="va">what</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">identify_row</span><span class="op">(</span><span class="va">iris_db</span>, <span class="va">Species</span>, <span class="st">"glue_sql"</span>, <span class="st">"{`vars`} IN ({what*})"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Failed to evaluate glue component {what}</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> object 'what' not found</span>
+<span class="r-in"><span><span class="co">#add * after a vector</span></span></span>
+<span class="r-in"><span><span class="fu">identify_row</span><span class="op">(</span><span class="va">iris_db</span>, <span class="va">Species</span>, <span class="st">"glue_sql"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"{`vars`} IN ({what*})"</span>,</span></span>
+<span class="r-in"><span> what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span>, <span class="st">"virginica"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Identify records with condition(s): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - where the Species column(s) in each record </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value satisfied SQL WHERE clause: `Species` IN ('setosa', 'virginica') </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> To see the final query generated by 'dbplyr', use dplyr::show_query() on the output. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> To extract the SQL string, use dbplyr::remote_query().</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 5]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: sqlite 3.45.2 [:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>          5.1         3.5          1.4         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          4.9         3            1.4         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          4.7         3.2          1.3         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          4.6         3.1          1.5         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          5           3.6          1.4         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          5.4         3.9          1.7         0.4 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          4.6         3.4          1.4         0.3 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          5           3.4          1.5         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          4.4         2.9          1.4         0.2 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          4.9         3.1          1.5         0.1 setosa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
