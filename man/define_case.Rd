@@ -26,7 +26,7 @@ define_case(
 )
 }
 \arguments{
-\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
+\item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
 \item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
 

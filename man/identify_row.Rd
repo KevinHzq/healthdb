@@ -2,7 +2,6 @@
 % Please edit documentation in R/identify_rows.R
 \name{identify_row}
 \alias{identify_row}
-\alias{identify_rows}
 \title{Identify rows with a match}
 \usage{
 identify_row(
@@ -15,20 +14,9 @@ identify_row(
   query_only = TRUE,
   ...
 )
-
-identify_rows(
-  data,
-  vars,
-  match = c("in", "start", "regex", "like", "between", "glue_sql"),
-  vals,
-  if_all = FALSE,
-  verbose = getOption("healthdb.verbose"),
-  query_only = TRUE,
-  ...
-)
 }
 \arguments{
-\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
+\item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
 \item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
 
@@ -48,7 +36,7 @@ identify_rows(
 \item "start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "\%" at the end
 \item "regex"/"like": a string of the expression
 \item "between": a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
-\item "glue_sql": a string of the part of query after WHERE, which will be passed to \code{\link[glue:glue_sql]{glue::glue_sql()}}. See examples in \code{\link[glue:glue_sql]{glue::glue_sql()}} for detail.
+\item "glue_sql": a string of a SQL WHERE clause, which will be passed to \code{\link[glue:glue_sql]{glue::glue_sql()}}. See examples for detail.
 }}
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
@@ -75,11 +63,14 @@ identify_row(iris_db, Species, "like", c("se\%", "\%ca"))
 
 #using glue_sql to write the WHERE clause
 #use {`vars`} to refer to the variables selected by vars
-#supply additional values required in the query through the ...
+#supply additional values required in the query through '...'
 #note that if you use LIKE here, you cannot supply multiple patterns in what
-identify_row(iris_db, Species, "glue_sql", "{`vars`} LIKE {what}", what = "se\%")
+identify_row(iris_db, Species, "glue_sql",
+ "{`vars`} LIKE {what}",
+  what = "se\%")
 
-#you could also set query parameters in the global environment
-what <- c("setosa", "virginica")
-identify_row(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
+#add * after a vector
+identify_row(iris_db, Species, "glue_sql",
+ "{`vars`} IN ({what*})",
+ what = c("setosa", "virginica"))
 }

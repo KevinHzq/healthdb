@@ -5,7 +5,7 @@
 #' @description
 #' Filter rows which values satisfy the specified conditions. The functionality is identical to [dplyr::filter()] combined with [dplyr::if_any()] or [dplyr::if_all()], but it used the 'data.table' package `vignette("datatable-intro", package = "data.table")` for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
 #'
-#' @param data Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)
+#' @param data Data.frames or remote tables (e.g., from [dbplyr::tbl_sql()])
 #' @param vars An expression passing to [dplyr::select()]. It can be quoted/unquoted column names, or helper functions, such as [dplyr::starts_with()].
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
 #'  - "in": var %in% vals (This is default)
@@ -19,7 +19,7 @@
 #'  - "start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end
 #'  - "regex"/"like": a string of the expression
 #'  - "between": a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
-#'  - "glue_sql": a string of the part of query after WHERE, which will be passed to [glue::glue_sql()]. See examples in [glue::glue_sql()] for detail.
+#'  - "glue_sql": a string of a SQL WHERE clause, which will be passed to [glue::glue_sql()]. See examples for detail.
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
 #' @param verbose A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #' @param query_only A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.
@@ -37,19 +37,20 @@
 #'
 #' #using glue_sql to write the WHERE clause
 #' #use {`vars`} to refer to the variables selected by vars
-#' #supply additional values required in the query through the ...
+#' #supply additional values required in the query through '...'
 #' #note that if you use LIKE here, you cannot supply multiple patterns in what
-#' identify_row(iris_db, Species, "glue_sql", "{`vars`} LIKE {what}", what = "se%")
+#' identify_row(iris_db, Species, "glue_sql",
+#'  "{`vars`} LIKE {what}",
+#'   what = "se%")
 #'
-#' #you could also set query parameters in the global environment
-#' what <- c("setosa", "virginica")
-#' identify_row(iris_db, Species, "glue_sql", "{`vars`} IN ({what*})")
+#' #add * after a vector
+#' identify_row(iris_db, Species, "glue_sql",
+#'  "{`vars`} IN ({what*})",
+#'  what = c("setosa", "virginica"))
 identify_row <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   rlang::check_required(vars)
   rlang::check_required(vals)
   UseMethod("identify_rows")
 }
 
-#' @rdname identify_row
-#' @aliases identify_row
 identify_rows <- identify_row
