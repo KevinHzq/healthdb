@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,16 +52,13 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="healthdb-development-version">healthdb (development version)<a class="anchor" aria-label="anchor" href="#healthdb-development-version"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="healthdb-020">healthdb 0.2.0<a class="anchor" aria-label="anchor" href="#healthdb-020"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>Fixed if_date() gave output shorter than the input when <code>detail</code> and <code>dup.rm</code> are both TRUE. if_date() now does not assume the dates are sorted and returns elements in the original unsorted order.</li>
 <li>Fixed restrict_date for remote table might miss cases with duplicated dates when n &gt; 2.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
+<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
 <ul><li><p>restrict_date() will give warning if there are missing entries in <code>date_var</code>. The description of <code>dup.rm</code> has been re-written to clarify it is applicable only when <code>apart</code> is absent.</p></li>
 <li><p>pool_case() now outputs both the number of raw (raw_in_src) and valid (valid_in_src) entries in each source.</p></li>
 </ul></div>

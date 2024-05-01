@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,20 +154,20 @@
 <span class="r-in"><span><span class="co">#Keep clients with 2 records that were 1 week apart within 1 month</span></span></span>
 <span class="r-in"><span><span class="fu">restrict_date</span><span class="op">(</span><span class="va">df</span>, <span class="va">clnt_id</span>, <span class="va">service_dt</span>, n <span class="op">=</span> <span class="fl">2</span>, apart <span class="op">=</span> <span class="fl">7</span>, within <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Of the 18 clients in the input, 11 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Of the 19 clients in the input, 14 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_date</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1 2020-01-30 r     j       v                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1 2020-01-31 m     g       k                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2 2020-01-04 c     s       l                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       2 2020-01-06 i     n       z                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       3 2020-01-23 t     v       <span style="color: #BB0000;">NA</span>                       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       4 2020-01-09 l     r       o                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       4 2020-01-28 t     f       x                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       5 2020-01-12 o     l       u                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       7 2020-01-01 k     x       e                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       7 2020-01-14 x     u       f                        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1 2020-01-09 k     r       s                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1 2020-01-11 f     r       n                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2 2020-01-12 t     w       x                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       2 2020-01-17 p     j       c                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       5 2020-01-21 l     a       y                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       6 2020-01-20 o     j       x                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       6 2020-01-20 w     b       l                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       7 2020-01-14 b     k       g                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       8 2020-01-14 t     c       z                        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       8 2020-01-22 u     m       a                        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 20 more rows</span></span>
 </code></pre></div>
     </div>
