@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/healthdb)](https://CRAN.R-project.org/package=healthdb)
 
 <!-- badges: end -->
 
@@ -25,7 +27,7 @@ wrangling, computing age and comorbidity index, etc.
 have access to other SQL dialects. Please report bugs if you encounter
 issues with other dialects.
 
-Administrative health data data are often stored on database with strict
+Administrative health data are often stored on SQL database with strict
 security measures which may disable permission to write temporary
 tables. Writing queries without being able to cache intermediate results
 is challenging, especially when the data is too large to be downloaded
@@ -82,12 +84,12 @@ claim_db %>% head()
 #> # Database: sqlite 3.45.2 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
-#> 1    51       1 16660 999   999     999    
-#> 2    24       1 17464 3048  3040    <NA>   
-#> 3    14       2 17640 3041  3047    <NA>   
-#> 4    37       3 16948 2913  3035    999    
-#> 5    91       4 16712 999   999     999    
-#> 6    82       4 16760 999   999     <NA>
+#> 1    11       1 16548 3046  3037    999    
+#> 2    46       1 18004 3044  2922    2913   
+#> 3    75       1 18261 999   <NA>    <NA>   
+#> 4    88       2 17712 999   <NA>    999    
+#> 5    99       3 17869 999   999     999    
+#> 6    96       4 18436 999   <NA>    999
 ```
 
 Hospitalization
@@ -98,12 +100,12 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 # this is a local data.frame/tibble
 hosp_df %>% head()
 #>   uid clnt_id      dates diagx diagx_1 diagx_2
-#> 1  43       1 2015-08-13  F156    F144    F168
-#> 2  16       1 2017-10-25   F12    F132    <NA>
-#> 3   6       2 2018-04-19  F133    F128    <NA>
-#> 4  29       3 2016-05-27  F130    F164     999
-#> 5  83       4 2015-10-04   999     999    <NA>
-#> 6  74       4 2015-11-21   999    <NA>     999
+#> 1  83       1 2018-07-14   999    <NA>     999
+#> 2  60       3 2018-03-09   999    <NA>     999
+#> 3  84       4 2015-12-15   999     999    <NA>
+#> 4  24       5 2015-02-02  F172     999     999
+#> 5  54       5 2017-07-23   999    <NA>    <NA>
+#> 6  78       7 2016-10-20   999     999     999
 ```
 
 Here’s how you could use `healthdb` to implement the SUD definition
@@ -145,12 +147,12 @@ above:
     #> # Ordered by: dates
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
-    #> 1    35       7 16810 2913  2923    999                   1
-    #> 2    22       7 16897 3056  2917    999                   1
-    #> 3    47       7 17096 3033  3051    3036                  1
-    #> 4    10       7 17250 2923  3057    999                   1
-    #> 5    41      10 16954 3033  305     2929                  1
-    #> 6    44      10 17788 999   304     292                   1
+    #> 1    11       1 16548 3046  3037    999                   1
+    #> 2    46       1 18004 3044  2922    2913                  1
+    #> 3    48       8 17706 3038  3048    3035                  1
+    #> 4     3       8 17897 3043  3030    <NA>                  1
+    #> 5    25      12 17652 304   3031    999                   1
+    #> 6    33      12 18411 3033  2924    999                   1
     ```
 
 3.  Restrict the temporal pattern of diagnoses
@@ -173,12 +175,12 @@ above:
     #> # Ordered by: dates, uid
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
-    #> 1    35       7 16810 2913  2923    999                   1                  1
-    #> 2    22       7 16897 3056  2917    999                   1                  1
-    #> 3    47       7 17096 3033  3051    3036                  1                  1
-    #> 4    10       7 17250 2923  3057    999                   1                  0
-    #> 5    41      10 16954 3033  305     2929                  1                  0
-    #> 6    44      10 17788 999   304     292                   1                  0
+    #> 1    11       1 16548 3046  3037    999                   1                  0
+    #> 2    46       1 18004 3044  2922    2913                  1                  0
+    #> 3    48       8 17706 3038  3048    3035                  1                  1
+    #> 4     3       8 17897 3043  3030    <NA>                  1                  0
+    #> 5    25      12 17652 304   3031    999                   1                  0
+    #> 6    33      12 18411 3033  2924    999                   1                  0
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.

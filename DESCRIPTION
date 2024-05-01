@@ -17,14 +17,14 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     data.table,
-    dbplyr,
+    dbplyr (>= 2.5.0),
     dplyr (>= 1.1.0),
     glue,
     lubridate,
     magrittr,
     purrr,
     rlang,
-    stringr,
+    stringr (>= 1.5.0),
     tidyr
 RoxygenNote: 7.3.1
 URL: https://github.com/KevinHzq/healthdb, https://kevinhzq.github.io/healthdb/

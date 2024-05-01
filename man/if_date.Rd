@@ -24,11 +24,11 @@ if_date(
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 
-\item{detail}{Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any().}
+\item{detail}{Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any(). Detail is not available if \code{apart} was supplied without \code{within} because sets that satisfied the condition could overlap, and records within a set may be far apart; thus, no unambiguous way to label by element.}
 
 \item{align}{Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". See 'flag_at' argument in \code{\link[=restrict_date]{restrict_date()}} for detail.}
 
-\item{dup.rm}{Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.}
+\item{dup.rm}{Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when \code{within} is supplied without \code{apart}; duplicated dates have no impact when \code{apart} is present as the n dates must be distinct if they were apart. Default is TRUE.}
 
 \item{...}{Additional argument passing to \code{\link[data.table:IDateTime]{data.table::as.IDate()}} for date conversion.}
 }

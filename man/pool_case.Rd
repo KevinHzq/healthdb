@@ -33,7 +33,7 @@ pool_case(
 \item{...}{Additional arguments passing to \code{\link[=bind_source]{bind_source()}}}
 }
 \value{
-A data.frame or remote table with clients that satisfied the predefined case definition.
+A data.frame or remote table with clients that satisfied the predefined case definition. Columns started with "raw_in_" are source-specific counts of raw records, and columns started with "valid_in_" are the number of valid entries (or the number of flags) in each source.
 }
 \description{
 This function filters and pools, i.e., row bind, qualified clients/groups from different source with an option to summarize by client. Unlike \code{\link[=bind_source]{bind_source()}}, no need to supply variable names; the function will guess what should be included and their names from the supplied definition from \code{\link[=build_def]{build_def()}}. Whether a client is qualified relies on the flag variables set by \code{\link[=define_case]{define_case()}}. Therefore, this function is intended to be use only with the built-in \code{\link[=define_case]{define_case()}} as \code{def_fn} in \code{\link[=build_def]{build_def()}}.

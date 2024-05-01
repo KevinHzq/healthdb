@@ -21,7 +21,7 @@ restrict_date(
 )
 }
 \arguments{
-\item{data}{Data frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
+\item{data}{Data frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
@@ -43,7 +43,7 @@ restrict_date(
 
 \item{flag_at}{Character, define if the flag should be placed at the start ("left") or end ("right") of a time period that contains n qualified records. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for \code{c("2023-01-01", "2023-04-01", "2024-05-01")}, flag will be \code{c(0, 1, 0)} for "right" while \code{c(1,0,0)} for "left".}
 
-\item{dup.rm}{Logical for whether duplicated dates should be removed before calculation. Default is TRUE.}
+\item{dup.rm}{Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when \code{within} is supplied without \code{apart}; duplicated dates have no impact when \code{apart} is present as the n dates must be distinct if they were apart. Default is TRUE.}
 
 \item{force_collect}{A logical for whether force downloading remote table if \code{apart} is not NULL. For remote table only, because \code{apart} is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
 

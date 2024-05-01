@@ -14,6 +14,8 @@ utils::globalVariables(c("patterns"))
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
+#' @importFrom lubridate %m-%
+#' @importFrom lubridate %m+%
 #' @importFrom rlang !!
 #' @importFrom rlang !!!
 #' @importFrom rlang .data

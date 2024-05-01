@@ -15,7 +15,7 @@
 #' * "n_per_clnt" - for each client, if they had fewer than `n_per_clnt` records in a source (see [restrict_n()]), then records from that source are removed.
 #' @param ... Additional arguments passing to [bind_source()]
 #'
-#' @return A data.frame or remote table with clients that satisfied the predefined case definition.
+#' @return A data.frame or remote table with clients that satisfied the predefined case definition. Columns started with "raw_in_" are source-specific counts of raw records, and columns started with "valid_in_" are the number of valid entries (or the number of flags) in each source.
 #' @export
 #'
 #' @examples
@@ -127,6 +127,8 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
                                                              .default = flag_restrict_n)) %>%
           dplyr::filter(flag_restrict_n > 0L) %>%
           dplyr::group_by(def, clnt_id)
+      } else {
+        stop("Input data does not contain flag_restrict_n")
       }
     }
   )
@@ -166,8 +168,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     bind_data <- bind_data %>%
       dplyr::mutate(max_date = max(date_var, na.rm = TRUE))
   }
-  bind_data <- bind_data %>%
-    dplyr::filter(flag_valid_record == 1)
 
   # getting source indicators
   src_nm <- unique(def[["src_labs"]])
@@ -185,19 +185,28 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
       dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
   }
 
+  # preserve raw record count before filter out valid records
+  bind_data <- bind_data %>%
+    dplyr::mutate(dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "raw_{.col}"))
+
+  bind_data <- bind_data %>%
+    dplyr::filter(flag_valid_record == 1)
+
   switch(has_date_var,
          y = {
            bind_data <- bind_data %>%
              dplyr::summarise(
                first_valid_date = min(date_var, na.rm = TRUE),
                last_entry_date = max(max_date, na.rm = TRUE),
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE))
+               dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
              )
          },
          n = {
            bind_data <- bind_data %>%
              dplyr::summarise(
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE))
+               dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
+               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
              )
          }
   )

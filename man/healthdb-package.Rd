@@ -4,7 +4,7 @@
 \name{healthdb-package}
 \alias{healthdb}
 \alias{healthdb-package}
-\title{healthdb: Working with Healthcare Database}
+\title{healthdb: Working with Healthcare Databases}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

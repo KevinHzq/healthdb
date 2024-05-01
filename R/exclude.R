@@ -4,7 +4,7 @@
 #' @description
 #' This function combines [dplyr::anti_join()], and negation of [dplyr::filter()]. When a second data set is supplied through the `excl` argument, anti join would be performed; otherwise, `data` would be filtered with the expression given via the `condition` argument, and the filter result would in turn be removed using [dplyr::setdiff()].
 #'
-#' @param data Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`). A subset will be removed from this data.
+#' @param data Data.frames or remote tables (e.g., from [dbplyr::tbl_sql()]). A subset will be removed from this data.
 #' @param excl Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from `data` if there is a match. This will be passed to [dplyr::anti_join()] as the second argument.
 #' @param by Column names that should be matched by [dplyr::anti_join()], or a expressions with [dplyr::join_by()]. See [dplyr::anti_join()]'s `by` argument for detail. Default NULL is the same as `setdiff(data, excl)`.
 #' @param condition An expression that will be passed to [dplyr::filter()]. The rows that satisfy `condition` are those to be removed from `data`.

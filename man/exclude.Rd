@@ -15,7 +15,7 @@ exclude(
 )
 }
 \arguments{
-\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)}). A subset will be removed from this data.}
+\item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}}). A subset will be removed from this data.}
 
 \item{excl}{Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from \code{data} if there is a match. This will be passed to \code{\link[dplyr:filter-joins]{dplyr::anti_join()}} as the second argument.}
 

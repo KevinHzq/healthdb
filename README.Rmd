@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master)
+[![R-CMD-check](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/KevinHzq/healthdb?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/healthdb)](https://CRAN.R-project.org/package=healthdb)
 
 <!-- badges: end -->
 
@@ -25,7 +25,7 @@ The goal of 'healthdb' is to provide a set of tools for identifying diseases or 
 
 **The package is tested only on SQL Server and SQLite** as we do not have access to other SQL dialects. Please report bugs if you encounter issues with other dialects.
 
-Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
+Administrative health data are often stored on SQL database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
 
 This package leverages 'dbplyr', particularly its ability to chain subqueries, in order to implement a common disease definition as a one-shot big query. Outputs are fully compatible with 'dplyr' functions.
 

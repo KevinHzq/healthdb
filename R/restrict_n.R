@@ -4,7 +4,7 @@
 #' @description
 #' Remove or flags groups or clients that have less than some number of rows or some number of distinct values in a variable. For example, it can be used to remove clients that had less than n visits to some service on different dates from some administrative records. It offers filtering with [dplyr::n_distinct()] functionality for database input.
 #'
-#' @param data Data.frames or remote tables (e.g., from `vignette("dbplyr", package = "dbplyr)`)
+#' @param data Data.frames or remote tables (e.g., from [dbplyr::tbl_sql()])
 #' @param clnt_id Grouping variable (quoted/unquoted).
 #' @param n_per_clnt A single number specifying the minimum number of group size.
 #' @param count_by Another variable dictating the counting unit of `n_per_clnt.` The default is NULL meaning the inclusion criteria is the number of row, i.e., `dplyr::n() >= n_per_clnt`. If it is not NULL, the criteria becomes equivalent to `dplyr::n_distinct(count_by) >= n_per_clnt`.

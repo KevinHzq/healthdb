@@ -14,7 +14,7 @@ restrict_n(
 )
 }
 \arguments{
-\item{data}{Data.frames or remote tables (e.g., from \verb{vignette("dbplyr", package = "dbplyr)})}
+\item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
