@@ -55,11 +55,17 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="healthdb-020">healthdb 0.2.0<a class="anchor" aria-label="anchor" href="#healthdb-020"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0" id="healthdb-010">healthdb 0.1.0<a class="anchor" aria-label="anchor" href="#healthdb-010"></a></h2><p class="text-muted">CRAN release: 2024-04-27</p>
-<ul><li>Initial CRAN submission.</li>
+<div class="section level3">
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
+<ul><li>Fixed if_date() gave output shorter than the input when <code>detail</code> and <code>dup.rm</code> are both TRUE. if_date() now does not assume the dates are sorted and returns elements in the original unsorted order.</li>
+<li>Fixed restrict_date for remote table might miss cases with duplicated dates when n &gt; 2.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
+<ul><li><p>restrict_date() will give warning if there are missing entries in <code>date_var</code>. The description of <code>dup.rm</code> has been re-written to clarify it is applicable only when <code>apart</code> is absent.</p></li>
+<li><p>pool_case() now outputs both the number of raw (raw_in_src) and valid (valid_in_src) entries in each source.</p></li>
+</ul></div>
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

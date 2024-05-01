@@ -84,7 +84,7 @@
 <!-- badges: end -->
 <p>The goal of ‘healthdb’ is to provide a set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by ‘stringr’ style regular expression and using ‘LIKE’ operator with multiple patterns in a vector. Three types of functions are included: interactive functions – for customizing complex definitions; call building functions – for batch execution of simple definition; miscellaneous functions – for data wrangling, computing age and comorbidity index, etc.</p>
 <p><strong>The package is tested only on SQL Server and SQLite</strong> as we do not have access to other SQL dialects. Please report bugs if you encounter issues with other dialects.</p>
-<p>Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.</p>
+<p>Administrative health data are often stored on SQL database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.</p>
 <p>This package leverages ‘dbplyr’, particularly its ability to chain subqueries, in order to implement a common disease definition as a one-shot big query. Outputs are fully compatible with ‘dplyr’ functions.</p>
 <p>Common disease definitions often are in the form of having n primary care/hospitalization/prescription records with some International Classification of Diseases (ICD) codes within some time span. See below for an example of implementing such case definition.</p>
 <div class="section level2">
@@ -118,12 +118,12 @@
 <span><span class="co">#&gt; # Database: sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1    51       1 16660 999   999     999    </span></span>
-<span><span class="co">#&gt; 2    24       1 17464 3048  3040    &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 3    14       2 17640 3041  3047    &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 4    37       3 16948 2913  3035    999    </span></span>
-<span><span class="co">#&gt; 5    91       4 16712 999   999     999    </span></span>
-<span><span class="co">#&gt; 6    82       4 16760 999   999     &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999    </span></span>
+<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913   </span></span>
+<span><span class="co">#&gt; 3    75       1 18261 999   &lt;NA&gt;    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4    88       2 17712 999   &lt;NA&gt;    999    </span></span>
+<span><span class="co">#&gt; 5    99       3 17869 999   999     999    </span></span>
+<span><span class="co">#&gt; 6    96       4 18436 999   &lt;NA&gt;    999</span></span></code></pre></div>
 <p>Hospitalization</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_test_dat.html">make_test_dat</a></span><span class="op">(</span>vals_kept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{10:19}"</span><span class="op">)</span>, <span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{100:199}"</span><span class="op">)</span>, noise_val <span class="op">=</span> <span class="st">"999"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -131,12 +131,12 @@
 <span><span class="co"># this is a local data.frame/tibble</span></span>
 <span><span class="va">hosp_df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1  43       1 2015-08-13  F156    F144    F168</span></span>
-<span><span class="co">#&gt; 2  16       1 2017-10-25   F12    F132    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3   6       2 2018-04-19  F133    F128    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4  29       3 2016-05-27  F130    F164     999</span></span>
-<span><span class="co">#&gt; 5  83       4 2015-10-04   999     999    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  74       4 2015-11-21   999    &lt;NA&gt;     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  83       1 2018-07-14   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 2  60       3 2018-03-09   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 3  84       4 2015-12-15   999     999    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4  24       5 2015-02-02  F172     999     999</span></span>
+<span><span class="co">#&gt; 5  54       5 2017-07-23   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6  78       7 2016-10-20   999     999     999</span></span></code></pre></div>
 <p>Here’s how you could use <code>healthdb</code> to implement the SUD definition above:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -174,12 +174,12 @@
 <span><span class="co">#&gt; # Ordered by: dates</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    35       7 16810 2913  2923    999                   1</span></span>
-<span><span class="co">#&gt; 2    22       7 16897 3056  2917    999                   1</span></span>
-<span><span class="co">#&gt; 3    47       7 17096 3033  3051    3036                  1</span></span>
-<span><span class="co">#&gt; 4    10       7 17250 2923  3057    999                   1</span></span>
-<span><span class="co">#&gt; 5    41      10 16954 3033  305     2929                  1</span></span>
-<span><span class="co">#&gt; 6    44      10 17788 999   304     292                   1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999                   1</span></span>
+<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913                  1</span></span>
+<span><span class="co">#&gt; 3    48       8 17706 3038  3048    3035                  1</span></span>
+<span><span class="co">#&gt; 4     3       8 17897 3043  3030    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 5    25      12 17652 304   3031    999                   1</span></span>
+<span><span class="co">#&gt; 6    33      12 18411 3033  2924    999                   1</span></span></code></pre></div>
 </li>
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
@@ -201,12 +201,12 @@
 <span><span class="co">#&gt; # Ordered by: dates, uid</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;              &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    35       7 16810 2913  2923    999                   1                  1</span></span>
-<span><span class="co">#&gt; 2    22       7 16897 3056  2917    999                   1                  1</span></span>
-<span><span class="co">#&gt; 3    47       7 17096 3033  3051    3036                  1                  1</span></span>
-<span><span class="co">#&gt; 4    10       7 17250 2923  3057    999                   1                  0</span></span>
-<span><span class="co">#&gt; 5    41      10 16954 3033  305     2929                  1                  0</span></span>
-<span><span class="co">#&gt; 6    44      10 17788 999   304     292                   1                  0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999                   1                  0</span></span>
+<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913                  1                  0</span></span>
+<span><span class="co">#&gt; 3    48       8 17706 3038  3048    3035                  1                  1</span></span>
+<span><span class="co">#&gt; 4     3       8 17897 3043  3030    &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 5    25      12 17652 304   3031    999                   1                  0</span></span>
+<span><span class="co">#&gt; 6    33      12 18411 3033  2924    999                   1                  0</span></span></code></pre></div>
 </li>
 <li><p>Repeat these steps for hospitalization and row bind the results.</p></li>
 </ol>
@@ -250,6 +250,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/KevinHzq/healthdb/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/KevinHzq/healthdb?branch=master" class="external-link"><img src="https://codecov.io/gh/KevinHzq/healthdb/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://CRAN.R-project.org/package=healthdb" class="external-link"><img src="https://www.r-pkg.org/badges/version/healthdb" alt="CRAN status"></a></li>
 </ul>
 </div>
 

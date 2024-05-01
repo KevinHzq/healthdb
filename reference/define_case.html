@@ -198,18 +198,18 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value exactly matched values in set: letters[1:4] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    c    d    f    g    i    k    m    n    p    q    r    s    v    w </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    c    d    f    g    h    i    m    n    p    q    r    s    u    v </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    x    z NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    w    z NA's </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------- Output first records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-02 q     d       w      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-07 g     a       p      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-02 m     k       d      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-24 b     v       f      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-04 a     g       v      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-07 w     n       a      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple sources with purrr::pmap</span></span></span>
 <span class="r-in"><span><span class="co"># arguments with length = 1 will be recycle to match the number of sources</span></span></span>
@@ -237,9 +237,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value exactly matched values in set: c("a", "b", "c", "d") </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    c    d    f    g    i    k    m    n    p    q    r    s    v    w </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    c    d    f    g    h    i    m    n    p    q    r    s    u    v </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    x    z NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    w    z NA's </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------Exclusion step--------------</span>
@@ -268,10 +268,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    d    e    f    g    h    i    j    k    l    m    o    p    r    s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    a    b    d    e    f    g    h    i    j    k    m    o    p    s    u    v </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    t    u    v    w    x    y    z NA's </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    w    x    y    z NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------Exclusion step--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -280,37 +280,40 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value satisfied regular expression: ^n|^o|^p </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b e g j l n o p r t u </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a d f h j m n o p r s u w </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 3 "clnt_id" in data, 3 were excluded.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 3 "clnt_id" in data, 2 were excluded.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------No. rows restriction--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 1 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-04     d       f       s               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-19     n       b       n               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-11     z       g       a               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        1 2020-01-18     q    &lt;NA&gt;       b               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        1 2020-01-02     q       d       w               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-29     b       d       i               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-07     g       a       p               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        3 2020-01-05     p       b       r               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-12     s       c       v               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-07     x       s       c               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-21     s       d       d               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-02     m       k       d               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-29     r       d       a               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-24     b       v       f               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-31     c       m       b               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        2 2020-01-13     d       h       p               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        2 2020-01-04     a       g       v               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-15     a       q       m               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-27     z       d       f               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-07     h    &lt;NA&gt;       b               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-07     w       n       a               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-12     b       r       u               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-20     i       b       s               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-14     c    &lt;NA&gt;       c               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] clnt_id         service_dt      diagx           diagx_1        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] diagx_2         flag_restrict_n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 2020-01-30     g       w       m               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       1 2020-01-21     z       g       y               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       1 2020-01-24     b       v       f               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       1 2020-01-20     x       j       s               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       1 2020-01-12     e    &lt;NA&gt;       v               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

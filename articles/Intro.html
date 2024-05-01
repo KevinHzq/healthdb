@@ -183,12 +183,12 @@ diagnostic codes</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.45.2 [:memory:]</span></span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    51       1 <span style="text-decoration: underline;">16</span>660 999   999     999    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>    24       1 <span style="text-decoration: underline;">17</span>464 3048  3040    <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>    14       2 <span style="text-decoration: underline;">17</span>640 3041  3047    <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>    37       3 <span style="text-decoration: underline;">16</span>948 2913  3035    999    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>    91       4 <span style="text-decoration: underline;">16</span>712 999   999     999    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>    82       4 <span style="text-decoration: underline;">16</span>760 999   999     <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>    46       4 <span style="text-decoration: underline;">18</span>497 2925  3047    2925   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>    79       5 <span style="text-decoration: underline;">16</span>559 999   999     <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>    40       5 <span style="text-decoration: underline;">17</span>134 3056  3042    <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>    63       5 <span style="text-decoration: underline;">17</span>213 999   999     999    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>    77       5 <span style="text-decoration: underline;">17</span>976 999   <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
 </li>
 <li>
 <p>Hospitalization with <a href="https://en.wikipedia.org/wiki/ICD-10" class="external-link">ICD-10</a> codes</p>
@@ -198,12 +198,12 @@ diagnostic codes</p>
 <span><span class="co"># this is a local data.frame/tibble</span></span>
 <span><span class="va">hosp_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1  43       1 2015-08-13  F156    F144    F168</span></span>
-<span><span class="co">#&gt; 2  16       1 2017-10-25   F12    F132    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3   6       2 2018-04-19  F133    F128    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4  29       3 2016-05-27  F130    F164     999</span></span>
-<span><span class="co">#&gt; 5  83       4 2015-10-04   999     999    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  74       4 2015-11-21   999    &lt;NA&gt;     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 100       1 2015-02-01   999     999     999</span></span>
+<span><span class="co">#&gt; 2  85       1 2017-07-17   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 3   3       1 2019-06-17  F133    F159     999</span></span>
+<span><span class="co">#&gt; 4  65       2 2019-01-08   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 5  52       2 2019-06-01   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span></code></pre></div>
 </li>
 </ol>
 </div>
@@ -332,7 +332,7 @@ collection.</p>
 <span></span>
 <span><span class="co"># Number of rows in the current result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 35</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 27</span></span></code></pre></div>
 <p>Our data now only contains diagnoses that are probably not enough for
 further analyses. Let’s say we want to gather client demographics such
 as age and sex from other sources. This certainly can be done with
@@ -366,16 +366,16 @@ multiple <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The data has 35 rows. After joining, variable(s) from age_tab has 35 rows, and variable(s) from address_tab has 35 rows</span></span>
+<span><span class="co">#&gt; The data has 27 rows. After joining, variable(s) from age_tab has 27 rows, and variable(s) from address_tab has 27 rows</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 12</span></span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    35       7 <span style="text-decoration: underline;">16</span>810 2913  2923    999                   1                  1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>    22       7 <span style="text-decoration: underline;">16</span>897 3056  2917    999                   1                  1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>    47       7 <span style="text-decoration: underline;">17</span>096 3033  3051    3036                  1                  1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>    10       7 <span style="text-decoration: underline;">17</span>250 2923  3057    999                   1                  0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>    41      10 <span style="text-decoration: underline;">16</span>954 3033  305     2929                  1                  0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>    44      10 <span style="text-decoration: underline;">17</span>788 999   304     292                   1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1      18 <span style="text-decoration: underline;">16</span>988 2919  2926    <span style="color: #BB0000;">NA</span>                    1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>    34      18 <span style="text-decoration: underline;">17</span>810 3056  305     999                   1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>    45      20 <span style="text-decoration: underline;">16</span>517 3033  3042    3036                  1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>    39      20 <span style="text-decoration: underline;">17</span>305 3034  3045    999                   1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>    33      21 <span style="text-decoration: underline;">16</span>451 3031  2911    999                   1                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>    50      21 <span style="text-decoration: underline;">16</span>818 2919  3058    3037                  1                  0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: year &lt;dbl&gt;, age &lt;int&gt;, sex &lt;chr&gt;, area_code &lt;int&gt;</span></span></span></code></pre></div>
 </li>
 </ol>
@@ -475,12 +475,14 @@ outputs from different calls.</p>
 <span><span class="co">#&gt;    - contains a value satisfied regular expression: ^F10|^F11|^F12|^F13|^F14|^F15|^F16|^F17|^F18|^F19 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span></span>
-<span><span class="co">#&gt;  999 F100 F101 F105 F109 F112 F113 F115 F116 F119 F120 F121 F122 F125 F128 F130 </span></span>
+<span><span class="co">#&gt;  999  F10 F103 F104 F105 F107 F108 F111 F112 F117  F12 F121 F122 F123 F124 F128 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; F131 F132 F134 F140 F142 F144 F145 F148 F150 F157 F158 F159 F161 F162 F164 F167 </span></span>
+<span><span class="co">#&gt; F129  F13 F132 F135 F137 F138 F140 F141 F146 F147  F15 F154 F159  F16 F161 F162 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; F168 F170 F171 F174 F176 F178 F180 F184 F187 F188 F191 F194 F195 F197 F198 NA's </span></span>
+<span><span class="co">#&gt; F164 F172 F173 F174 F175 F176 F179 F183 F184 F185 F187 F189 F192 F193 F197 F198 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
+<span><span class="co">#&gt; NA's </span></span>
+<span><span class="co">#&gt;    1 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; -------------- Output all records--------------</span></span></code></pre></div>
 <p>Let’s check the results!</p>
@@ -492,20 +494,20 @@ outputs from different calls.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># Ordered by: dates, uid</span></span></span>
 <span><span class="co">#&gt;   def   src     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SUD   claim    24       1 <span style="text-decoration: underline;">17</span>464 3048  3040    <span style="color: #BB0000;">NA</span>                    0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SUD   claim    14       2 <span style="text-decoration: underline;">17</span>640 3041  3047    <span style="color: #BB0000;">NA</span>                    0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SUD   claim    37       3 <span style="text-decoration: underline;">16</span>948 2913  3035    999                   0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SUD   claim    18       4 <span style="text-decoration: underline;">18</span>151 305   3056    999                   0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SUD   claim    38       5 <span style="text-decoration: underline;">18</span>248 3055  3054    999                   0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SUD   claim    46       6 <span style="text-decoration: underline;">17</span>273 2922  3048    2927                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SUD   claim    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>                    0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SUD   claim    46       4 <span style="text-decoration: underline;">18</span>497 2925  3047    2925                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SUD   claim    40       5 <span style="text-decoration: underline;">17</span>134 3056  3042    <span style="color: #BB0000;">NA</span>                    0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SUD   claim    10       8 <span style="text-decoration: underline;">17</span>237 2912  3057    999                   0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SUD   claim    41      12 <span style="text-decoration: underline;">17</span>520 3047  3049    2915                  0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SUD   claim    22      13 <span style="text-decoration: underline;">18</span>489 3045  3042    <span style="color: #BB0000;">NA</span>                    0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: flag_restrict_date &lt;int&gt;</span></span></span>
 <span><span class="co">#&gt;   def  src uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1 SUD hosp  43       1 2015-08-13  F156    F144    F168</span></span>
-<span><span class="co">#&gt; 2 SUD hosp  16       1 2017-10-25   F12    F132    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3 SUD hosp   6       2 2018-04-19  F133    F128    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4 SUD hosp  29       3 2016-05-27  F130    F164     999</span></span>
-<span><span class="co">#&gt; 5 SUD hosp  10       4 2019-09-12  F138    F120     999</span></span>
-<span><span class="co">#&gt; 6 SUD hosp  30       5 2019-12-18  F192    F100     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 SUD hosp   3       1 2019-06-17  F133    F159     999</span></span>
+<span><span class="co">#&gt; 2 SUD hosp  38       4 2015-07-09  F191    F147     999</span></span>
+<span><span class="co">#&gt; 3 SUD hosp  17       4 2017-04-23  F114    F154     999</span></span>
+<span><span class="co">#&gt; 4 SUD hosp  30       5 2015-06-28  F101    F107    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5 SUD hosp  27       5 2016-10-05  F165    F174    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6 SUD hosp  24       5 2017-09-05  F118    F111    &lt;NA&gt;</span></span></code></pre></div>
 <p>At this point, the result from the claim database
 (<code>result[[1]]</code>) has not been collected locally. You could
 collect it manually, do further filtering, and then combine with the
@@ -521,20 +523,20 @@ naming feature.</p>
 <span>  flag_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flag_restrict_date"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  force_proceed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 99 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 97 × 5</span></span></span>
 <span><span class="co">#&gt;    src_No src     uid clnt_id flag_date</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>      1 claim    24       1         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>      1 claim    14       2         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>      1 claim    37       3         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>      1 claim    18       4         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>      1 claim    38       5         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>      1 claim    46       6         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>      1 claim    35       7         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>      1 claim    22       7         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>      1 claim    47       7         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>      1 claim    10       7         0</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 89 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>      1 claim    25       3         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>      1 claim    46       4         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>      1 claim    40       5         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>      1 claim    10       8         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>      1 claim    41      12         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>      1 claim    22      13         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>      1 claim     3      15         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>      1 claim    14      16         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>      1 claim    26      17         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>      1 claim     1      18         0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 87 more rows</span></span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

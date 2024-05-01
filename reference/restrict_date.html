@@ -77,7 +77,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>Data frames or remote tables (e.g., from <code>vignette("dbplyr", package = "dbplyr)</code>)</p></dd>
+<dd><p>Data frames or remote tables (e.g., from <code><a href="https://dbplyr.tidyverse.org/reference/tbl_sql.html" class="external-link">dbplyr::tbl_sql()</a></code>)</p></dd>
 
 
 <dt>clnt_id</dt>
@@ -115,7 +115,7 @@
 
 
 <dt>dup.rm</dt>
-<dd><p>Logical for whether duplicated dates should be removed before calculation. Default is TRUE.</p></dd>
+<dd><p>Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when <code>within</code> is supplied without <code>apart</code>; duplicated dates have no impact when <code>apart</code> is present as the n dates must be distinct if they were apart. Default is TRUE.</p></dd>
 
 
 <dt>force_collect</dt>
@@ -154,20 +154,20 @@
 <span class="r-in"><span><span class="co">#Keep clients with 2 records that were 1 week apart within 1 month</span></span></span>
 <span class="r-in"><span><span class="fu">restrict_date</span><span class="op">(</span><span class="va">df</span>, <span class="va">clnt_id</span>, <span class="va">service_dt</span>, n <span class="op">=</span> <span class="fl">2</span>, apart <span class="op">=</span> <span class="fl">7</span>, within <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Of the 19 clients in the input, 13 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Of the 18 clients in the input, 11 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_date</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1 2020-01-20 v     s       g                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       3 2020-01-26 c     v       b                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       4 2020-01-02 i     o       e                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       5 2020-01-10 l     x       o                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       5 2020-01-15 a     u       v                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       5 2020-01-24 p     x       r                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       5 2020-01-26 h     g       g                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       6 2020-01-16 v     x       i                        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       7 2020-01-05 m     p       f                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       7 2020-01-28 h     e       d                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1 2020-01-30 r     j       v                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1 2020-01-31 m     g       k                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2 2020-01-04 c     s       l                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       2 2020-01-06 i     n       z                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       3 2020-01-23 t     v       <span style="color: #BB0000;">NA</span>                       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       4 2020-01-09 l     r       o                        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       4 2020-01-28 t     f       x                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       5 2020-01-12 o     l       u                        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       7 2020-01-01 k     x       e                        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       7 2020-01-14 x     u       f                        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 20 more rows</span></span>
 </code></pre></div>
     </div>

@@ -88,7 +88,7 @@
 
 
 <dt>detail</dt>
-<dd><p>Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any().</p></dd>
+<dd><p>Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any(). Detail is not available if <code>apart</code> was supplied without <code>within</code> because sets that satisfied the condition could overlap, and records within a set may be far apart; thus, no unambiguous way to label by element.</p></dd>
 
 
 <dt>align</dt>
@@ -96,7 +96,7 @@
 
 
 <dt>dup.rm</dt>
-<dd><p>Logical for whether duplicated dates in x should be removed before calculation. Default is TRUE.</p></dd>
+<dd><p>Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when <code>within</code> is supplied without <code>apart</code>; duplicated dates have no impact when <code>apart</code> is present as the n dates must be distinct if they were apart. Default is TRUE.</p></dd>
 
 
 <dt>...</dt>
