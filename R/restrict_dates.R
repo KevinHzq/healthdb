@@ -27,19 +27,25 @@
 #'
 #' @examples
 #' sample_size <- 30
-#' df <- data.frame(clnt_id = sample(1:sample_size, sample_size, replace = TRUE),
-#'  service_dt = sample(seq(as.Date("2020-01-01"), as.Date("2020-01-31"), by = 1),
-#'                      size = sample_size, replace = TRUE),
-#'  diagx = sample(letters, size = sample_size, replace = TRUE),
-#'  diagx_1 = sample(c(NA, letters), size = sample_size, replace = TRUE),
-#'  diagx_2 = sample(c(NA, letters), size = sample_size, replace = TRUE))
+#' df <- data.frame(
+#'   clnt_id = sample(1:sample_size, sample_size, replace = TRUE),
+#'   service_dt = sample(seq(as.Date("2020-01-01"), as.Date("2020-01-31"), by = 1),
+#'     size = sample_size, replace = TRUE
+#'   ),
+#'   diagx = sample(letters, size = sample_size, replace = TRUE),
+#'   diagx_1 = sample(c(NA, letters), size = sample_size, replace = TRUE),
+#'   diagx_2 = sample(c(NA, letters), size = sample_size, replace = TRUE)
+#' )
 #'
-#' #Keep clients with 2 records that were 1 week apart within 1 month
+#' # Keep clients with 2 records that were 1 week apart within 1 month
 #' restrict_date(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
-restrict_date <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose")
-, ...) {
+restrict_date <- function(
+    data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"),
+    ...) {
   rlang::check_required(clnt_id)
   rlang::check_required(date_var)
+  stopifnot(n > 1, is.wholenumber(n))
+  stopifnot(any(!is.null(apart), !is.null(within)))
   UseMethod("restrict_dates")
 }
 

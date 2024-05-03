@@ -91,3 +91,4 @@ test_that("sort back works", {
   out <- if_dates(x, n = 2, within = w, detail = TRUE, align = "right")
   expect_equal(out, ans)
 })
+

@@ -12,7 +12,7 @@ make_test_dat(
   nrows = 100,
   n_any = 50,
   n_all = 10,
-  seed = 2024,
+  seed = NULL,
   answer_id = NULL,
   type = c("data.frame", "database")
 )

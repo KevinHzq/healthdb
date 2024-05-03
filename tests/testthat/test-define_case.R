@@ -41,10 +41,12 @@ test_that("output is correct for database", {
   out_df <- df %>% dplyr::filter(dplyr::if_any(dplyr::starts_with("diagx"), ~ . %in% "999"))
   ans_df <- ans_df %>% dplyr::anti_join(out_df, by = "clnt_id")
   ans_id <- test_apart_within(ans_df, n, apart, within)
-  output_df <- define_case(db, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, mode = "filter", n_per_clnt = n, date_var = dates, apart = apart, within = within, force_collect = TRUE)
+  output_df <- define_case(db, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, uid = uid, mode = "filter", n_per_clnt = n, date_var = dates, apart = apart, within = within, force_collect = TRUE) %>%
+    dplyr::collect()
   expect_setequal(output_df$clnt_id, ans_id)
   # also test mode
-  output_df_flag <- define_case(db, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, n_per_clnt = n, date_var = dates, apart = apart, within = within, mode = "flag", force_collect = TRUE)
+  output_df_flag <- define_case(db, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, uid = uid, n_per_clnt = n, date_var = dates, apart = apart, within = within, mode = "flag", force_collect = TRUE) %>%
+    dplyr::collect()
   expect_gt(nrow(output_df_flag), nrow(output_df))
   expect_setequal(dplyr::filter(output_df_flag, dplyr::if_all(dplyr::starts_with("flag_"), ~ . == 1)) %>% dplyr::pull(clnt_id), ans_id)
   #also test df input

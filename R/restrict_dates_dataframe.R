@@ -20,8 +20,12 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   # place holder for temp var names
   flag_restrict_date <- temp.nm_keep <- temp.nm_keep_cum <- NULL
 
+  if(verbose) {
+    initial_n <- report_n(data, on = {{ clnt_id }})
+  }
+
   # see if_dates for detail
-  keep <- data %>%
+  data <- data %>%
     dplyr::group_by(.data[[clnt_id]]) %>%
     dplyr::arrange(.data[[clnt_id]], .data[[date_var]]) %>%
     dplyr::mutate(
@@ -29,26 +33,25 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
       flag_restrict_date = as.numeric(temp.nm_keep)
     )
 
-  n_kept <- keep %>%
+  n_kept <- data %>%
     dplyr::filter(flag_restrict_date == 1) %>%
     dplyr::n_groups()
 
   if (mode == "filter") {
-    keep <- keep %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
+    data <- data %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
   }
 
-  keep <- keep %>%
+  data <- data %>%
     dplyr::select(-dplyr::starts_with("temp.nm_")) %>%
     dplyr::ungroup()
 
   if (verbose) {
-    initial_n <- report_n(data, on = {{ clnt_id }})
     cat(
-      "\n Of the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), "within", within, "days."
+      "\n Of the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), ifelse(!is.null(within), paste("within", within, "days"), "")
       # , ifelse(strict_start, "Records before the earliest entries that met the condition are removed.", "")
       , "\n"
     )
   }
 
-  return(keep)
+  return(data)
 }

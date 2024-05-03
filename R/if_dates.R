@@ -30,11 +30,11 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
   if (all(is.null(apart), is.null(within))) stop("apart and within cannot both be NULL")
 
   # stopifnot("x must be character or Date" = any(is.character(x), lubridate::is.Date(x)))
-  stopifnot(is.wholenumber(n))
+  stopifnot(n > 1, is.wholenumber(n))
   align <- rlang::arg_match0(align, c("left", "right"))
 
   # place holder for var names
-  N <- len_enough <- period_id <- real_end <- start <- y <- NULL
+  N <- len_enough <- period_id <- real_end <- start <- d <- y <- NULL
 
   len <- length(x)
 
@@ -88,7 +88,8 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     if (apart * (n - 1) >= within) stop("Condition is impossible as apart*(n - 1) cannot be greater than within")
     # overlap join dates and dates+within to get records falls in every within window starting at each date. This ensure the within condition, then calls all_apart to test the apart condition
     # tested against combn(sample, n, function(x) all(diff(sort(x)) >= m) & (diff(c(min(x), max(x))) <= within)) %>% any()
-    dtx <- data.table::data.table(x = x, y = x, key = c("x", "y"))
+    # browser()
+    dtx <- data.table::data.table(d = x, y = x, key = c("d", "y"))
 
     switch(align,
       left = {
@@ -100,17 +101,22 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     )
 
     overlap <- data.table::foverlaps(dtx, dty)[, y := NULL]
-    data.table::setorder(overlap, period_id, x)
-    overlap[, N := .N, by = period_id]
-    # filters with if (!start_valid) is used for reducing compute
-    if (!detail) overlap <- overlap[N >= n]
-    overlap[, real_end := data.table::last(x), by = period_id]
-    if (!detail) overlap <- overlap[, len_enough := (real_end - start) >= apart * (n - 1)][len_enough == TRUE]
-    if (nrow(overlap) == 0) {
-      return(FALSE)
-    }
+    # browser()
+    data.table::setorder(overlap, period_id, d)
 
-    overlap <- overlap[, list(incl = all_apart(x, n, apart)), by = period_id]
+    # filters with n for reducing compute
+    if (!detail) {
+      overlap[, N := .N, by = period_id]
+      overlap <- overlap[N >= n]
+      if (nrow(overlap) == 0) {
+        return(FALSE)
+      }
+    }
+    # intended to reduce compute but need to adjust for `align`
+    # overlap[, real_end := data.table::last(d), by = period_id]
+    # if (!detail) overlap <- overlap[, len_enough := (real_end - start) >= apart * (n - 1)][len_enough == TRUE]
+
+    overlap <- overlap[, list(incl = all_apart(d, n, apart)), by = period_id]
 
     if (detail) {
       return(overlap[["incl"]][order(ord)])
@@ -120,5 +126,4 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
   }
 }
 
-#' @aliases if_date
 if_dates <- if_date

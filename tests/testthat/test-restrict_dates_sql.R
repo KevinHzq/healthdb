@@ -9,6 +9,18 @@ test_that("basic use works", {
   expect_setequal(output_df$clnt_id, ans_id)
 })
 
+test_that("apart only works", {
+  n <- sample(2:5, 1)
+  apart <- sample(7:14, 1)
+  within <- sample(30:365, 1)
+  db <- make_test_dat(type = "database")
+  df <- dplyr::collect(db)
+  output_df <- restrict_dates(db, clnt_id, dates, n, apart, uid = uid, mode = "filter") %>%
+    dplyr::collect()
+  ans_id <- test_apart_within(df, n, apart)
+  expect_setequal(output_df$clnt_id, ans_id)
+})
+
 test_that("within only works", {
   skip_on_cran()
   n <- sample(2:5, 1)
@@ -80,3 +92,4 @@ test_that("edge case duplicated dates and n > 2", {
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, flag_at = "right") %>% dplyr::collect()
   expect_setequal(output_df$flag_restrict_date, as.numeric(ans))
 })
+
