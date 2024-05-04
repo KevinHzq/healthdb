@@ -38,7 +38,9 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
     dplyr::n_groups()
 
   if (mode == "filter") {
-    data <- data %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
+    data <- data %>%
+      dplyr::mutate(flag_restrict_date = tidyr::replace_na(flag_restrict_date, 0)) %>%
+      dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
   }
 
   data <- data %>%
@@ -46,11 +48,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
     dplyr::ungroup()
 
   if (verbose) {
-    cat(
-      "\n Of the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have", n, "records that were", ifelse(!is.null(apart), paste("at least", apart, "days apart"), ""), ifelse(!is.null(within), paste("within", within, "days"), "")
-      # , ifelse(strict_start, "Records before the earliest entries that met the condition are removed.", "")
-      , "\n"
-    )
+    rlang::inform(c("i" = glue::glue('Of the {initial_n} clients in the input, {initial_n - n_kept} were {ifelse(mode == "filter", "excluded", "flagged as 0")} by restricting that each client must have {n} records that were{ifelse(!is.null(apart), paste(" at least", apart, "days apart"), "")}{ifelse(!is.null(within), paste(" within", within, "days"), "")}')))
   }
 
   return(data)

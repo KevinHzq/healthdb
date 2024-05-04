@@ -7,6 +7,7 @@ test_that("basic use works", {
   output_df <- restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid, force_collect = TRUE, mode = "filter")
   ans_id <- test_apart_within(df, n, apart, within)
   expect_setequal(output_df$clnt_id, ans_id)
+  expect_message(restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid, verbose = TRUE), "flagged")
 })
 
 test_that("apart only works", {
@@ -91,5 +92,23 @@ test_that("edge case duplicated dates and n > 2", {
   db <- dbplyr::memdb_frame(clnt_id = 1, dates = x, uid = 1:length(x))
   output_df <- restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, flag_at = "right") %>% dplyr::collect()
   expect_setequal(output_df$flag_restrict_date, as.numeric(ans))
+})
+
+test_that("check apart and within works for even and odd ns", {
+  skip_on_cran()
+  purrr::walk(2:6, function(n) {
+    apart <- sample(7:14, 1)
+    within <- sample(30:365, 1) + apart
+    df <- make_test_dat()
+    db <- memdb_tbl(df)
+    output_df <- restrict_dates(df, clnt_id, dates, n, apart, within, uid = uid)
+    output_db <- restrict_dates(db, clnt_id, dates, n, apart, within, uid = uid) %>%
+      dplyr::collect() %>%
+      dplyr::arrange(clnt_id, dates)
+    expect_equal(output_db$flag_restrict_date, output_df$flag_restrict_date)
+    ans_id <- test_apart_within(df, n, apart, within)
+    expect_setequal(subset(output_db, flag_restrict_date == 1)$clnt_id, ans_id)
+    expect_setequal(subset(output_df, flag_restrict_date == 1)$clnt_id, ans_id)
+  })
 })
 

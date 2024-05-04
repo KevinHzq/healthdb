@@ -43,8 +43,8 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode 
   if (verbose) {
     # disable report_n to save the extra execution
     # initial_n <- report_n(data, on = {{ clnt_id }})
-    # cat("\nOf the", initial_n, "clients in the input,", initial_n - report_n(db, on = {{ clnt_id }}), "were excluded by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
-    cat("\nApply restriction that each client must have at least", n_per_clnt, paste0(ifelse(has_count_by, paste0("records with distinct ", count_by_nm, "."), "records."), " Clients/groups which", ifelse(mode == "filter", "did not meet", "met"), "the condition were"), ifelse(mode == "filter", "excluded.", "flagged."), "\n")
+    # cat("\nApply restriction that each client must have at least", n_per_clnt, paste0(ifelse(has_count_by, paste0("records with distinct ", count_by_nm, "."), "records."), " Clients/groups which", ifelse(mode == "filter", "did not meet", "met"), "the condition were"), ifelse(mode == "filter", "excluded.", "flagged."), "\n")
+    rlang::inform(c("i" = glue::glue('Apply restriction that each client must have at least {n_per_clnt} {ifelse(has_count_by, paste0("records with distinct ", count_by_nm), "records")}. {ifelse(mode == "filter", "Clients/groups which did not met the condition were excluded.", "Records that met the condition were flagged.")}')))
   }
 
   return(dplyr::ungroup(db))

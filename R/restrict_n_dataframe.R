@@ -32,7 +32,8 @@ restrict_n.data.frame <- function(data, clnt_id, n_per_clnt, count_by = NULL, mo
 
   if (verbose) {
     initial_n <- report_n(data, on = {{ clnt_id }})
-    cat("\nOf the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
+    # cat("\nOf the", initial_n, "clients in the input,", initial_n - n_kept, "were", ifelse(mode == "filter", "excluded", "flagged as 0"), "by restricting that each client must have at least", n_per_clnt, "records", ifelse(has_count_by, paste0("with distinct ", count_by_nm), ""), "\n")
+    rlang::inform(c("i" = glue::glue('Of the {initial_n} clients in the input, {initial_n - n_kept} were {ifelse(mode == "filter", "excluded", "flagged as 0")} by restricting that each client must have at least {n_per_clnt} records {ifelse(has_count_by, paste0("with distinct ", count_by_nm), "")}')))
   }
 
   # convert back to dataframe before output

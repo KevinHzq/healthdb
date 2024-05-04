@@ -7,7 +7,7 @@ test_that("basic use works", {
   output_id <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, mode = "filter") %>% dplyr::pull(clnt_id)
   expect_setequal(output_id, keep_id)
   # also test the n in output
-  expect_output(restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, verbose = TRUE, mode = "filter"), glue::glue("{length(c(keep_id, out_id))} clients in the input, {length(out_id)}"))
+  expect_message(restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, verbose = TRUE, mode = "filter"), glue::glue("{length(c(keep_id, out_id))} clients in the input, {length(out_id)}"))
 })
 
 test_that("nothing change if n = 1", {

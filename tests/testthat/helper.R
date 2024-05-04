@@ -41,7 +41,8 @@ test_apart_within <- function(data, n, apart = 0, within = Inf) {
     dplyr::filter(dplyr::n_distinct(.data[["dates"]]) >= n)
 
   keep <- data %>%
-    dplyr::summarise(met = utils::combn(.data[["dates"]] %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any())
+    dplyr::summarise(met = ifelse(dplyr::n() < n, FALSE,
+                                  utils::combn(.data[["dates"]] %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any()))
 
   keep <- keep %>%
     dplyr::filter(met) %>%

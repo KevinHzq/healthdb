@@ -30,6 +30,14 @@ test_that("identify+restrict_n+restrict_dates works", {
   expect_s3_class(output_df, "data.frame")
 })
 
+test_that("identify+exclude+restrict_n+restrict_date works", {
+  excl_vals <- c("a", "b")
+  db <- letters_n(type = "database")
+  output_df <- define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, mode = "filter", excl_vals = excl_vals, n_per_clnt = 2, apart = 30, within = 365, date_var = dates, uid = uid, force_collect = TRUE)
+  expect_s3_class(output_df, "data.frame")
+  expect_message(define_case(db, starts_with("diagx"), "in", letters, clnt_id = clnt_id, mode = "filter", excl_vals = excl_vals, n_per_clnt = 2, apart = 30, within = 365, date_var = dates, uid = uid, force_collect = TRUE, verbose = TRUE), "Output all records")
+})
+
 test_that("output is correct for database", {
   skip_on_cran()
   n <- 2

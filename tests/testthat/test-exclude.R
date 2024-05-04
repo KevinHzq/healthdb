@@ -34,18 +34,18 @@ test_that("condition on database works", {
   out_db <- exclude(db, condition = ans == "noise") %>% dplyr::arrange(uid)
   expect_equal(out_db %>% dplyr::collect(), subset(df, ans != "noise"), ignore_attr = "row.names")
   # also test console output
-  expect_output(exclude(db, condition = ans == "noise", verbose = TRUE), "Consider")
+  expect_message(exclude(db, condition = ans == "noise", verbose = TRUE), "Consider")
 })
 
 test_that("report_on on data.frames works", {
   df <- letters_n()
-  expect_output(exclude(df, condition = ans == "noise", report_on = clnt_id, verbose = TRUE), "were excluded")
+  expect_message(exclude(df, condition = ans == "noise", report_on = clnt_id, verbose = TRUE), "were excluded")
 })
 
 test_that("report_on on database works", {
   db <- letters_n(type = "database")
   on <- "clnt_id"
-  expect_output(exclude(db, condition = ans == "noise", report_on = !!on, verbose = TRUE), "were excluded")
+  expect_message(exclude(db, condition = ans == "noise", report_on = !!on, verbose = TRUE), "were excluded")
 })
 
 test_that("edge case - variable contains NA on database works", {

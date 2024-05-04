@@ -18,7 +18,7 @@ execute_def(
 
 \item{bind}{A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default is FALSE. If TRUE, the behavior is to try and return the unbinded result when failed.}
 
-\item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = FALSE) to suppress the prompt once and for all.}
+\item{force_proceed}{A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = TRUE) to suppress the prompt once and for all.}
 }
 \value{
 A single (if bind = TRUE) or a list of data.frames or remote tables.

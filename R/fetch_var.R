@@ -122,7 +122,9 @@ fetch_var <- function(data, keys, linkage, verbose = getOption("healthdb.verbose
 
   y_n <- purrr::map_dbl(vars_df, nrow)
 
-  if (verbose) cat("\nThe data has", nrow(data), "rows. After joining,", glue::glue("variable(s) from {df$lhs} has {y_n} rows") %>% paste(collapse = ", and "), "\n")
+  one_to_n <- y_n != nrow(data)
+  # if (verbose) rlang::inform(c("i" = paste("The data has", nrow(data), "rows. After joining,", glue::glue("variable(s) from {df$lhs} has {y_n} rows") %>% paste(collapse = ", and "), "\n")))
+  if (any(one_to_n)) rlang::inform(c("i" = glue::glue('The join between data and any of ({stringr::str_flatten_comma(as.character(df$lhs[one_to_n]), last = " and ")}) is not one to one.')))
 
   vars_df <- purrr::list_cbind(vars_df)
 

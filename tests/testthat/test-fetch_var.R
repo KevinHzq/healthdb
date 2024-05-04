@@ -72,3 +72,12 @@ test_that("n of keys check works", {
                           linkage = list(df2 ~ sex|ans)),
                "subset of keys")
 })
+
+test_that("not one to one warning works", {
+  df1 <- letters_n()
+  df2 <- data.frame(clnt_id = c(1:5,1:5), sex = c(rep("F", 5), rep("M", 5)))
+  expect_message(fetch_var(df1, keys = clnt_id,
+                           linkage = list(df2 ~ sex)), "not one to one") %>% expect_warning() %>% expect_error("recycle")
+
+})
+

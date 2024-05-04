@@ -7,7 +7,7 @@
 #' @param def A tibble created by [build_def()].
 #' @param with_data A named list which the elements are in the form of src_lab = data, where 'src_lab' corresponds to the src_labs argument from [build_def()] and 'data' is the data object that will be passed to calls stored in def. The names (and length) of `with_data` must match the unique values of src_labs in `def`.
 #' @param bind A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default is FALSE. If TRUE, the behavior is to try and return the unbinded result when failed.
-#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = FALSE) to suppress the prompt once and for all.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = TRUE) to suppress the prompt once and for all.
 #' @seealso [bind_sources()] for binding the output with convenient renaming features.
 #'
 #' @return A single (if bind = TRUE) or a list of data.frames or remote tables.
@@ -78,6 +78,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
   def_check <- def %>%
     dplyr::select(dplyr::all_of(c("def_lab", "src_labs"))) %>%
     dplyr::distinct()
+
   if (nrow(def_check) < nrow(def)) stop("Duplicates in 'def_lab' + 'src_labs' combinations")
 
   n_source <- dplyr::n_distinct(def[["src_labs"]])
@@ -99,6 +100,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
   # first alter the call to include data, then eval
   def <- def %>%
     dplyr::mutate(
+      output_lab = glue::glue("{def_lab}.{src_labs}"),
       fn_call = purrr::map2(
         .data[["fn_call"]], .data[["src_labs"]],
         function(x, y) rlang::call_modify(x, data = with_data_expr[[y]])
@@ -123,24 +125,23 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
       )
     )
 
-  # result <- purrr::map(def[["fn_call"]], function(x) eval(x, envir = with_data_env))
+  result <- def[["result"]]
+  names(result) <- def[["output_lab"]]
 
   if (bind & !any_local) {
     # if the data are all remote, do union in SQL;
     # union_all not necessary as already labeled by def and src; rows would not collapse across srcs
-    result <- rlang::try_fetch(purrr::reduce(def[["result"]], dplyr::union),
+    result <- rlang::try_fetch(purrr::reduce(result, dplyr::union),
       error = function(cnd) {
         rlang::warn("Returned unbinded result. Binding failed probably due to combining tables from different databases, which cannot be binded without collecting. Actual error message:\n", parent = cnd)
-        return(def[["result"]])
+        return(result)
       }
     )
     # manual return here to simplify the subsequent if logic
     return(result)
   } else if (bind) {
     # if not all remote, also collect the remote ones before binding
-    result <- purrr::map_if(def[["result"]], !is_local, dplyr::collect, .progress = TRUE)
-  } else {
-    result <- def[["result"]]
+    result <- purrr::map_if(result, !is_local, dplyr::collect, .progress = TRUE)
   }
 
   # do faster list bind on all local tables, with distinct() to match union result

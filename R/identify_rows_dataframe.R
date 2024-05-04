@@ -84,13 +84,16 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
   if (verbose) {
     result_vals <- dt[, unlist(.SD), .SDcols = vars] %>% unique()
 
-    cat(
-      "\nIdentify records with condition(s):",
-      "\n - where", ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the")), paste0(vars, collapse = ", "), "column(s) in each record",
-      "\n   - contains a value", match_msg, match_str, "\n"
-    )
+    # cat(
+    #   "\nIdentify records with condition(s):",
+    #   "\n - where", ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the")), paste0(vars, collapse = ", "), "column(s) in each record",
+    #   "\n   - contains a value", match_msg, match_str, "\n"
+    # )
+    rlang::inform(c("i" = "Identify records with condition(s):",
+                    "*" = glue::glue('where {ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the"))} {paste0(vars, collapse = ", ")} column(s) in each record'),
+                    "*" = glue::glue('contains a value {match_msg} {match_str}')))
 
-    cat(ifelse(is.numeric(result_vals), "\nSummary of values in the result", "\nAll unique value(s) and frequency in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other columns):", ":"), "\n")
+    cat(ifelse(is.numeric(result_vals), "\nSummary of values in the result", "\nAll unique value(s) and frequency in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns):", ":"), "\n")
 
     switch(match,
       "between" = {cat("Range: "); print(range(result_vals))},

@@ -100,12 +100,12 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   incl <- rlang::call_modify(incl, ... = rlang::zap(), .homonyms = "first")
 
   # body
-  if (verbose) cat("\n--------------Inclusion step--------------\n")
+  if (verbose) rlang::inform(c(">" = "--------------Inclusion step--------------\n"))
   # browser()
   result <- eval(incl)
 
   if (!is.null(excl_vals)) {
-    if (verbose) cat("\n--------------Exclusion step--------------\n")
+    if (verbose) rlang::inform(c(">" = "--------------Exclusion step--------------\n"))
     # allow overwriting arguments for identifying exclusion values
     excl <- rlang::call_modify(incl, !!!excl_args, vals = excl_vals, .homonyms = "last")
     if (is.data.frame(result)) {
@@ -117,16 +117,16 @@ define_case <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1,
   }
 
   if (n_per_clnt > 1) {
-    if (verbose) cat("\n--------------No. rows restriction--------------\n")
+    if (verbose) rlang::inform(c(">" = "--------------No. rows restriction--------------\n"))
     result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), mode = mode, verbose = verbose))
   }
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
-    if (verbose) cat("\n--------------Time span restriction--------------\n")
+    if (verbose) rlang::inform(c(">" = "--------------Time span restriction--------------\n"))
     result <- rlang::inject(result %>% restrict_date(clnt_id = !!clnt_id, date_var = !!date_var, n = n_per_clnt, apart = apart, within = within, uid = !!uid, mode = mode, force_collect = force_collect, verbose = verbose, !!!dot))
   }
 
-  if (verbose) cat("\n--------------", "Output", keep, "records--------------\n")
+  if (verbose) rlang::inform(c(">" = paste("--------------", "Output", keep, "records--------------\n")))
   # switch to filter(date = min/max(date)) instead of problematic slice_min/max
   # fixing sql translation failed when using .data with slice_min/max
   # if (is.data.frame(result)) {

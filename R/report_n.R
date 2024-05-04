@@ -6,7 +6,7 @@
 #'
 #' @param ... Data frames or remote tables (e.g., from 'dbplyr')
 #' @param on The column to report on. It must be present in all data sources.
-#' @param force_proceed A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options. Use `options(healthdb.force_proceed = FALSE)` to suppress the prompt once and for all.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all.
 #'
 #' @return A sequence of the number of distinct `on` for each data frames
 #' @export
@@ -22,6 +22,11 @@
 #'
 #' # get the difference at each step
 #' diff(n)
+#' # data in a list
+#' iris_list <- list(iris_1, iris_2)
+#' report_n(rlang::splice(iris_list), on = Species)
+#' # if you loaded tidyverse, this will also work
+#' # report_n(!!!iris_list, on = Species)
 report_n <- function(..., on, force_proceed = getOption("healthdb.force_proceed")) {
   dat <- rlang::list2(...)
 

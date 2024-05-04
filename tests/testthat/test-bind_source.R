@@ -19,7 +19,9 @@ test_that("stored list object input works", {
 
 test_that("different input type works", {
   db <- make_test_dat(type = "database")
-  df <- make_test_dat(vals_kept = paste0("F1", 1:9), seed = 2) %>%
+  df <- make_test_dat(vals_kept = paste0("F1", 1:9), seed = 2)
+  expect_warning(bind_source(list(db, df), clnt_id = "clnt_id", dx_date = "dates", icd9 = "diagx", icd10 = c(NA, "diagx")), "incompatible types")
+  df <- df %>%
     dplyr::mutate(dates = as.numeric(dates))
   # 1. mixed
   dat_list <- list(db, df)

@@ -14,3 +14,7 @@
 -   restrict_date() will give warning if there are missing entries in `date_var`. The description of `dup.rm` has been re-written to clarify it is applicable only when `apart` is absent.
 
 -   pool_case() now outputs both the number of raw (raw_in_src) and valid (valid_in_src) entries in each source.
+
+-   List element of execute_def() output is named by definition and source labels.
+
+-   Most of the verbose message, except data summaries, will be sent as message instead of text output, so that they can be suppressed via `message = FALSE` in Rmarkdown.

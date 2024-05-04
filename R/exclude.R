@@ -35,12 +35,12 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = ge
 
     cnd_txt <- deparse(substitute(condition))
 
-    if (verbose) cat("\nExclude a subset of `data` that satisfies condition:", cnd_txt, ifelse("tbl_sql" %in% class(data), "\nCheck NAs in the result; SQL handles missing value differently compared to R.\n", "\n"))
+    if (verbose) rlang::inform(c("i" = paste("Exclude a subset of `data` that satisfies condition:", cnd_txt, ifelse("tbl_sql" %in% class(data), "\nCheck NAs in the result; SQL handles missing value differently compared to R.\n", "\n"))))
 
-    if (verbose & !stringr::str_detect(cnd_txt, "is.na")) cat("Consider being explicit about NA, e.g., condition = var == 'val' | is.na(var)\n")
+    if (verbose & !stringr::str_detect(cnd_txt, "is.na")) rlang::inform(c("i" = paste("Consider being explicit about NA, e.g., condition = var == 'val' | is.na(var)\n")))
   } else if (any(dplyr::intersect(class(data), class(excl)) %in% c("data.frame", "tbl_sql"))) {
     # if two data sets, do anti_join
-    if (verbose) cat("\nExclude records in `data` through anti_join with `excl` matching on (by argument):", deparse(substitute(by)), "\n")
+    if (verbose) rlang::inform(c("i" = paste("Exclude records in `data` through anti_join with `excl` matching on (by argument):", deparse(substitute(by)), "\n")))
     keep_rows <- dplyr::anti_join(data, excl, by = {{ by }}, ...)
   } else {
     stop("Both data and excl must be remote tables or local data frames. Try collect() the remote table - may be slow if collecting large data - before runing the function.")
@@ -48,7 +48,7 @@ exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = ge
 
   if (all(!is.null(substitute(report_on)), verbose)) {
     cat_n <- report_n(keep_rows, data, on = {{ report_on }})
-    cat("\nOf the", cat_n[2], deparse(substitute(report_on)), "in data,", diff(cat_n), "were excluded.\n")
+    rlang::inform(c("i" = paste("Of the", cat_n[2], deparse(substitute(report_on)), "in data,", diff(cat_n), "were excluded.\n")))
   }
 
   return(keep_rows)
