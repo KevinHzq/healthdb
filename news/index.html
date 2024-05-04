@@ -65,6 +65,8 @@
 <ul><li><p>The <code>apart</code> argument in restrict_date() is now fully functional for both data.frame and database input!</p></li>
 <li><p>restrict_date() will give warning if there are missing entries in <code>date_var</code>. The description of <code>dup.rm</code> has been re-written to clarify it is applicable only when <code>apart</code> is absent.</p></li>
 <li><p>pool_case() now outputs both the number of raw (raw_in_src) and valid (valid_in_src) entries in each source.</p></li>
+<li><p>List element of execute_def() output is named by definition and source labels.</p></li>
+<li><p>Most of the verbose message, except data summaries, will be sent as message instead of text output, so that they can be suppressed via <code>message = FALSE</code> in Rmarkdown.</p></li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

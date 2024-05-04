@@ -127,8 +127,6 @@ y2 ~ tidyselect_expr2|key1 + key2)</p>
 <span class="r-in"><span>    <span class="va">df3</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">|</span> <span class="va">id</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="co"># match by id only; otherwise failed because df3 has no year</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The data has 30 rows. After joining, variable(s) from df2 has 30 rows, and variable(s) from df3 has 30 rows </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id service_dt year status_1 status_2 sex</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   6 2020-11-23 2020        1        0   M</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   9 2020-04-06 2020        0        0   M</span>
@@ -173,8 +171,6 @@ y2 ~ tidyselect_expr2|key1 + key2)</p>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  copy <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># pass to left_join for forced collection of remote table</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The data has 30 rows. After joining, variable(s) from db2 has 30 rows, and variable(s) from df3 has 30 rows </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id service_dt year status_1 status_2 sex</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   6 2020-11-23 2020        1        0   M</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   9 2020-04-06 2020        0        0   M</span>

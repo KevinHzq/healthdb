@@ -80,7 +80,7 @@
 
 
 <dt>force_proceed</dt>
-<dd><p>A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is TRUE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = FALSE) to suppress the prompt once and for all.</p></dd>
+<dd><p>A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = TRUE) to suppress the prompt once and for all.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -133,42 +133,35 @@
 <span class="r-in"><span><span class="va">sud_def</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">execute_def</span><span class="op">(</span>with_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>src1 <span class="op">=</span> <span class="va">df</span>, src2 <span class="op">=</span> <span class="va">db</span><span class="op">)</span>, force_proceed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing source: df</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^304</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identify records with condition(s): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - where at least one of the diagx, diagx_1, diagx_2 column(s) in each record </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value satisfied regular expression: ^304 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other columns): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------No. rows restriction--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 2 records  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------- Output all records--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 2 records </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing source: db</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------Inclusion step--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identify records with condition(s): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - where at least one of the diagx, diagx_1, diagx_2 column(s) in each record </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    - contains a value satisfied SQL LIKE pattern: 305% </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To see the final query generated by 'dbplyr', use dplyr::show_query() on the output. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To extract the SQL string, use dbplyr::remote_query().</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------No. rows restriction--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Apply restriction that each client must have at least 3 records. Clients/groups whichmetthe condition were flagged. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------- Output all records--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied SQL LIKE pattern: 305%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> To see the final query generated by 'dbplyr', use dplyr::show_query() on the output.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> To extract the SQL string, use dbplyr::remote_query().</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This message is displayed once per session.</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Apply restriction that each client must have at least 3 records. Records that met the condition were flagged.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $SUD.src1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] def             src             clnt_id         service_dt     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] diagx           diagx_1         diagx_2         flag_restrict_n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $SUD.src2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [0 x 8]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: sqlite 3.45.2 [:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 variables: def &lt;lgl&gt;, src &lt;lgl&gt;, clnt_id &lt;int&gt;, service_dt &lt;dbl&gt;,</span></span>

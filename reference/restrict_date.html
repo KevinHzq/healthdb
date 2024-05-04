@@ -156,8 +156,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Keep clients with 2 records that were 1 week apart within 1 month</span></span></span>
 <span class="r-in"><span><span class="fu">restrict_date</span><span class="op">(</span><span class="va">df</span>, <span class="va">clnt_id</span>, <span class="va">service_dt</span>, n <span class="op">=</span> <span class="fl">2</span>, apart <span class="op">=</span> <span class="fl">7</span>, within <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Of the 18 clients in the input, 11 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 18 clients in the input, 11 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_date</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>

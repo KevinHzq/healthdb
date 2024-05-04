@@ -108,8 +108,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#remove cyl groups with less than 8 cars</span></span></span>
 <span class="r-in"><span><span class="fu">restrict_n</span><span class="op">(</span><span class="va">mtcars</span>, clnt_id <span class="op">=</span> <span class="va">cyl</span>, n_per_clnt <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 8 records  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 8 records </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mpg cyl  disp  hp drat    wt  qsec vs am gear carb flag_restrict_n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4               0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4               0</span>
@@ -146,8 +145,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#remove cyl groups with less than 2 types of gear boxes</span></span></span>
 <span class="r-in"><span><span class="fu">restrict_n</span><span class="op">(</span><span class="va">mtcars</span>, clnt_id <span class="op">=</span> <span class="va">cyl</span>, n_per_clnt <span class="op">=</span> <span class="fl">3</span>, count_by <span class="op">=</span> <span class="va">gear</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 3 records with distinct gear </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 3 records with distinct gear</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mpg cyl  disp  hp drat    wt  qsec vs am gear carb flag_restrict_n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4               1</span>
