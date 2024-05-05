@@ -1,9 +1,7 @@
-# healthdb (development version)
+# healthdb 0.2.0
 
 ::: {#dev}
 :::
-
-# healthdb 0.2.0
 
 ## Improvements
 
