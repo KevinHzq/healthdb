@@ -22,7 +22,7 @@ A tibble with a number of rows equal to the length of \code{src_labs}, containin
 This function assembles function calls from the supplied functions and their required arguments, leaving the data argument empty for easy re-use of the definition calls with different data and batch execution (see \code{\link[=execute_def]{execute_def()}} for detail). It is useful for defining multiple diseases/events across multiple sources.
 }
 \examples{
-build_def("SUD", # usually a disease name
+sud_def <- build_def("SUD", # usually a disease name
   src_lab = c("src1", "src2"), # identify from multiple sources, e.g., hospitalization, ED visits.
   # functions that filter the data with some criteria,
   # including mean here for src2 as a trivial example
@@ -39,4 +39,10 @@ build_def("SUD", # usually a disease name
     x = list(1:10) # src2 with mean as def_fn will only accept this argument
   )
 )
+
+# the result is a tibble
+sud_def
+
+# the fn_call column stores the code that can be ran with execute_def
+sud_def#fn_call
 }

@@ -25,28 +25,36 @@ collapse_episode(
 
 \item{end_dt}{Column name of the end date of records. The default is NULL assuming the record last one day and only the start date will be used to calculate the gaps between records.}
 
-\item{gap}{A number in days that will be used to separate episodes. It should be the inclusive upper bound + 1. For example, gap = 8 means collapsing records no more than 7 days apart.}
+\item{gap}{A number in days that will be used to separate episodes. For example, gap = 7 means collapsing records no more than 7 days apart. Note that the number of days apart will be calculated as numeric difference between two days, so that Monday and Sunday is considered as 6 days apart.}
 
-\item{overwrite}{Column name of a grouping variable determining whether the consecutive records are related and should have a different gap value. For example, dispensing records may have the same original prescription number, and a different gap value can be assigned for situation, e.g., the days between two records is > gap, but these records still belong to the same prescription.}
+\item{overwrite}{Column name of a grouping variable determining whether the consecutive records are related and should have a different gap value. For example, dispensing records may have the same original prescription number, and a different gap value can be assigned for such situation, e.g., the days between two records is > gap, but these records still belong to the same prescription.}
 
 \item{gap_overwrite}{A different gap value used for related records. The default is Inf, which means all records with the same overwrite variable will be collapsed.}
 
-\item{.dt_trans}{Function to transform start_dt/end_dt. Default is [data.table::as.IDate()].}
+\item{.dt_trans}{Function to transform start_dt/end_dt. Default is \code{\link[data.table:IDateTime]{data.table::as.IDate()}}.}
 
 \item{...}{Additional arguments passing to the .dt_trans function.}
 }
 \value{
-The original data.frame with new columns indicating episode grouping
+The original data.frame with new columns indicating episode grouping. The new variables include:
+\itemize{
+\item epi_id: unique identifier of episodes across the whole data set
+\item epi_no: identifier of episodes within a client/group
+\item epi_seq: identifier of records within an episode
+\item epi_start/stop_dt: start and end dates corresponding to epi_id
+}
 }
 \description{
-This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable.
+This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable. This function is implemented for data.frame input only.
 }
 \examples{
 # make toy data
-df <- make_test_dat()
+df <- make_test_dat() \%>\%
+dplyr::select(clnt_id, dates)
 
 head(df)
 
 # collapse records no more than 90 days apart
-collapse_episode(df, clnt_id, dates, gap = 91)
+# end_dt could be absent then it is assumed to be the same as start_dt
+collapse_episode(df, clnt_id, start_dt = dates, gap = 90)
 }

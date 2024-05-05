@@ -1,6 +1,9 @@
 #' Row-bind a list of data.frames or remote tables
 #'
 #' @md
+#' @description
+#' Row bind a list of data.frames or remote tables with variable selection and renaming.
+#'
 #' @param data A list of data.frame or remote tables, e.g., output from [execute_def()].
 #' @param ... Named arguments for each variable included in the output. The argument name should be the new name in the output, and the right hand side of the argument is a character vector of the original names. The name vector and the list elements in `data` will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., `var` only come from the second out of three sources, then `var = c(NA, 'nm_in_src2', NA)`.
 #' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all.
@@ -18,7 +21,8 @@
 #'   s_w = "Sepal.Width",
 #'   p_l_setosa = c("Petal.Length", NA, NA),
 #'   p_l_virginica = c(NA, NA, "Petal.Length")
-#' )
+#' ) %>%
+#' head()
 bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_proceed")) {
   # capture data names in the original env before any eval
   data_quo <- rlang::enquo(data)

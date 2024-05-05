@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @examples
-#' make_test_dat()
+#' make_test_dat() %>% head()
 make_test_dat <- function(vals_kept = c("304", "305", 3040:3049, 3050:3059), noise_val = "999", IDs = 1:50, date_range = seq(as.Date("2015-01-01"), as.Date("2020-12-31"), by = 1), nrows = 100, n_any = 50, n_all = 10, seed = NULL, answer_id = NULL, type = c("data.frame", "database")) {
   stopifnot(
     n_all <= n_any,

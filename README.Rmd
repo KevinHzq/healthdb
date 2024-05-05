@@ -48,9 +48,13 @@ devtools::install_github("KevinHzq/healthdb")
 
 ## Usage
 
-Case definition: One or more hospitalization with a substance use disorder (SUD) diagnostic code, OR Two or more physician claims with a substance use disorder diagnostic code within one year.
+We are going to implement the following case definition:
 
-We are going to implement this definition. First, let's make a demo data sets for the two sources:
+One or more hospitalization with a substance use disorder (SUD) ICD-9 diagnostic code, OR Two or more physician claims with a substance use disorder ICD-10 diagnostic code within one year.
+
+Before we get started, please see [how to connect to a database](https://solutions.posit.co/connections/db/getting-started/connect-to-database/) and [how to write query with 'dbplyr'](https://solutions.posit.co/connections/db/getting-started/database-queries/) if you don't have experience of working with database in R.
+
+First, let's make a demo data sets for the two sources:
 
 Physician claims
 
@@ -118,4 +122,4 @@ Here's how you could use `healthdb` to implement the SUD definition above:
 
 4.  Repeat these steps for hospitalization and row bind the results.
 
-The output of these functions, including `identify_row()`, `exclude()`, `restrict_n()`, `restrict_date()` and more can be piped into 'dplyr' functions for further manipulations. Therefore, wrangling with them along with 'dplyr' provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the "Intro" vignette (`vignette("Intro")`) for a much more concise way to work with multiple sources and definitions (the 'Call-building functions' section).
+The output of these functions, including `identify_row()`, `exclude()`, `restrict_n()`, `restrict_date()` and more, can be piped into 'dplyr' functions for further manipulations. Therefore, wrangling with them along with 'dplyr' provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the "Intro" vignette (`vignette("Intro")`) **for a much more concise way to work with multiple sources and definitions** (the 'Call-building functions' section).

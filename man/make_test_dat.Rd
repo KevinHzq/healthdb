@@ -45,5 +45,5 @@ A data.frame or remote table from 'dbplyr'.
 Make a toy data set for testing and demo. This is for internal use purpose and not intended to be called by users.
 }
 \examples{
-make_test_dat()
+make_test_dat() \%>\% head()
 }

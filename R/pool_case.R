@@ -20,19 +20,8 @@
 #'
 #' @examples
 #' # toy data
-#' sample_size <- 30
-#' df <- data.frame(
-#'   clnt_id = rep(1:3, each = 10),
-#'   service_dt = sample(seq(as.Date("2020-01-01"), as.Date("2020-01-31"), by = 1),
-#'     size = sample_size, replace = TRUE
-#'   ),
-#'   diagx = sample(letters, size = sample_size, replace = TRUE),
-#'   diagx_1 = sample(c(NA, letters), size = sample_size, replace = TRUE),
-#'   diagx_2 = sample(c(NA, letters), size = sample_size, replace = TRUE)
-#' )
-#'
-#' # make df a database table
-#' db <- dbplyr::tbl_memdb(df)
+#' df1 <- make_test_dat()
+#' df2 <- make_test_dat()
 #'
 #' # use build_def to make a toy definition
 #' sud_def <- build_def("SUD", # usually a disease name
@@ -54,10 +43,10 @@
 #' # saveRDS(sud_def, file = some_path)
 #'
 #' # execute definition
-#' sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = db, src2 = db))
+#' sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #'
 #' # pool results from src1 and src2 together at client level
-#' sud_pooled <- pool_case(sud_by_src, sud_def, output_lvl = "clnt")
+#' pool_case(sud_by_src, sud_def, output_lvl = "clnt")
 pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c("all", "has_valid", "n_per_clnt"), ...) {
   . <- clnt_id <- date_var <- flag_restrict_date <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
 

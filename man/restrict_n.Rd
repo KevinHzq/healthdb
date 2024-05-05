@@ -33,11 +33,12 @@ A subset of input data satisfied the group size requirement, or raw input data w
 Remove or flags groups or clients that have less than some number of rows or some number of distinct values in a variable. For example, it can be used to remove clients that had less than n visits to some service on different dates from some administrative records. It offers filtering with \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} functionality for database input.
 }
 \examples{
-#remove cyl groups with less than 8 cars
-restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8)
+# flag cyl groups with less than 8 cars
+restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8, mode = "flag") \%>\%
+head()
 
 #remove cyl groups with less than 2 types of gear boxes
-restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear)
+restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear, mode = "filter")
 }
 \seealso{
 \code{\link[dplyr:context]{dplyr::n()}}, \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}}

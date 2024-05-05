@@ -17,7 +17,7 @@ bind_source(data, ..., force_proceed = getOption("healthdb.force_proceed"))
 A data.frame or remote table containing combined rows of the input list with variables specified by ...
 }
 \description{
-Row-bind a list of data.frames or remote tables
+Row bind a list of data.frames or remote tables with variable selection and renaming.
 }
 \examples{
 df1 <- subset(iris, Species == "setosa")
@@ -29,5 +29,6 @@ bind_source(list(df1, df2, df3),
   s_w = "Sepal.Width",
   p_l_setosa = c("Petal.Length", NA, NA),
   p_l_virginica = c(NA, NA, "Petal.Length")
-)
+) \%>\%
+head()
 }

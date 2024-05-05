@@ -9,7 +9,7 @@
 #' @param clnt_id Grouping variable (quoted/unquoted).
 #' @param date_var Variable name (quoted/unquoted) for the dates to be interpreted.
 #' @param n An integer for the size of a draw.
-#' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw. This option is only implemented for data.frame input.
+#' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
 #' @param uid Variable name for a unique row identifier. It is necessary for SQL to produce consistent result based on sorting.
 #' @param mode Either:

@@ -29,7 +29,7 @@ restrict_date(
 
 \item{n}{An integer for the size of a draw.}
 
-\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw. This option is only implemented for data.frame input.}
+\item{apart}{An integer specifying the minimum gap (in days) between adjacent dates in a draw.}
 
 \item{within}{An integer specifying the maximum time span (in days) of a draw.}
 

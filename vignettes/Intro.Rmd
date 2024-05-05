@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 -   This package is designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability. Three types of functions are included:
 
--   Interactive functions (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful outside health research.
+-   Interactive functions (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful even outside health research.
 
 -   Call-building functions (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
 
@@ -28,11 +28,11 @@ knitr::opts_chunk$set(
 
 ### Motivation
 
-Administrative health data data are often stored on database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process. The lack of regular expression support in SQL makes writing queries for searching ICD codes even more painful.
+In health research and surveillance, identifying diseases or events from administrative databases is often the initial step. However, crafting case-finding algorithms is a complex task. Existing algorithms, often written in SAS by experienced analysts, can be complex and difficult to decipher for the growing number of analysts trained primarily in R.
 
-The 'dbplyr' package not only translates 'dplyr' syntax to SQL but also make nesting sub-queries easy with the pipe operator. With 'dbplyr', complex query script can be built from nested sub-queries instead of writing temporary tables at a cost of performance (sub-queries have to be ran again and again if it was called multiple times). Nevertheless, building complex queries with 'dbplyr' is a useful approach to push computation onto the SQL server that is often much more efficient and resourceful than the user's (virtual) machine.
+These algorithms may also affect performance if they depend on Data Step in SAS, due to a lack of translation between Data Step and SQL. This can result in SAS downloading data from a remote database to a local machine, leading to poor performance when handling large, population-based databases.
 
-However, 'dbplyr' SQL translations failed at some places for the intended use case and needs fixing. The motivation of this package is to ease the pain from these issues for analyst who regularly works with healthcare database.
+The 'healthdb' R package was created to address these challenges. It minimizes the need to download data and offers an easy-to-use interface for working with healthcare databases. It also includes capabilities not supported by 'SQL', such as matching strings by 'stringr' style regular expressions, and can compute comorbidity scores directly on a database server. This vignette will present an example of common use cases.
 
 ------------------------------------------------------------------------
 
@@ -41,10 +41,10 @@ However, 'dbplyr' SQL translations failed at some places for the intended use ca
 Simply run:
 
 ```{r, eval = FALSE}
-devtools::install_github("kevinHzq/healthdb", build_vignettes = TRUE)
+install.packages("healthdb")
 ```
 
-We will also need the following packages for this demo.
+We will need the following packages for this demo.
 
 ```{r setup, message=FALSE}
 library(dplyr)
@@ -66,21 +66,21 @@ We are going to implement this definition. First, let's make a demo data sets fo
 1.  Physician claims with multiple columns of [ICD-9](https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/physicians/diagnostic-code-descriptions-icd-9) diagnostic codes
 
     ```{r}
-# make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
-claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
+    # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
+    claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
 
-# this is a database table
-# note that in-memory SQLite database stores dates as numbers
-claim_db %>% head()
+    # this is a database table
+    # note that in-memory SQLite database stores dates as numbers
+    claim_db %>% head()
     ```
 
 2.  Hospitalization with [ICD-10](https://en.wikipedia.org/wiki/ICD-10) codes
 
     ```{r}
-hosp_df <- make_test_dat(vals_kept = c(glue("F{10:19}"), glue("F{100:199}"), noise_val = "999"), type = "data.frame")
+    hosp_df <- make_test_dat(vals_kept = c(glue("F{10:19}"), glue("F{100:199}"), noise_val = "999"), type = "data.frame")
 
-# this is a local data.frame/tibble
-hosp_df %>% head()
+    # this is a local data.frame/tibble
+    hosp_df %>% head()
     ```
 
 ## Interactive functions
@@ -106,12 +106,12 @@ Here's how you could use `healthdb` to achieve these steps:
 1.  Identify rows contains the target codes
 
     ```{r}
-result1 <- claim_db %>%
-  identify_row(
+    result1 <- claim_db %>%
+      identify_row(
     vars = starts_with("diagx_"),
     match = "start",
     vals = c(291:292, 303:305)
-  )
+      )
     ```
 
 2.  Bonus: remove clients with exclusion codes
@@ -121,23 +121,23 @@ result1 <- claim_db %>%
     We first identify "111" from the source, then exclude clients in the output from the previous step's result. `exclude()` take either a data set (via the excl argument) or expression (condition argument) as input. For the former, it performs an anti join matching on the by argument (see `dplyr::join_by()`). For the latter, it is the opposite of filter, i.e., `filter(!(some_expression))`.
 
     ```{r}
-result2 <- result1 %>%
-  exclude(
+    result2 <- result1 %>%
+      exclude(
     excl = identify_row(claim_db, starts_with("diagx_"), "in", "111"),
     by = "clnt_id"
-  )
+      )
     ```
 
 3.  Restrict the number of records per client
 
     ```{r}
-result3 <- result2 %>% restrict_n(
-  clnt_id = clnt_id,
-  n_per_clnt = 2,
-  count_by = dates,
-  # here we use filter mode to remove records that failed the restriction
-  mode = "filter"
-)
+    result3 <- result2 %>% restrict_n(
+      clnt_id = clnt_id,
+      n_per_clnt = 2,
+      count_by = dates,
+      # here we use filter mode to remove records that failed the restriction
+      mode = "filter"
+    )
     ```
 
 4.  Restrict the temporal pattern of diagnoses
@@ -145,15 +145,15 @@ result3 <- result2 %>% restrict_n(
     `restrict_date()` also supports more complicated patterns like having n diagnoses at least i days apart within j years, but the "apart" feature requires relatively expensive computation and implemented for local data.frames only. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id colume (uid) has to be supplied to get consistent result.
 
     ```{r}
-result4 <- result3 %>% restrict_date(
-  clnt_id = clnt_id,
-  date_var = dates,
-  n = 2,
-  within = 365,
-  uid = uid,
-  # here we use flag mode to flag records that met the restriction instead of removing those
-  mode = "flag"
-)
+    result4 <- result3 %>% restrict_date(
+      clnt_id = clnt_id,
+      date_var = dates,
+      n = 2,
+      within = 365,
+      uid = uid,
+      # here we use flag mode to flag records that met the restriction instead of removing those
+      mode = "flag"
+    )
     ```
 
 5.  Fetch variables from other tables by matching common keys
@@ -161,48 +161,48 @@ result4 <- result3 %>% restrict_date(
     Up to this point, the result is only a query and have not been downloaded. Hopefully, it has been shrunken to a manageable size for collection.
 
     ```{r}
-# Class of result4
-class(result4)
+    # Class of result4
+    class(result4)
 
-# execute query and download the result
-result_df <- result4 %>% collect()
+    # execute query and download the result
+    result_df <- result4 %>% collect()
 
-# Number of rows in source
-nrow(claim_db %>% collect())
+    # Number of rows in source
+    nrow(claim_db %>% collect())
 
-# Number of rows in the current result
-nrow(result_df)
+    # Number of rows in the current result
+    nrow(result_df)
     ```
 
     Our data now only contains diagnoses that are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise.
 
     ```{r}
-# make two look up tables
-age_tab <- data.frame(
-  clnt_id = 1:50,
-  age = sample(1:90, 50),
-  sex = sample(c("F", "M"), 50, replace = TRUE)
-)
-address_tab <- data.frame(
-  clnt_id = rep(1:50, 5), year = rep(2016:2020, each = 50),
-  area_code = sample(0:200, 50, replace = TRUE)
-)
+    # make two look up tables
+    age_tab <- data.frame(
+      clnt_id = 1:50,
+      age = sample(1:90, 50),
+      sex = sample(c("F", "M"), 50, replace = TRUE)
+    )
+    address_tab <- data.frame(
+      clnt_id = rep(1:50, 5), year = rep(2016:2020, each = 50),
+      area_code = sample(0:200, 50, replace = TRUE)
+    )
 
-# get year from dates for matching
+    # get year from dates for matching
 
-result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
+    result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
 
-# note that keys must be present in all tables
-result_df %>%
-  fetch_var(
+    # note that keys must be present in all tables
+    result_df %>%
+      fetch_var(
     keys = c(clnt_id, year),
     linkage = list(
       # |clnt_id means matching on clnt_id only
       age_tab ~ c(age, sex) | clnt_id,
       address_tab ~ area_code
     )
-  ) %>%
-  head()
+      ) %>%
+      head()
     ```
 
 ## Call-building functions
@@ -252,13 +252,15 @@ result_list <- sud_def %>%
   ))
 ```
 
-Let's check the results! 
+Let's check the results!
+
 ```{r}
 # view the results
 purrr::walk(result_list, ~ head(.) %>% print())
 ```
 
-At this point, the result from the claim database (`result[[1]]`) has not been collected locally. You could collect it manually, do further filtering, and then combine with the result from hospitalization data in any way you want. If you just need a simple row bind, we have `bind_source()` with convenient naming feature. 
+At this point, the result from the claim database (`result[[1]]`) has not been collected locally. You could collect it manually, do further filtering, and then combine with the result from hospitalization data in any way you want. If you just need a simple row bind, we have `bind_source()` with convenient naming feature.
+
 ```{r}
 bind_source(result_list,
   # output_name = c(names in the list elements)

@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' build_def("SUD", # usually a disease name
+#' sud_def <- build_def("SUD", # usually a disease name
 #'   src_lab = c("src1", "src2"), # identify from multiple sources, e.g., hospitalization, ED visits.
 #'   # functions that filter the data with some criteria,
 #'   # including mean here for src2 as a trivial example
@@ -31,6 +31,12 @@
 #'     x = list(1:10) # src2 with mean as def_fn will only accept this argument
 #'   )
 #' )
+#'
+#' # the result is a tibble
+#' sud_def
+#'
+#' # the fn_call column stores the code that can be ran with execute_def
+#' sud_def#fn_call
 build_def <- function(def_lab, src_labs, def_fn = define_case, fn_args) {
   # input checking
   stopifnot(

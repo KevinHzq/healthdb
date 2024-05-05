@@ -39,12 +39,16 @@ df <- data.frame(sample_id = 1, period_id = 1, start_date = "2015-01-01", end_da
 # divide period into segments (multiple rows per period)
 df_seg <- cut_period(
   data = df, start = start_date, end = end_date,
-  len = 30, .dt_trans = lubridate::ymd
+  len = 1,
+  unit = "year",
+  .dt_trans = lubridate::ymd
 )
 
 # categorize segment_id as factor
 df_seg$segment <- cut(df_seg$segment_id,
   breaks = c(0, 1, 2, Inf),
-  labels = c("< 1 month", "1 - 2 months", "Remainder")
+  labels = c("< 1 year", "1 - 2 years", "Remainder")
 )
+
+head(df_seg)
 }

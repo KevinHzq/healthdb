@@ -37,8 +37,8 @@ This function combines \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, and
 }
 \examples{
 # exclude with condition
-cyl4 <- exclude(mtcars, condition = cyl == 4, report_on = cyl)
+cyl_not_4 <- exclude(mtcars, condition = cyl == 4, report_on = cyl)
 
 # exclude with another data
-exclude(mtcars, cyl4, dplyr::join_by(cyl), report_on = cyl)
+exclude(mtcars, cyl_not_4, dplyr::join_by(cyl), report_on = cyl)
 }

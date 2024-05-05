@@ -20,14 +20,18 @@
 #' # divide period into segments (multiple rows per period)
 #' df_seg <- cut_period(
 #'   data = df, start = start_date, end = end_date,
-#'   len = 30, .dt_trans = lubridate::ymd
+#'   len = 1,
+#'   unit = "year",
+#'   .dt_trans = lubridate::ymd
 #' )
 #'
 #' # categorize segment_id as factor
 #' df_seg$segment <- cut(df_seg$segment_id,
 #'   breaks = c(0, 1, 2, Inf),
-#'   labels = c("< 1 month", "1 - 2 months", "Remainder")
+#'   labels = c("< 1 year", "1 - 2 years", "Remainder")
 #' )
+#'
+#' head(df_seg)
 cut_period <- function(data, start, end, len, unit = c("day", "week", "month", "quarter", "year"), .dt_trans = NULL) {
   # input checks
   stopifnot(is.data.frame(data))
