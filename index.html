@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,8 +101,10 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Case definition: One or more hospitalization with a substance use disorder (SUD) diagnostic code, OR Two or more physician claims with a substance use disorder diagnostic code within one year.</p>
-<p>We are going to implement this definition. First, let’s make a demo data sets for the two sources:</p>
+<p>We are going to implement the following case definition:</p>
+<p>One or more hospitalization with a substance use disorder (SUD) ICD-9 diagnostic code, OR Two or more physician claims with a substance use disorder ICD-10 diagnostic code within one year.</p>
+<p>Before we get started, please see <a href="https://solutions.posit.co/connections/db/getting-started/connect-to-database/" class="external-link">how to connect to a database</a> and <a href="https://solutions.posit.co/connections/db/getting-started/database-queries/" class="external-link">how to write query with ‘dbplyr’</a> if you don’t have experience of working with database in R.</p>
+<p>First, let’s make a demo data sets for the two sources:</p>
 <p>Physician claims</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/KevinHzq/healthdb" class="external-link">healthdb</a></span><span class="op">)</span></span>
@@ -118,12 +120,12 @@
 <span><span class="co">#&gt; # Database: sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999    </span></span>
-<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913   </span></span>
-<span><span class="co">#&gt; 3    75       1 18261 999   &lt;NA&gt;    &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 4    88       2 17712 999   &lt;NA&gt;    999    </span></span>
-<span><span class="co">#&gt; 5    99       3 17869 999   999     999    </span></span>
-<span><span class="co">#&gt; 6    96       4 18436 999   &lt;NA&gt;    999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    43       1 16549 3056  3055    2924   </span></span>
+<span><span class="co">#&gt; 2    80       2 16823 999   999     999    </span></span>
+<span><span class="co">#&gt; 3    95       2 17974 999   999     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4    60       3 16442 999   999     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 5     4       3 16632 2918  2917    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 6    69       4 16692 999   999     999</span></span></code></pre></div>
 <p>Hospitalization</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_test_dat.html">make_test_dat</a></span><span class="op">(</span>vals_kept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{10:19}"</span><span class="op">)</span>, <span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{100:199}"</span><span class="op">)</span>, noise_val <span class="op">=</span> <span class="st">"999"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -131,12 +133,12 @@
 <span><span class="co"># this is a local data.frame/tibble</span></span>
 <span><span class="va">hosp_df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1  83       1 2018-07-14   999    &lt;NA&gt;     999</span></span>
-<span><span class="co">#&gt; 2  60       3 2018-03-09   999    &lt;NA&gt;     999</span></span>
-<span><span class="co">#&gt; 3  84       4 2015-12-15   999     999    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4  24       5 2015-02-02  F172     999     999</span></span>
-<span><span class="co">#&gt; 5  54       5 2017-07-23   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  78       7 2016-10-20   999     999     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  84       1 2015-05-14   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2  59       1 2016-04-08   999     999    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3  20       2 2015-04-01   F14    F186    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4  53       2 2017-01-28   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 5  18       2 2020-10-14  F145    F148    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6  11       3 2017-07-29  F107    F186     999</span></span></code></pre></div>
 <p>Here’s how you could use <code>healthdb</code> to implement the SUD definition above:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -148,12 +150,10 @@
 <span>match <span class="op">=</span> <span class="st">"start"</span>,</span>
 <span>vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">291</span><span class="op">:</span><span class="fl">292</span>, <span class="fl">303</span><span class="op">:</span><span class="fl">305</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Identify records with condition(s): </span></span>
-<span><span class="co">#&gt;  - where at least one of the diagx_1, diagx_2 column(s) in each record </span></span>
-<span><span class="co">#&gt;    - contains a value satisfied SQL LIKE pattern: 291% OR 292% OR 303% OR 304% OR 305% </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; To see the final query generated by 'dbplyr', use dplyr::show_query() on the output. </span></span>
+<span><span class="co">#&gt; ℹ Identify records with condition(s):</span></span>
+<span><span class="co">#&gt; • where at least one of the diagx_1, diagx_2 column(s) in each record</span></span>
+<span><span class="co">#&gt; • contains a value satisfied SQL LIKE pattern: 291% OR 292% OR 303% OR 304% OR 305%</span></span>
+<span><span class="co">#&gt; ℹ To see the final query generated by 'dbplyr', use dplyr::show_query() on the output.</span></span>
 <span><span class="co">#&gt; To extract the SQL string, use dbplyr::remote_query().</span></span></code></pre></div>
 </li>
 <li>
@@ -166,20 +166,20 @@
 <span>  <span class="co"># here we use filter mode to remove records that failed the restriction</span></span>
 <span>  mode <span class="op">=</span> <span class="st">"filter"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Apply restriction that each client must have at least 2 records with distinct dates. Clients/groups whichdid not meetthe condition were excluded.</span></span>
+<span><span class="co">#&gt; ℹ Apply restriction that each client must have at least 2 records with distinct</span></span>
+<span><span class="co">#&gt; dates. Clients/groups which did not met the condition were excluded.</span></span>
 <span><span class="va">result2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:     SQL [6 x 7]</span></span>
 <span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt; # Ordered by: dates</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999                   1</span></span>
-<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913                  1</span></span>
-<span><span class="co">#&gt; 3    48       8 17706 3038  3048    3035                  1</span></span>
-<span><span class="co">#&gt; 4     3       8 17897 3043  3030    &lt;NA&gt;                  1</span></span>
-<span><span class="co">#&gt; 5    25      12 17652 304   3031    999                   1</span></span>
-<span><span class="co">#&gt; 6    33      12 18411 3033  2924    999                   1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    21       7 16762 3035  2915    999                   1</span></span>
+<span><span class="co">#&gt; 2    11       7 16924 2920  3039    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 3    12      10 16676 2912  292     999                   1</span></span>
+<span><span class="co">#&gt; 4    33      10 16902 3042  2927    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 5    49      10 17208 2915  2911    3043                  1</span></span>
+<span><span class="co">#&gt; 6    20      10 17964 2922  2926    999                   1</span></span></code></pre></div>
 </li>
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
@@ -193,24 +193,24 @@
 <span>  <span class="co"># here we use flag mode to flag records that met the restriction instead of removing those</span></span>
 <span>  mode <span class="op">=</span> <span class="st">"flag"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Apply restriction that each client must have 2 records that were  within 365 days. Records that met the condition were flagged.</span></span>
+<span><span class="co">#&gt; ℹ Apply restriction that each client must have 2 records that were within 365</span></span>
+<span><span class="co">#&gt; days. Records that met the condition were flagged.</span></span>
 <span><span class="va">result3</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:     SQL [6 x 8]</span></span>
 <span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt; # Ordered by: dates, uid</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;              &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    11       1 16548 3046  3037    999                   1                  0</span></span>
-<span><span class="co">#&gt; 2    46       1 18004 3044  2922    2913                  1                  0</span></span>
-<span><span class="co">#&gt; 3    48       8 17706 3038  3048    3035                  1                  1</span></span>
-<span><span class="co">#&gt; 4     3       8 17897 3043  3030    &lt;NA&gt;                  1                  0</span></span>
-<span><span class="co">#&gt; 5    25      12 17652 304   3031    999                   1                  0</span></span>
-<span><span class="co">#&gt; 6    33      12 18411 3033  2924    999                   1                  0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    21       7 16762 3035  2915    999                   1                  1</span></span>
+<span><span class="co">#&gt; 2    11       7 16924 2920  3039    &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 3    12      10 16676 2912  292     999                   1                  1</span></span>
+<span><span class="co">#&gt; 4    33      10 16902 3042  2927    &lt;NA&gt;                  1                  1</span></span>
+<span><span class="co">#&gt; 5    49      10 17208 2915  2911    3043                  1                  0</span></span>
+<span><span class="co">#&gt; 6    20      10 17964 2922  2926    999                   1                  0</span></span></code></pre></div>
 </li>
 <li><p>Repeat these steps for hospitalization and row bind the results.</p></li>
 </ol>
-<p>The output of these functions, including <code><a href="reference/identify_row.html">identify_row()</a></code>, <code><a href="reference/exclude.html">exclude()</a></code>, <code><a href="reference/restrict_n.html">restrict_n()</a></code>, <code><a href="reference/restrict_date.html">restrict_date()</a></code> and more can be piped into ‘dplyr’ functions for further manipulations. Therefore, wrangling with them along with ‘dplyr’ provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the “Intro” vignette (<code><a href="articles/Intro.html">vignette("Intro")</a></code>) for a much more concise way to work with multiple sources and definitions (the ‘Call-building functions’ section).</p>
+<p>The output of these functions, including <code><a href="reference/identify_row.html">identify_row()</a></code>, <code><a href="reference/exclude.html">exclude()</a></code>, <code><a href="reference/restrict_n.html">restrict_n()</a></code>, <code><a href="reference/restrict_date.html">restrict_date()</a></code> and more, can be piped into ‘dplyr’ functions for further manipulations. Therefore, wrangling with them along with ‘dplyr’ provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the “Intro” vignette (<code><a href="articles/Intro.html">vignette("Intro")</a></code>) <strong>for a much more concise way to work with multiple sources and definitions</strong> (the ‘Call-building functions’ section).</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

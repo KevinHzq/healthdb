@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@ data.frame, and some use ‘data.table’ package
 (<code><a href="https://rdatatable.gitlab.io/data.table/articles/datatable-intro.html" class="external-link">vignette("datatable-intro", package = "data.table")</a></code>) to
 speed up processing time for large data. These functions are not as
 flexible as <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter()</a></code>, but they are general enough to
-be useful outside health research.</p></li>
+be useful even outside health research.</p></li>
 <li><p>Call-building functions (e.g., <code><a href="../reference/build_def.html">build_def()</a></code>,
 <code><a href="../reference/execute_def.html">execute_def()</a></code>) that facilitate batch execution and re-use
 of case definitions. In essence, <code>build_def</code> creates codes of
@@ -119,25 +119,23 @@ built-in checks signalling if things could go wrong.</p></li>
 <div class="section level3">
 <h3 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
 </h3>
-<p>Administrative health data data are often stored on database with
-strict security measures which may disable permission to write temporary
-tables. Writing queries without being able to cache intermediate results
-is challenging, especially when the data is too large to be downloaded
-from database into R (i.e., local memory) without some filtering
-process. The lack of regular expression support in SQL makes writing
-queries for searching ICD codes even more painful.</p>
-<p>The ‘dbplyr’ package not only translates ‘dplyr’ syntax to SQL but
-also make nesting sub-queries easy with the pipe operator. With
-‘dbplyr’, complex query script can be built from nested sub-queries
-instead of writing temporary tables at a cost of performance
-(sub-queries have to be ran again and again if it was called multiple
-times). Nevertheless, building complex queries with ‘dbplyr’ is a useful
-approach to push computation onto the SQL server that is often much more
-efficient and resourceful than the user’s (virtual) machine.</p>
-<p>However, ‘dbplyr’ SQL translations failed at some places for the
-intended use case and needs fixing. The motivation of this package is to
-ease the pain from these issues for analyst who regularly works with
-healthcare database.</p>
+<p>In health research and surveillance, identifying diseases or events
+from administrative databases is often the initial step. However,
+crafting case-finding algorithms is a complex task. Existing algorithms,
+often written in SAS by experienced analysts, can be complex and
+difficult to decipher for the growing number of analysts trained
+primarily in R.</p>
+<p>These algorithms may also affect performance if they depend on Data
+Step in SAS, due to a lack of translation between Data Step and SQL.
+This can result in SAS downloading data from a remote database to a
+local machine, leading to poor performance when handling large,
+population-based databases.</p>
+<p>The ‘healthdb’ R package was created to address these challenges. It
+minimizes the need to download data and offers an easy-to-use interface
+for working with healthcare databases. It also includes capabilities not
+supported by ‘SQL’, such as matching strings by ‘stringr’ style regular
+expressions, and can compute comorbidity scores directly on a database
+server. This vignette will present an example of common use cases.</p>
 <hr>
 </div>
 </div>
@@ -146,8 +144,8 @@ healthcare database.</p>
 </h2>
 <p>Simply run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"kevinHzq/healthdb"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>We will also need the following packages for this demo.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"healthdb"</span><span class="op">)</span></span></code></pre></div>
+<p>We will need the following packages for this demo.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a></span><span class="op">)</span></span>

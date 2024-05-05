@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,13 +108,13 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># exclude with condition</span></span></span>
-<span class="r-in"><span><span class="va">cyl4</span> <span class="op">&lt;-</span> <span class="fu">exclude</span><span class="op">(</span><span class="va">mtcars</span>, condition <span class="op">=</span> <span class="va">cyl</span> <span class="op">==</span> <span class="fl">4</span>, report_on <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cyl_not_4</span> <span class="op">&lt;-</span> <span class="fu">exclude</span><span class="op">(</span><span class="va">mtcars</span>, condition <span class="op">=</span> <span class="va">cyl</span> <span class="op">==</span> <span class="fl">4</span>, report_on <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Exclude a subset of `data` that satisfies condition: cyl == 4 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Consider being explicit about NA, e.g., condition = var == 'val' | is.na(var)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 cyl in data, 1 were excluded.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># exclude with another data</span></span></span>
-<span class="r-in"><span><span class="fu">exclude</span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">cyl4</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span>, report_on <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">exclude</span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">cyl_not_4</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span>, report_on <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): dplyr::join_by(cyl) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 cyl in data, 2 were excluded.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 mpg cyl  disp  hp drat    wt  qsec vs am gear carb</span>

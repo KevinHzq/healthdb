@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,108 +122,14 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">make_test_dat</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     uid clnt_id      dates diagx diagx_1 diagx_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    56       1 2016-06-21   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    77       1 2016-08-18   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    93       1 2018-11-17   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    91       1 2019-01-23   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5       3 2015-09-16   304    3057     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    79       3 2019-02-14   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    80       3 2020-01-27   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    16       3 2020-02-19  3043    3053     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     3       4 2015-11-01  3057    3057    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   58       4 2019-05-22   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   62       5 2015-08-21   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   47       5 2019-08-24  3041    3054    3047</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   18       7 2017-06-19  3059    3051     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14   57       7 2019-09-19   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   71       7 2020-07-05   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   81       8 2016-03-06   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17   30       8 2019-02-05  3051     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   83       9 2015-07-16   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   54       9 2015-12-19   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   42       9 2018-02-20  3048    3047    3043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   37       9 2018-11-10  3046    3048     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   13       9 2019-07-09  3044    3051    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   55      10 2015-08-06   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   76      10 2016-05-07   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   20      10 2018-03-07   305    3040    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   66      10 2019-06-25   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   25      10 2020-02-24  3049    3045    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   44      11 2016-04-29   305    3048    3042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   36      12 2019-07-26  3048    3049     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   85      13 2019-01-21   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   64      13 2020-09-05   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32   24      16 2015-07-17  3042    3042    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33  100      16 2016-07-30   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   49      16 2018-12-20  3047    3055     305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35   87      18 2015-11-23   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36   75      18 2017-02-12   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37   11      20 2018-05-20  3040    3056    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   69      20 2019-08-27   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39   73      20 2020-02-07   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40   51      21 2020-04-28   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41   32      22 2016-10-09   305    3059     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42   27      22 2019-05-16  3058    3052    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43   84      22 2020-05-14   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   67      23 2015-08-15   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45    4      23 2016-01-12  3044    3059     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46   26      23 2018-07-26  3040    3040     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47   48      23 2019-10-17  3043    3049    3043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48   70      24 2016-01-01   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49   92      24 2016-07-28   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   29      24 2017-04-01  3048    3042     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51   68      24 2017-08-19   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52   52      24 2017-10-15   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53   95      25 2018-01-26   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54   43      26 2020-01-22  3047    3052     304</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55   33      27 2018-10-22  3057    3051    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56   90      27 2019-01-08   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57   45      27 2019-10-10  3054     304    3051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58    8      28 2016-05-27  3048    3043    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59   94      28 2020-12-13   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60   72      29 2015-06-12   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61   39      29 2016-06-06  3041    3043    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62    2      31 2017-07-12  3051     305    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63   17      31 2018-01-30  3051    3040     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64   96      33 2015-09-24   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65   99      34 2016-07-20   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66   65      34 2020-10-19   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67    9      35 2016-01-13  3056    3046    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68    6      35 2016-05-02   304    3046     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69   78      35 2017-04-20   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70   46      35 2018-11-18  3042    3058    3041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71   63      36 2016-04-23   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72   88      36 2018-01-04   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73   21      37 2016-12-18   305    3048    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74   59      37 2017-03-19   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75   53      38 2015-03-15   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76   60      38 2018-02-26   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77   41      39 2017-02-18   305    3054    3049</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78   40      40 2015-08-15  3053    3055     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79   14      40 2018-03-03  3053    3050    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80   10      40 2019-07-12  3046    3055     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81   28      41 2016-02-25  3051    3044     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82   31      41 2019-10-03  3048    3055    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83   12      42 2018-03-19  3044    3052     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84   89      43 2020-08-28   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85   74      44 2016-04-09   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86   35      45 2018-06-21  3051    3058    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87    7      45 2020-07-12  3045    3042    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88   98      46 2015-11-04   999    &lt;NA&gt;     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89   97      46 2018-10-17   999     999    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90   38      47 2018-09-21  3057    3044     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91    1      48 2016-10-29  3053    3044     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92   82      48 2018-04-22   999    &lt;NA&gt;    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93   23      49 2016-02-22  3058    3042     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94   22      49 2018-06-18  3049    3045     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95   15      49 2020-03-28  3042    3050     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96   34      49 2020-04-08  3046    3043     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97   19      49 2020-09-01  3047     305    &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98   61      50 2015-08-06   999     999     999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99   50      50 2016-03-11  3043    3052    3043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100  86      50 2016-08-18   999     999     999</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">make_test_dat</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   uid clnt_id      dates diagx diagx_1 diagx_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  56       1 2016-06-21   999    &lt;NA&gt;     999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  77       1 2016-08-18   999    &lt;NA&gt;     999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  93       1 2018-11-17   999    &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  91       1 2019-01-23   999     999     999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   5       3 2015-09-16   304    3057     999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  79       3 2019-02-14   999    &lt;NA&gt;    &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

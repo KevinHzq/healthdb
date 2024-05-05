@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,24 +103,8 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># toy data</span></span></span>
-<span class="r-in"><span><span class="va">sample_size</span> <span class="op">&lt;-</span> <span class="fl">30</span></span></span>
-<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  clnt_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, each <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  service_dt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    size <span class="op">=</span> <span class="va">sample_size</span>, replace <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  diagx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, size <span class="op">=</span> <span class="va">sample_size</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  diagx_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="va">letters</span><span class="op">)</span>, size <span class="op">=</span> <span class="va">sample_size</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  diagx_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="va">letters</span><span class="op">)</span>, size <span class="op">=</span> <span class="va">sample_size</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># make df a database table</span></span></span>
-<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">dbplyr</span><span class="fu">::</span><span class="fu"><a href="https://dbplyr.tidyverse.org/reference/memdb_frame.html" class="external-link">tbl_memdb</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in db_copy_to(dest$con, name, df, overwrite = overwrite, types = types,     temporary = temporary, unique_indexes = unique_indexes, indexes = indexes,     analyze = analyze, in_transaction = in_transaction, ...):</span> Can't copy data to table <span style="color: #00BB00;">`df`</span>.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `dplyr::db_write_table()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Can't write table table <span style="color: #00BB00;">`df`</span>.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Table `df` exists in database, and both overwrite and append are FALSE</span>
+<span class="r-in"><span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_test_dat.html">make_test_dat</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_test_dat.html">make_test_dat</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># use build_def to make a toy definition</span></span></span>
 <span class="r-in"><span><span class="va">sud_def</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_def.html">build_def</a></span><span class="op">(</span><span class="st">"SUD"</span>, <span class="co"># usually a disease name</span></span></span>
@@ -142,12 +126,55 @@
 <span class="r-in"><span><span class="co"># saveRDS(sud_def, file = some_path)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># execute definition</span></span></span>
-<span class="r-in"><span><span class="va">sud_by_src</span> <span class="op">&lt;-</span> <span class="va">sud_def</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="execute_def.html">execute_def</a></span><span class="op">(</span>with_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>src1 <span class="op">=</span> <span class="va">db</span>, src2 <span class="op">=</span> <span class="va">db</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'db' not found</span>
+<span class="r-in"><span><span class="va">sud_by_src</span> <span class="op">&lt;-</span> <span class="va">sud_def</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="execute_def.html">execute_def</a></span><span class="op">(</span>with_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>src1 <span class="op">=</span> <span class="va">df1</span>, src2 <span class="op">=</span> <span class="va">df2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing source: df1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^304</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3054 3055 3056 3057 3058 3059  999 NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 29 clients in the input, 20 were flagged as 0 by restricting that each client must have at least 2 records </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing source: df2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^305</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  304 3040 3041 3042 3043 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 3054 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3055 3056 3057 3058 3059  999 NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 24 clients in the input, 21 were flagged as 0 by restricting that each client must have at least 3 records </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pool results from src1 and src2 together at client level</span></span></span>
-<span class="r-in"><span><span class="va">sud_pooled</span> <span class="op">&lt;-</span> <span class="fu">pool_case</span><span class="op">(</span><span class="va">sud_by_src</span>, <span class="va">sud_def</span>, output_lvl <span class="op">=</span> <span class="st">"clnt"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'sud_by_src' not found</span>
+<span class="r-in"><span><span class="fu">pool_case</span><span class="op">(</span><span class="va">sud_by_src</span>, <span class="va">sud_def</span>, output_lvl <span class="op">=</span> <span class="st">"clnt"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    def   clnt_id raw_in_src1 raw_in_src2 valid_in_src1 valid_in_src2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SUD         1           0           1             0             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SUD         4           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> SUD         7           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> SUD        20           0           1             0             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> SUD        21           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> SUD        22           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> SUD        23           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> SUD        25           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> SUD        29           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> SUD        34           1           1             0             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> SUD        39           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> SUD        42           1           1             1             0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
