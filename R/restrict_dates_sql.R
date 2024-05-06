@@ -172,6 +172,9 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     row_date <- data %>%
       dplyr::select(dplyr::all_of(c(clnt_id, date_var))) %>%
       dplyr::rename(dplyr::all_of(nm_lu)) %>%
+      # here may give a warning as an order by is added somehow
+      # try to fix
+      dplyr::arrange() %>%
       dplyr::collapse()
 
     if (use.datediff(data)) {

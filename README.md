@@ -91,12 +91,12 @@ claim_db %>% head()
 #> # Database: sqlite 3.45.2 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
-#> 1    43       1 16549 3056  3055    2924   
-#> 2    80       2 16823 999   999     999    
-#> 3    95       2 17974 999   999     <NA>   
-#> 4    60       3 16442 999   999     <NA>   
-#> 5     4       3 16632 2918  2917    <NA>   
-#> 6    69       4 16692 999   999     999
+#> 1    81       2 16986 999   <NA>    999    
+#> 2    82       3 17018 999   999     <NA>   
+#> 3    24       3 17352 291   3047    <NA>   
+#> 4     4       3 17554 2913  3032    <NA>   
+#> 5    28       4 17750 2929  2925    <NA>   
+#> 6    74       4 18196 999   <NA>    <NA>
 ```
 
 Hospitalization
@@ -107,12 +107,12 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 # this is a local data.frame/tibble
 hosp_df %>% head()
 #>   uid clnt_id      dates diagx diagx_1 diagx_2
-#> 1  84       1 2015-05-14   999    <NA>    <NA>
-#> 2  59       1 2016-04-08   999     999    <NA>
-#> 3  20       2 2015-04-01   F14    F186    <NA>
-#> 4  53       2 2017-01-28   999    <NA>     999
-#> 5  18       2 2020-10-14  F145    F148    <NA>
-#> 6  11       3 2017-07-29  F107    F186     999
+#> 1   8       1 2017-06-06   F14    F142     999
+#> 2  52       1 2019-02-02   999    <NA>     999
+#> 3  55       2 2020-05-17   999     999     999
+#> 4  83       3 2015-07-22   999     999     999
+#> 5  84       3 2018-01-22   999    <NA>     999
+#> 6  45       4 2015-12-06  F130    F114    F144
 ```
 
 Here’s how you could use `healthdb` to implement the SUD definition
@@ -152,12 +152,12 @@ above:
     #> # Ordered by: dates
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
-    #> 1    21       7 16762 3035  2915    999                   1
-    #> 2    11       7 16924 2920  3039    <NA>                  1
-    #> 3    12      10 16676 2912  292     999                   1
-    #> 4    33      10 16902 3042  2927    <NA>                  1
-    #> 5    49      10 17208 2915  2911    3043                  1
-    #> 6    20      10 17964 2922  2926    999                   1
+    #> 1    24       3 17352 291   3047    <NA>                  1
+    #> 2     4       3 17554 2913  3032    <NA>                  1
+    #> 3    28       4 17750 2929  2925    <NA>                  1
+    #> 4     5       4 18518 2918  3035    999                   1
+    #> 5     3       7 16765 2921  2910    <NA>                  1
+    #> 6    13       7 17738 3058  3048    <NA>                  1
     ```
 
 3.  Restrict the temporal pattern of diagnoses
@@ -180,12 +180,12 @@ above:
     #> # Ordered by: dates, uid
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
-    #> 1    21       7 16762 3035  2915    999                   1                  1
-    #> 2    11       7 16924 2920  3039    <NA>                  1                  0
-    #> 3    12      10 16676 2912  292     999                   1                  1
-    #> 4    33      10 16902 3042  2927    <NA>                  1                  1
-    #> 5    49      10 17208 2915  2911    3043                  1                  0
-    #> 6    20      10 17964 2922  2926    999                   1                  0
+    #> 1    24       3 17352 291   3047    <NA>                  1                  1
+    #> 2     4       3 17554 2913  3032    <NA>                  1                  0
+    #> 3    28       4 17750 2929  2925    <NA>                  1                  0
+    #> 4     5       4 18518 2918  3035    999                   1                  0
+    #> 5     3       7 16765 2921  2910    <NA>                  1                  0
+    #> 6    13       7 17738 3058  3048    <NA>                  1                  0
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.
@@ -196,6 +196,6 @@ functions for further manipulations. Therefore, wrangling with them
 along with ‘dplyr’ provide the maximum flexibility for implementing
 complex algorithms. However, your code could look repetitive if multiple
 data sources were involved. See the “Intro” vignette
-(`vignette("Intro")`) **for a much more concise way to work with
+(`vignette("healthdb")`) **for a much more concise way to work with
 multiple sources and definitions** (the ‘Call-building functions’
 section).

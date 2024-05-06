@@ -1,8 +1,8 @@
 ---
-title: "Intro"
+title: "Introduction to healthdb"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Intro}
+  %\VignetteIndexEntry{Introduction to healthdb}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 -   Call-building functions (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
 
--   Miscellaneous functions such as computing age, collapsing records within a time range into one episode, and more (on-going effort) with built-in checks signalling if things could go wrong.
+-   Miscellaneous functions such as computing age `compute_duration()`, collapsing records within a time range into one episode `collapse_episode()`, and more (on-going effort). Most of these functions have built-in checks signalling when things might go wrong, e.g., missing values in calculated ages.
 
 ### Motivation
 
@@ -32,7 +32,7 @@ In health research and surveillance, identifying diseases or events from adminis
 
 These algorithms may also affect performance if they depend on Data Step in SAS, due to a lack of translation between Data Step and SQL. This can result in SAS downloading data from a remote database to a local machine, leading to poor performance when handling large, population-based databases.
 
-The 'healthdb' R package was created to address these challenges. It minimizes the need to download data and offers an easy-to-use interface for working with healthcare databases. It also includes capabilities not supported by 'SQL', such as matching strings by 'stringr' style regular expressions, and can compute comorbidity scores directly on a database server. This vignette will present an example of common use cases.
+The 'healthdb' R package was created to address these challenges. It minimizes the need to download data and offers an easy-to-use interface for working with healthcare databases. It also includes capabilities not supported by 'SQL', such as matching strings by 'stringr' style regular expressions, and can compute comorbidity scores (`compute_comorbidity()`) directly on a database server. This vignette will present an example of common use cases.
 
 ------------------------------------------------------------------------
 
