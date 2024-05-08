@@ -1,5 +1,9 @@
 # healthdb (development version)
 
+## Bug fixes
+
+-   For restrict_date(), suppressed a warning related to SQL translation of "ORDER BY" when `apart` and `within` are both present. The output is correct even when the warning is given. It could be manually avoided by using dplyr::collect() or dplyr::show_query() with argument `cte = TRUE` and likely caused by issues in `dbplyr`.
+
 # healthdb 0.2.0
 
 ## Improvements

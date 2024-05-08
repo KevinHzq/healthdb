@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 
 -   This package is designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability. Three types of functions are included:
 
--   Interactive functions (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful even outside health research.
+-   *Interactive functions* (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful even outside health research.
 
--   Call-building functions (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
+-   *Call-building functions* (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
 
--   Miscellaneous functions such as computing age `compute_duration()`, collapsing records within a time range into one episode `collapse_episode()`, and more (on-going effort). Most of these functions have built-in checks signalling when things might go wrong, e.g., missing values in calculated ages.
+-   *Miscellaneous functions* such as computing age `compute_duration()`, collapsing records within a time range into one episode `collapse_episode()`, and more (on-going effort). Most of these functions have built-in checks signalling when things might go wrong, e.g., missing values in calculated ages.
 
 ### Motivation
 
@@ -103,7 +103,7 @@ claim_db %>%
 
 Here's how you could use `healthdb` to achieve these steps:
 
-1.  Identify rows contains the target codes
+1.  Identify rows contains the target codes. Use `?identify_row` to see a list of supported matching types.
 
     ```{r}
     result1 <- claim_db %>%
@@ -142,7 +142,7 @@ Here's how you could use `healthdb` to achieve these steps:
 
 4.  Restrict the temporal pattern of diagnoses
 
-    `restrict_date()` also supports more complicated patterns like having n diagnoses at least i days apart within j years, but the "apart" feature requires relatively expensive computation and implemented for local data.frames only. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id colume (uid) has to be supplied to get consistent result.
+    `restrict_date()` supports more complicated patterns like having n diagnoses at least i days apart within j years. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id (uid) has to be supplied to get consistent result.
 
     ```{r}
     result4 <- result3 %>% restrict_date(
@@ -158,7 +158,7 @@ Here's how you could use `healthdb` to achieve these steps:
 
 5.  Fetch variables from other tables by matching common keys
 
-    Up to this point, the result is only a query and have not been downloaded. Hopefully, it has been shrunken to a manageable size for collection.
+    Up to this point, the result is only a query and have not been downloaded. Hopefully, the data has been shrunken to a manageable size for collection.
 
     ```{r}
     # Class of result4
@@ -174,7 +174,7 @@ Here's how you could use `healthdb` to achieve these steps:
     nrow(result_df)
     ```
 
-    Our data now only contains diagnoses that are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise.
+    Our data now only contains diagnoses which are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise.
 
     ```{r}
     # make two look up tables
@@ -197,11 +197,13 @@ Here's how you could use `healthdb` to achieve these steps:
       fetch_var(
     keys = c(clnt_id, year),
     linkage = list(
+      # the formula means from_table ~ get_variable
       # |clnt_id means matching on clnt_id only
       age_tab ~ c(age, sex) | clnt_id,
       address_tab ~ area_code
     )
       ) %>%
+      select(uid, clnt_id, dates, age, sex, area_code) %>% 
       head()
     ```
 
@@ -241,7 +243,7 @@ Let's look inside the fn_call list column. Two calls of `define_case()` have bee
 sud_def$fn_call
 ```
 
-Executing the definition is simple. If verbose option is not turned off by `options(healthdb.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def()` outputs together and execute them all at once. Definition and source labels will be added to the result to identify outputs from different calls.
+Executing the definition is simply a call of `execute_def()`. If verbose option is not turned off by `options(healthdb.verbose = FALSE)`, the output message will explain what has been done. You could append multiple `build_def()` outputs together and execute them all at once. Definition and source labels will be added to the result to identify outputs from different calls.
 
 ```{r}
 # execute the definition

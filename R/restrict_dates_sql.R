@@ -157,8 +157,9 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     } else {
       data <- rlang::try_fetch(
         dplyr::compute(data,
-          temporary = TRUE,
-          indexes = list(clnt_id, date_var)
+          # maybe not worth it to create index
+          # indexes = list(clnt_id, date_var),
+          temporary = TRUE
         ),
         error = function(cnd) {
           rlang::warn("The attempt to write a temp table for performance boost failed. Actual error message:\n", parent = cnd)

@@ -1,0 +1,21 @@
+---
+title: "How restrict_date() works"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How restrict_date() works}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(healthdb)
+```
+
+This article is for people who want to know or report the nitty-gritty  
