@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,12 +43,15 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
+  <a class="nav-link" href="articles/healthdb.html">Get started</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/Intro.html">Intro</a>
+    <a class="dropdown-item" href="articles/restrict_date.html">How restrict_date() works</a>
   </div>
 </li>
 <li class="nav-item">
@@ -120,12 +123,12 @@
 <span><span class="co">#&gt; # Database: sqlite 3.45.2 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1    43       1 16549 3056  3055    2924   </span></span>
-<span><span class="co">#&gt; 2    80       2 16823 999   999     999    </span></span>
-<span><span class="co">#&gt; 3    95       2 17974 999   999     &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 4    60       3 16442 999   999     &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 5     4       3 16632 2918  2917    &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 6    69       4 16692 999   999     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    82       1 17657 999   999     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 2    92       1 17940 999   999     999    </span></span>
+<span><span class="co">#&gt; 3    58       2 16620 999   &lt;NA&gt;    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4    11       2 18337 3052  2917    999    </span></span>
+<span><span class="co">#&gt; 5    28       3 16552 2913  2929    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 6    18       3 17172 3051  3036    &lt;NA&gt;</span></span></code></pre></div>
 <p>Hospitalization</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_test_dat.html">make_test_dat</a></span><span class="op">(</span>vals_kept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{10:19}"</span><span class="op">)</span>, <span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{100:199}"</span><span class="op">)</span>, noise_val <span class="op">=</span> <span class="st">"999"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -133,12 +136,12 @@
 <span><span class="co"># this is a local data.frame/tibble</span></span>
 <span><span class="va">hosp_df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1  84       1 2015-05-14   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2  59       1 2016-04-08   999     999    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3  20       2 2015-04-01   F14    F186    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4  53       2 2017-01-28   999    &lt;NA&gt;     999</span></span>
-<span><span class="co">#&gt; 5  18       2 2020-10-14  F145    F148    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  11       3 2017-07-29  F107    F186     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   9       2 2016-10-27  F134    F119    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2  10       2 2017-09-21  F173    F148     999</span></span>
+<span><span class="co">#&gt; 3  64       2 2018-04-03   999    &lt;NA&gt;     999</span></span>
+<span><span class="co">#&gt; 4  68       2 2018-09-07   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5  50       2 2020-08-03  F191    F141    F109</span></span>
+<span><span class="co">#&gt; 6   7       2 2020-12-12  F196     F19     999</span></span></code></pre></div>
 <p>Here’s how you could use <code>healthdb</code> to implement the SUD definition above:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -174,12 +177,12 @@
 <span><span class="co">#&gt; # Ordered by: dates</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    21       7 16762 3035  2915    999                   1</span></span>
-<span><span class="co">#&gt; 2    11       7 16924 2920  3039    &lt;NA&gt;                  1</span></span>
-<span><span class="co">#&gt; 3    12      10 16676 2912  292     999                   1</span></span>
-<span><span class="co">#&gt; 4    33      10 16902 3042  2927    &lt;NA&gt;                  1</span></span>
-<span><span class="co">#&gt; 5    49      10 17208 2915  2911    3043                  1</span></span>
-<span><span class="co">#&gt; 6    20      10 17964 2922  2926    999                   1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    28       3 16552 2913  2929    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 2    18       3 17172 3051  3036    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 3    22      10 16948 2919  2927    999                   1</span></span>
+<span><span class="co">#&gt; 4    50      10 18529 292   2921    111                   1</span></span>
+<span><span class="co">#&gt; 5    40      13 18447 2928  3030    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 6    23      13 18607 3031  2921    &lt;NA&gt;                  1</span></span></code></pre></div>
 </li>
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
@@ -201,16 +204,16 @@
 <span><span class="co">#&gt; # Ordered by: dates, uid</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;              &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    21       7 16762 3035  2915    999                   1                  1</span></span>
-<span><span class="co">#&gt; 2    11       7 16924 2920  3039    &lt;NA&gt;                  1                  0</span></span>
-<span><span class="co">#&gt; 3    12      10 16676 2912  292     999                   1                  1</span></span>
-<span><span class="co">#&gt; 4    33      10 16902 3042  2927    &lt;NA&gt;                  1                  1</span></span>
-<span><span class="co">#&gt; 5    49      10 17208 2915  2911    3043                  1                  0</span></span>
-<span><span class="co">#&gt; 6    20      10 17964 2922  2926    999                   1                  0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    28       3 16552 2913  2929    &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 2    18       3 17172 3051  3036    &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 3    22      10 16948 2919  2927    999                   1                  0</span></span>
+<span><span class="co">#&gt; 4    50      10 18529 292   2921    111                   1                  0</span></span>
+<span><span class="co">#&gt; 5    40      13 18447 2928  3030    &lt;NA&gt;                  1                  1</span></span>
+<span><span class="co">#&gt; 6    23      13 18607 3031  2921    &lt;NA&gt;                  1                  0</span></span></code></pre></div>
 </li>
 <li><p>Repeat these steps for hospitalization and row bind the results.</p></li>
 </ol>
-<p>The output of these functions, including <code><a href="reference/identify_row.html">identify_row()</a></code>, <code><a href="reference/exclude.html">exclude()</a></code>, <code><a href="reference/restrict_n.html">restrict_n()</a></code>, <code><a href="reference/restrict_date.html">restrict_date()</a></code> and more, can be piped into ‘dplyr’ functions for further manipulations. Therefore, wrangling with them along with ‘dplyr’ provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the “Intro” vignette (<code><a href="articles/Intro.html">vignette("Intro")</a></code>) <strong>for a much more concise way to work with multiple sources and definitions</strong> (the ‘Call-building functions’ section).</p>
+<p>The output of these functions, including <code><a href="reference/identify_row.html">identify_row()</a></code>, <code><a href="reference/exclude.html">exclude()</a></code>, <code><a href="reference/restrict_n.html">restrict_n()</a></code>, <code><a href="reference/restrict_date.html">restrict_date()</a></code> and more, can be piped into ‘dplyr’ functions for further manipulations. Therefore, wrangling with them along with ‘dplyr’ provide the maximum flexibility for implementing complex algorithms. However, your code could look repetitive if multiple data sources were involved. See the introduction vignette (<code><a href="articles/healthdb.html">vignette("healthdb")</a></code>) <strong>for a much more concise way to work with multiple sources and definitions</strong> (the ‘Call-building functions’ section).</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

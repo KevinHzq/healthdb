@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,12 +19,15 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/healthdb.html">Get started</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Intro.html">Intro</a>
+    <a class="dropdown-item" href="../articles/restrict_date.html">How restrict_date() works</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -51,10 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="healthdb-020">healthdb 0.2.0<a class="anchor" aria-label="anchor" href="#healthdb-020"></a></h2><p class="text-muted">CRAN release: 2024-05-05</p>
-<div id="dev">
-
+<h2 class="pkg-version" data-toc-text="development version" id="healthdb-development-version">healthdb (development version)<a class="anchor" aria-label="anchor" href="#healthdb-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>For restrict_date(), suppressed a warning related to SQL translation of “ORDER BY” when <code>apart</code> and <code>within</code> are both present. The output is correct even when the warning is given. It could be manually avoided by using dplyr::collect() or dplyr::show_query() with argument <code>cte = TRUE</code> and likely caused by issues in <code>dbplyr</code>.</li>
+</ul></div>
 </div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="healthdb-020">healthdb 0.2.0<a class="anchor" aria-label="anchor" href="#healthdb-020"></a></h2><p class="text-muted">CRAN release: 2024-05-05</p>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
 <ul><li><p>The <code>apart</code> argument in restrict_date() is now functional for both data.frame and database input.</p></li>
