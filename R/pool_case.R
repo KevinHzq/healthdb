@@ -138,7 +138,7 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
       warning("'date_var' is missing in some of the sources. Records cannot be sorted by dates.")
     }
     return(bind_data %>%
-      dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw))) %>%
+      # dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw))) %>%
       dplyr::ungroup())
   }
 
