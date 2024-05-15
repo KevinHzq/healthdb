@@ -19,6 +19,7 @@
 #' @param dup.rm Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when `within` is supplied without `apart`; duplicated dates have no impact when `apart` is present as the n dates must be distinct if they were apart. Default is TRUE.
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
+#' @param check_missing A logical for whether to check and remove missing entries in `date_var` before applying the conditions. Default is FALSE for faster run time.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
 #' @seealso [if_date()]
 #'
@@ -40,7 +41,7 @@
 #' # Keep clients with 2 records that were 1 week apart within 1 month
 #' restrict_date(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
 restrict_date <- function(
-    data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"),
+    data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), check_missing = FALSE,
     ...) {
   rlang::check_required(clnt_id)
   rlang::check_required(date_var)

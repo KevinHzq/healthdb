@@ -76,8 +76,22 @@ test_that("n of keys check works", {
 test_that("not one to one warning works", {
   df1 <- letters_n()
   df2 <- data.frame(clnt_id = c(1:5,1:5), sex = c(rep("F", 5), rep("M", 5)))
-  expect_message(fetch_var(df1, keys = clnt_id,
-                           linkage = list(df2 ~ sex)), "not one to one") %>% expect_warning() %>% expect_error("recycle")
-
+  expect_error(fetch_var(df1, keys = clnt_id,
+                           linkage = list(df2 ~ sex)), "not one to one")
 })
 
+test_that("database x works", {
+  db1 <- letters_n(type = "database")
+  df1 <- dplyr::collect(db1)
+  df2 <- data.frame(clnt_id = 1:nrow(df1), sex = sample(c("F", "M"), nrow(df1), replace = TRUE),
+                    ans = sample(c("all", "any", "noise"), nrow(df1), replace = TRUE))
+  db3 <- dbplyr::memdb_frame(clnt_id = 1:nrow(df1), age = sample(0:100, nrow(df1), replace = TRUE),
+                             ans = sample(c("all", "any", "noise"), nrow(df1), replace = TRUE))
+  out_df <- fetch_var(db1, keys = c(clnt_id, ans),
+                      linkage = list(df2 ~ sex,
+                                     db3 ~ age),
+                      copy = TRUE) %>%
+    dplyr::collect()
+  expect_in(out_df$sex, c(df2$sex, NA))
+  expect_in(out_df$age, c(dplyr::pull(db3, age), NA))
+})

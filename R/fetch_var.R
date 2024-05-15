@@ -2,10 +2,11 @@
 #'
 #' @md
 #' @description
-#' This function fetches variables from different tables that linked by common IDs. It calls [dplyr::left_join()] multiple times with different source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off a table of study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases. That said, this function is to replace repetitions of simple joins and only allows one-to-one matching.
+#' This function fetches variables from different tables that linked by common IDs. It calls [dplyr::left_join()] multiple times with various source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off a table of study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases.
+#' **Caution**: this function is intended for one-to-one joins only because it could be problematic when we do not know which source caused a one-to-many join and changed the number of rows. For data.frame input, an error will be given when one-to-many joins were detected. However, such checking could be an expensive operation on remote source. Therefore, for database input, the result will not be checked.
 #'
 #'
-#' @param data A local data.frame, or tibble. It would be used as the x argument in left_join().
+#' @param data A data.frame or remote table (tbl_sql). It would be used as the x argument in left_join().
 #' @param keys A vector of quoted/unquoted variable names, or 'tidyselect' expression (see [dplyr::select()]). These variables must be present in `data` and would be used as the `by` argument in left_join(). The y tables must have a subset of these if not all.
 #' @param linkage A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 #'  - source table on the left-hand-side
@@ -20,10 +21,9 @@
 #'  meaning:
 #'  1. from table y1 get variables picked by the tidyselect expression matching on all 3 keys;
 #'  2. from table y2 get variables matching on only key1 and key2.
-#' @param verbose A logical for whether report the number of rows after joining for each source. Default is getting from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
-#' @param ... Additional arguments passing to left_join().
+#' @param ... Additional arguments, e.g., `copy = TRUE`, passing to left_join().
 #'
-#' @return A data.frame or tibble containing all original columns of x and new variables matched from other tables based on the specified linkage.
+#' @return A data.frame or remote table containing all original columns of x and new variables matched from other tables based on the specified linkage.
 #' @export
 #'
 #' @examples
@@ -67,21 +67,22 @@
 #'   ),
 #'   copy = TRUE # pass to left_join for forced collection of remote table
 #' )
-fetch_var <- function(data, keys, linkage, verbose = getOption("healthdb.verbose"), ...) {
+fetch_var <- function(data, keys, linkage, ...) {
   # input checks
   stopifnot(any(purrr::map_lgl(linkage, rlang::is_formula)))
 
   # place holder for helper variable names
-  vars <- y <- keys_y <- NULL
+  vars <- y <- keys_y <- . <- NULL
 
   # capture expression arguments
   data_quo <- rlang::enquo(data)
   data_expr <- rlang::quo_get_expr(data_quo)
   data_env <- rlang::quo_get_env(data_quo)
 
-  stopifnot(is.data.frame(data))
+  # stopifnot(is.data.frame(data))
+  is_df <- is.data.frame(data)
 
-  keys <- dplyr::select(data, {{ keys }}) %>% names()
+  keys <- dplyr::select(data, {{ keys }}) %>% colnames()
 
   dots <- rlang::list2(...)
 
@@ -106,29 +107,42 @@ fetch_var <- function(data, keys, linkage, verbose = getOption("healthdb.verbose
   df <- df %>%
     dplyr::mutate(y = glue::glue("dplyr::select({lhs}, c({vars}, {keys_y_expr}))") %>% rlang::parse_exprs())
 
-  x_arg <- glue::glue("dplyr::select({data_expr}, c({glue::glue_collapse(keys, ', ')}))") %>% rlang::parse_expr()
+  if (is_df) {
+    x_arg <- glue::glue("dplyr::select({data_expr}, c({glue::glue_collapse(keys, ', ')}))") %>% rlang::parse_expr()
+  } else {
+    x_arg <- rlang::expr(.)
+  }
 
   df <- df %>%
     dplyr::rowwise() %>%
     dplyr::mutate(calls = rlang::call2("left_join", x = x_arg, y = y, by = keys_y, .ns = "dplyr") %>% list())
 
+  # passing ... to left_join by modding calls
   if (!rlang::is_empty(dots)) {
     mod_calls <- purrr::map(df[["calls"]], function(x) rlang::call_modify(x, !!!dots, .homonyms = "last"))
   } else {
     mod_calls <- df[["calls"]]
   }
 
-  vars_df <- purrr::map(mod_calls, function(x) eval(x, envir = data_env) %>% dplyr::select(-dplyr::any_of(keys)))
+  # browser()
 
-  y_n <- purrr::map_dbl(vars_df, nrow)
+  if (is_df) {
+    vars_df <- purrr::map(mod_calls, function(x) eval(x, envir = data_env) %>% dplyr::select(-dplyr::any_of(keys)))
 
-  one_to_n <- y_n != nrow(data)
-  # if (verbose) rlang::inform(c("i" = paste("The data has", nrow(data), "rows. After joining,", glue::glue("variable(s) from {df$lhs} has {y_n} rows") %>% paste(collapse = ", and "), "\n")))
-  if (any(one_to_n)) rlang::inform(c("i" = glue::glue('The join between data and any of ({stringr::str_flatten_comma(as.character(df$lhs[one_to_n]), last = " and ")}) is not one to one.')))
+    y_n <- purrr::map_dbl(vars_df, nrow)
 
-  vars_df <- purrr::list_cbind(vars_df)
+    one_to_n <- y_n != nrow(data)
 
-  result <- dplyr::bind_cols(data, vars_df)
+    if (any(one_to_n)) rlang::abort(c("i" = glue::glue('The join between data and any of ({stringr::str_flatten_comma(as.character(df$lhs[one_to_n]), last = " and ")}) is not one to one.')))
+
+    vars_df <- purrr::list_cbind(vars_df)
+
+    result <- dplyr::bind_cols(data, vars_df)
+  } else {
+    expr_vec <- purrr::map_chr(mod_calls, rlang::expr_text)
+    pipe_expr_vec <- paste(c(rlang::as_name(data_quo), expr_vec), collapse = " %>% ")
+    result <- eval(rlang::parse_expr(pipe_expr_vec), envir = data_env)
+  }
 
   return(result)
 }

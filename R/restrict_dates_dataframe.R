@@ -1,5 +1,5 @@
 #' @export
-restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), ...) {
+restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), check_missing = FALSE, ...) {
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
   flag_at <- rlang::arg_match0(flag_at, c("left", "right"))
   rlang::check_dots_used()
@@ -9,12 +9,14 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   date_var <- rlang::as_name(rlang::enquo(date_var))
 
   # check missing date_var
-  check_null <- data %>%
-    dplyr::filter(is.na(.data[[date_var]]))
-  if (nrow(check_null) > 1) {
-    warning("Removed ", nrow(check_null), " records with missing date_var")
-    data <- data %>%
-      dplyr::setdiff(check_null)
+  if (check_missing) {
+    check_null <- data %>%
+      dplyr::filter(is.na(.data[[date_var]]))
+    if (nrow(check_null) > 1) {
+      warning("Removed ", nrow(check_null), " records with missing date_var")
+      data <- data %>%
+        dplyr::setdiff(check_null)
+    }
   }
 
   # place holder for temp var names

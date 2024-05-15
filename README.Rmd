@@ -86,7 +86,7 @@ Here's how you could use `healthdb` to implement the SUD definition above:
     ```{r}
     result1 <- claim_db %>%
       identify_row(
-    vars = starts_with("diagx_"),
+    vars = starts_with("diagx"),
     match = "start",
     vals = c(291:292, 303:305)
       )

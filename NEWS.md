@@ -1,8 +1,12 @@
 # healthdb (development version)
 
-## Bug fixes
+## Improvements
 
--   For restrict_date(), suppressed a warning related to SQL translation of "ORDER BY" when `apart` and `within` are both present. The output is correct even when the warning is given. It could be manually avoided by using dplyr::collect() or dplyr::show_query() with argument `cte = TRUE` and likely caused by issues in `dbplyr`.
+-   fetch_var() will accept database input, but it will not prevent one-to-many joins because the checking could be slow on remote database.  
+
+-   All functions that accept database input now will NOT sort the output to avoid generating the 'ORDER BY' clause which may trigger a warning if the output was chained with subsequent operations.
+
+-   restrict_date() will not check missing date unless the new `check_missing` argument was set to TRUE. The checking time may be not negligible for large data set; the user should opt in for it.
 
 # healthdb 0.2.0
 

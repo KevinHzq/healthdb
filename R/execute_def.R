@@ -109,8 +109,8 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
 
   def <- def %>%
     dplyr::mutate(
-      result = purrr::map2(.data[["fn_call"]], .data[["src_labs"]], function(x, y) {
-        if (getOption("healthdb.verbose")) rlang::inform(paste("\nProcessing source:", rlang::expr_deparse(with_data_expr[[y]]), "\n"))
+      result = purrr::pmap(list(.data[["fn_call"]], .data[["src_labs"]], .data[["def_lab"]]), function(x, y, z) {
+        if (getOption("healthdb.verbose")) rlang::inform(paste0("\nActions for definition ", z, " using source ", rlang::expr_deparse(with_data_expr[[y]]), ":\n"))
         eval(x, envir = with_data_env)
       }, .progress = TRUE),
       result = purrr::pmap(

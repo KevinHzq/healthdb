@@ -81,7 +81,7 @@ test_that("check missing dates works", {
   df <- make_test_dat()
   df$dates[sample(1:nrow(df), 5)] <- NA
   db <- memdb_tbl(df)
-  expect_warning(restrict_dates(db, clnt_id, dates, n, within = within, uid = uid), "Removed 5 records")
+  expect_warning(restrict_dates(db, clnt_id, dates, n, within = within, uid = uid, check_missing = TRUE), "Removed 5 records")
 })
 
 test_that("edge case duplicated dates and n > 2", {

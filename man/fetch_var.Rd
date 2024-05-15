@@ -4,10 +4,10 @@
 \alias{fetch_var}
 \title{Get variables from multiple tables with common ID columns}
 \usage{
-fetch_var(data, keys, linkage, verbose = getOption("healthdb.verbose"), ...)
+fetch_var(data, keys, linkage, ...)
 }
 \arguments{
-\item{data}{A local data.frame, or tibble. It would be used as the x argument in left_join().}
+\item{data}{A data.frame or remote table (tbl_sql). It would be used as the x argument in left_join().}
 
 \item{keys}{A vector of quoted/unquoted variable names, or 'tidyselect' expression (see \code{\link[dplyr:select]{dplyr::select()}}). These variables must be present in \code{data} and would be used as the \code{by} argument in left_join(). The y tables must have a subset of these if not all.}
 
@@ -29,15 +29,14 @@ meaning:
 \item from table y2 get variables matching on only key1 and key2.
 }}
 
-\item{verbose}{A logical for whether report the number of rows after joining for each source. Default is getting from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
-
-\item{...}{Additional arguments passing to left_join().}
+\item{...}{Additional arguments, e.g., \code{copy = TRUE}, passing to left_join().}
 }
 \value{
-A data.frame or tibble containing all original columns of x and new variables matched from other tables based on the specified linkage.
+A data.frame or remote table containing all original columns of x and new variables matched from other tables based on the specified linkage.
 }
 \description{
-This function fetches variables from different tables that linked by common IDs. It calls \code{\link[dplyr:mutate-joins]{dplyr::left_join()}} multiple times with different source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off a table of study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases. That said, this function is to replace repetitions of simple joins and only allows one-to-one matching.
+This function fetches variables from different tables that linked by common IDs. It calls \code{\link[dplyr:mutate-joins]{dplyr::left_join()}} multiple times with various source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off a table of study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases.
+\strong{Caution}: this function is intended for one-to-one joins only because it could be problematic when we do not know which source caused a one-to-many join and changed the number of rows. For data.frame input, an error will be given when one-to-many joins were detected. However, such checking could be an expensive operation on remote source. Therefore, for database input, the result will not be checked.
 }
 \examples{
 # make toy data

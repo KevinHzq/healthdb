@@ -81,6 +81,10 @@ We are going to implement this definition. First, let's make a demo data sets fo
 
     # this is a local data.frame/tibble
     hosp_df %>% head()
+    
+    # convert Date to numeric to be consistent with claim_db
+    hosp_df <- hosp_df %>% 
+      mutate(dates = julian(dates))
     ```
 
 ## Interactive functions
@@ -91,7 +95,7 @@ Let's focus on the physician claims. Extracting clients with at least two record
 ## not run
 claim_db %>%
   # identify the target codes
-  filter(if_any(starts_with("diagx_"), ~ str_like(., c("291%", "292%", "303%", "304%", "305%")))) %>%
+  filter(if_any(starts_with("diagx"), ~ str_like(., c("291%", "292%", "303%", "304%", "305%")))) %>%
   # each clnt has at least 2 records on different dates
   group_by(clnt_id) %>%
   # the n_distinct step is mainly for reducing computation in the next step
@@ -108,7 +112,7 @@ Here's how you could use `healthdb` to achieve these steps:
     ```{r}
     result1 <- claim_db %>%
       identify_row(
-    vars = starts_with("diagx_"),
+    vars = starts_with("diagx"),
     match = "start",
     vals = c(291:292, 303:305)
       )
@@ -123,7 +127,7 @@ Here's how you could use `healthdb` to achieve these steps:
     ```{r}
     result2 <- result1 %>%
       exclude(
-    excl = identify_row(claim_db, starts_with("diagx_"), "in", "111"),
+    excl = identify_row(claim_db, starts_with("diagx"), "in", "111"),
     by = "clnt_id"
       )
     ```
@@ -222,7 +226,7 @@ sud_def <- build_def(
   # below are argumets of define_case
   fn_args = list(
     # if length = 1, the single element will be use for every source
-    vars = list(starts_with("diagx_")),
+    vars = list(starts_with("diagx")),
     match = "start", # match ICD starts with vals
     vals = list(c(291:292, 303:305), glue("F{10:19}")),
     clnt_id = clnt_id,
@@ -269,7 +273,20 @@ bind_source(result_list,
   src = "src",
   uid = "uid",
   clnt_id = "clnt_id",
-  flag_date = c("flag_restrict_date", NA),
+  flag = c("flag_restrict_date", NA),
+  # force_proceed is needed to collect remote tables to local memory
   force_proceed = TRUE
 )
+```
+
+`pool_case()` goes a few steps further than row bind. It also filters records with valid flags and can summarize by client/group. Since we had to decide which variables to be summarized in advance, the output may not be flexible enough to meet your needs.
+
+```{r}
+pool_case(result_list,
+          def = sud_def,
+          # your could skip summary with output_lvl = "raw"
+          output_lvl = "clnt",
+          # include records only from sources having valid records, see function documentation for more detail and other options
+          include_src = "has_valid",
+          force_proceed = TRUE)
 ```
