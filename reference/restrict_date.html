@@ -24,12 +24,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/restrict_date.html">How restrict_date() works</a>
-  </div>
-</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -73,6 +67,7 @@
 <span>  dup.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_collect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"healthdb.verbose"</span><span class="op">)</span>,</span>
+<span>  check_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -127,6 +122,10 @@
 
 <dt>verbose</dt>
 <dd><p>A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use <code>options(healthdb.verbose = FALSE)</code> to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.</p></dd>
+
+
+<dt>check_missing</dt>
+<dd><p>A logical for whether to check and remove missing entries in <code>date_var</code> before applying the conditions. Default is FALSE for faster run time.</p></dd>
 
 
 <dt>...</dt>

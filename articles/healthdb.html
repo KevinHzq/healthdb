@@ -48,12 +48,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/restrict_date.html">How restrict_date() works</a>
-  </div>
-</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -208,7 +202,11 @@ diagnostic codes</p>
 <span><span class="co">#&gt; 3   3       1 2019-06-17  F133    F159     999</span></span>
 <span><span class="co">#&gt; 4  65       2 2019-01-08   999    &lt;NA&gt;     999</span></span>
 <span><span class="co">#&gt; 5  52       2 2019-06-01   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span></span>
+<span><span class="co"># convert Date to numeric to be consistent with claim_db</span></span>
+<span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="va">hosp_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">julian</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
 </div>
@@ -225,7 +223,7 @@ n_distinct.</p>
 <code class="sourceCode R"><span><span class="co">## not run</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># identify the target codes</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx_"</span><span class="op">)</span>, <span class="op">~</span> <span class="fu">str_like</span><span class="op">(</span><span class="va">.</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"291%"</span>, <span class="st">"292%"</span>, <span class="st">"303%"</span>, <span class="st">"304%"</span>, <span class="st">"305%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="op">~</span> <span class="fu">str_like</span><span class="op">(</span><span class="va">.</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"291%"</span>, <span class="st">"292%"</span>, <span class="st">"303%"</span>, <span class="st">"304%"</span>, <span class="st">"305%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># each clnt has at least 2 records on different dates</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">clnt_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># the n_distinct step is mainly for reducing computation in the next step</span></span>
@@ -243,12 +241,12 @@ types.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result1</span> <span class="op">&lt;-</span> <span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/identify_row.html">identify_row</a></span><span class="op">(</span></span>
-<span>vars <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx_"</span><span class="op">)</span>,</span>
+<span>vars <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>,</span>
 <span>match <span class="op">=</span> <span class="st">"start"</span>,</span>
 <span>vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">291</span><span class="op">:</span><span class="fl">292</span>, <span class="fl">303</span><span class="op">:</span><span class="fl">305</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx_1, diagx_2 column(s) in each record</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> contains a value satisfied SQL LIKE pattern: 291% OR 292% OR 303% OR 304% OR 305%</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> To see the final query generated by 'dbplyr', use dplyr::show_query() on the output.</span></span>
 <span><span class="co">#&gt; To extract the SQL string, use dbplyr::remote_query().</span></span></code></pre></div>
@@ -269,11 +267,11 @@ is the opposite of filter, i.e.,
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result2</span> <span class="op">&lt;-</span> <span class="va">result1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/exclude.html">exclude</a></span><span class="op">(</span></span>
-<span>excl <span class="op">=</span> <span class="fu"><a href="../reference/identify_row.html">identify_row</a></span><span class="op">(</span><span class="va">claim_db</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx_"</span><span class="op">)</span>, <span class="st">"in"</span>, <span class="st">"111"</span><span class="op">)</span>,</span>
+<span>excl <span class="op">=</span> <span class="fu"><a href="../reference/identify_row.html">identify_row</a></span><span class="op">(</span><span class="va">claim_db</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="st">"in"</span>, <span class="st">"111"</span><span class="op">)</span>,</span>
 <span>by <span class="op">=</span> <span class="st">"clnt_id"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx_1, diagx_2 column(s) in each record</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: "111"</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id"</span></span></code></pre></div>
 </li>
@@ -396,7 +394,7 @@ with different data and parameters to meet those needs.</p>
 <span>  <span class="co"># below are argumets of define_case</span></span>
 <span>  fn_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="co"># if length = 1, the single element will be use for every source</span></span>
-<span>    vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx_"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    match <span class="op">=</span> <span class="st">"start"</span>, <span class="co"># match ICD starts with vals</span></span>
 <span>    vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">291</span><span class="op">:</span><span class="fl">292</span>, <span class="fl">303</span><span class="op">:</span><span class="fl">305</span><span class="op">)</span>, <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"F{10:19}"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    clnt_id <span class="op">=</span> <span class="va">clnt_id</span>,</span>
@@ -422,12 +420,12 @@ study periods.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sud_def</span><span class="op">$</span><span class="va">fn_call</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; define_case(data = , vars = starts_with("diagx_"), match = "start", </span></span>
+<span><span class="co">#&gt; define_case(data = , vars = starts_with("diagx"), match = "start", </span></span>
 <span><span class="co">#&gt;     vals = c(291:292, 303:305), clnt_id = clnt_id, n_per_clnt = 2, </span></span>
 <span><span class="co">#&gt;     date_var = dates, within = 365, uid = uid, mode = "flag")</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; define_case(data = , vars = starts_with("diagx_"), match = "start", </span></span>
+<span><span class="co">#&gt; define_case(data = , vars = starts_with("diagx"), match = "start", </span></span>
 <span><span class="co">#&gt;     vals = glue("F{10:19}"), clnt_id = clnt_id, n_per_clnt = 1, </span></span>
 <span><span class="co">#&gt;     date_var = dates, within = NULL, uid = uid, mode = "flag")</span></span></code></pre></div>
 <p>Executing the definition is simply a call of
@@ -445,10 +443,10 @@ outputs from different calls.</p>
 <span>    hosp <span class="op">=</span> <span class="va">hosp_df</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Processing source: claim_db</span></span>
+<span><span class="co">#&gt; Actions for definition SUD using source claim_db:</span></span>
 <span><span class="co">#&gt; → --------------Inclusion step--------------</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx_1, diagx_2 column(s) in each record</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> contains a value satisfied SQL LIKE pattern: 291% OR 292% OR 303% OR 304% OR 305%</span></span>
 <span><span class="co">#&gt; → --------------No. rows restriction--------------</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -459,23 +457,25 @@ outputs from different calls.</p>
 <span><span class="co">#&gt; → -------------- Output all records--------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Processing source: hosp_df </span></span>
+<span><span class="co">#&gt; Actions for definition SUD using source hosp_df:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; → --------------Inclusion step--------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx_1, diagx_2 column(s) in each record</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^F10|^F11|^F12|^F13|^F14|^F15|^F16|^F17|^F18|^F19</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span></span>
-<span><span class="co">#&gt;  999  F10 F103 F104 F105 F107 F108 F111 F112 F117  F12 F121 F122 F123 F124 F128 </span></span>
+<span><span class="co">#&gt;  999  F10 F101 F103 F104 F105 F107 F108 F109 F111 F112 F113 F114 F115 F116 F117 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; F129  F13 F132 F135 F137 F138 F140 F141 F146 F147  F15 F154 F159  F16 F161 F162 </span></span>
+<span><span class="co">#&gt; F118 F119  F12 F121 F122 F123 F124 F125 F128 F129  F13 F132 F133 F134 F135 F137 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; F164 F172 F173 F174 F175 F176 F179 F183 F184 F185 F187 F189 F192 F193 F197 F198 </span></span>
+<span><span class="co">#&gt; F138  F14 F140 F141 F143 F144 F145 F146 F147  F15 F154 F155 F159  F16 F160 F161 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; NA's </span></span>
-<span><span class="co">#&gt;    1</span></span>
+<span><span class="co">#&gt; F162 F164 F165 F166 F168  F17 F170 F172 F173 F174 F175 F176 F179 F181 F183 F184 </span></span>
+<span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
+<span><span class="co">#&gt; F185 F187 F188 F189  F19 F191 F192 F193 F196 F197 F198 NA's </span></span>
+<span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1</span></span>
 <span><span class="co">#&gt; → -------------- Output all records--------------</span></span></code></pre></div>
 <p>Let’s check the results!</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -493,13 +493,13 @@ outputs from different calls.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SUD   claim    41      12 <span style="text-decoration: underline;">17</span>520 3047  3049    2915                  0</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SUD   claim    22      13 <span style="text-decoration: underline;">18</span>489 3045  3042    <span style="color: #BB0000;">NA</span>                    0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: flag_restrict_date &lt;int&gt;</span></span></span>
-<span><span class="co">#&gt;   def  src uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1 SUD hosp   3       1 2019-06-17  F133    F159     999</span></span>
-<span><span class="co">#&gt; 2 SUD hosp  38       4 2015-07-09  F191    F147     999</span></span>
-<span><span class="co">#&gt; 3 SUD hosp  17       4 2017-04-23  F114    F154     999</span></span>
-<span><span class="co">#&gt; 4 SUD hosp  30       5 2015-06-28  F101    F107    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5 SUD hosp  27       5 2016-10-05  F165    F174    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6 SUD hosp  24       5 2017-09-05  F118    F111    &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   def  src uid clnt_id dates diagx diagx_1 diagx_2</span></span>
+<span><span class="co">#&gt; 1 SUD hosp   3       1 18064  F133    F159     999</span></span>
+<span><span class="co">#&gt; 2 SUD hosp  38       4 16625  F191    F147     999</span></span>
+<span><span class="co">#&gt; 3 SUD hosp  17       4 17279  F114    F154     999</span></span>
+<span><span class="co">#&gt; 4 SUD hosp  30       5 16614  F101    F107    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5 SUD hosp  27       5 17079  F165    F174    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6 SUD hosp  24       5 17414  F118    F111    &lt;NA&gt;</span></span></code></pre></div>
 <p>At this point, the result from the claim database
 (<code>result[[1]]</code>) has not been collected locally. You could
 collect it manually, do further filtering, and then combine with the
@@ -512,23 +512,51 @@ naming feature.</p>
 <span>  src <span class="op">=</span> <span class="st">"src"</span>,</span>
 <span>  uid <span class="op">=</span> <span class="st">"uid"</span>,</span>
 <span>  clnt_id <span class="op">=</span> <span class="st">"clnt_id"</span>,</span>
-<span>  flag_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flag_restrict_date"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flag_restrict_date"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="co"># force_proceed is needed to collect remote tables to local memory</span></span>
 <span>  force_proceed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 97 × 5</span></span></span>
-<span><span class="co">#&gt;    src_No src     uid clnt_id flag_date</span></span>
-<span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>      1 claim    25       3         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>      1 claim    46       4         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>      1 claim    40       5         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>      1 claim    10       8         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>      1 claim    41      12         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>      1 claim    22      13         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>      1 claim     3      15         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>      1 claim    14      16         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>      1 claim    26      17         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>      1 claim     1      18         0</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 87 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 5</span></span></span>
+<span><span class="co">#&gt;    src_No src     uid clnt_id  flag</span></span>
+<span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>      1 claim    25       3     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>      1 claim    46       4     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>      1 claim    40       5     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>      1 claim    10       8     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>      1 claim    41      12     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>      1 claim    22      13     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>      1 claim     3      15     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>      1 claim    14      16     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>      1 claim    26      17     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>      1 claim     1      18     0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 90 more rows</span></span></span></code></pre></div>
+<p><code><a href="../reference/pool_case.html">pool_case()</a></code> goes a few steps further than row bind. It
+also filters records with valid flags and can summarize by client/group.
+Since we had to decide which variables to be summarized in advance, the
+output may not be flexible enough to meet your needs.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pool_case.html">pool_case</a></span><span class="op">(</span><span class="va">result_list</span>,</span>
+<span>          def <span class="op">=</span> <span class="va">sud_def</span>,</span>
+<span>          <span class="co"># your could skip summary with output_lvl = "raw"</span></span>
+<span>          output_lvl <span class="op">=</span> <span class="st">"clnt"</span>,</span>
+<span>          <span class="co"># include records only from sources having valid records, see function documentation for more detail and other options</span></span>
+<span>          include_src <span class="op">=</span> <span class="st">"has_valid"</span>,</span>
+<span>          force_proceed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 29 × 8</span></span></span>
+<span><span class="co">#&gt;    def   clnt_id first_valid_date last_entry_date raw_in_claim raw_in_hosp</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> SUD         1            <span style="text-decoration: underline;">18</span>064           <span style="text-decoration: underline;">18</span>064            0           1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SUD         4            <span style="text-decoration: underline;">16</span>625           <span style="text-decoration: underline;">17</span>279            0           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SUD         5            <span style="text-decoration: underline;">16</span>614           <span style="text-decoration: underline;">17</span>414            0           3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SUD         7            <span style="text-decoration: underline;">17</span>700           <span style="text-decoration: underline;">17</span>865            0           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SUD         8            <span style="text-decoration: underline;">17</span>821           <span style="text-decoration: underline;">18</span>135            0           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SUD         9            <span style="text-decoration: underline;">17</span>637           <span style="text-decoration: underline;">18</span>344            0           3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SUD        11            <span style="text-decoration: underline;">17</span>675           <span style="text-decoration: underline;">18</span>395            0           3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SUD        12            <span style="text-decoration: underline;">17</span>888           <span style="text-decoration: underline;">17</span>888            0           1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SUD        13            <span style="text-decoration: underline;">18</span>342           <span style="text-decoration: underline;">18</span>342            0           1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> SUD        16            <span style="text-decoration: underline;">18</span>088           <span style="text-decoration: underline;">18</span>088            0           1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 19 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: valid_in_claim &lt;int&gt;, valid_in_hosp &lt;int&gt;</span></span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
