@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,12 +48,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="healthdb-development-version">healthdb (development version)<a class="anchor" aria-label="anchor" href="#healthdb-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="healthdb-030">healthdb 0.3.0<a class="anchor" aria-label="anchor" href="#healthdb-030"></a></h2>
 <div class="section level3">
-<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
+<h3 id="improvements-0-3-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-0"></a></h3>
 <ul><li><p>fetch_var() will accept database input, but it will not prevent one-to-many joins because the checking could be slow on remote database.</p></li>
 <li><p>All functions that accept database input now will NOT sort the output to avoid generating the ‘ORDER BY’ clause which may trigger a warning if the output was chained with subsequent operations.</p></li>
-<li><p>restrict_date() will not check missing date unless the new <code>check_missing</code> argument was set to TRUE. The checking time may be not negligible for large data set; the user should opt in for it.</p></li>
+<li><p>restrict_date() will not check missing date unless the new <code>check_missing</code> argument was set to TRUE. The checking time may be not negligible for large database; the user should opt in for it.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<ul><li>Chaining pool_case() with dplyr::compute() to create table in database should no longer give errors or warnings related to window order.</li>
 </ul></div>
 </div>
     <div class="section level2">
