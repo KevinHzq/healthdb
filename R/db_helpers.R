@@ -4,3 +4,12 @@ memdb_tbl <- function(df) {
   dplyr::copy_to(dbplyr::src_memdb(), df, tab_nm, temporary = TRUE, overwrite = TRUE)
   dplyr::tbl(dbplyr::src_memdb(), tab_nm)
 }
+
+# clean up all the grouping and ordering in tbl_sql object
+clean_db <- function(db) {
+  db %>%
+    dplyr::ungroup() %>%
+    dbplyr::window_order() %>%
+    dbplyr::window_frame() %>%
+    dplyr::arrange()
+}

@@ -15,7 +15,10 @@ test_that("pool databases works", {
     )
   )
   result <- execute_def(def, with_data = list(msp = db, dad = db))
-  pool_result <- pool_case(result, def, output_lvl = "clnt", include_src = "n_per_clnt") %>% dplyr::collect()
+  pool_result <- pool_case(result, def, output_lvl = "clnt", include_src = "n_per_clnt") %>%
+    # test compatibility with compute()
+    dplyr::compute() %>%
+    dplyr::collect()
   expect_gt(nrow(pool_result), 0)
   # also test include_src works
   pool_result2 <- pool_case(result, def, output_lvl = "clnt", include_src = "all") %>% dplyr::collect()

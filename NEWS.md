@@ -2,11 +2,15 @@
 
 ## Improvements
 
--   fetch_var() will accept database input, but it will not prevent one-to-many joins because the checking could be slow on remote database.  
+-   fetch_var() will accept database input, but it will not prevent one-to-many joins because the checking could be slow on remote database.
 
 -   All functions that accept database input now will NOT sort the output to avoid generating the 'ORDER BY' clause which may trigger a warning if the output was chained with subsequent operations.
 
--   restrict_date() will not check missing date unless the new `check_missing` argument was set to TRUE. The checking time may be not negligible for large data set; the user should opt in for it.
+-   restrict_date() will not check missing date unless the new `check_missing` argument was set to TRUE. The checking time may be not negligible for large database; the user should opt in for it.
+
+## Bug fixes
+
+-   Chaining pool_case() with dplyr::compute() to create table in database should no longer give errors or warnings related to window order.
 
 # healthdb 0.2.0
 

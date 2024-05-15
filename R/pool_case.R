@@ -58,17 +58,11 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
 
   # bind data with obtained names
   bind_data <- bind_source(data, !!!dot, ...)
+  is_df <- is.data.frame(bind_data)
 
   # interpret has date_var or not for later whether dates need to be summarized
   has_date_var <- ifelse("date_var" %in% names(dot), "y", "n")
   partial_date_var <- any(is.na(dot[["date_var"]]))
-
-  # def_long <- def %>%
-  #   tidyr::unnest(fn_args) %>%
-  #   dplyr::mutate(fn_arg_names = sapply(def$fn_args, function(x) names(x)) %>% c()) %>%
-  #   dplyr::select(-def_lab, -def_fn, -fn_call)
-  # def_wide <- def_long %>% tidyr::pivot_wider(names_from = fn_arg_names, values_from = fn_args)
-  # browser()
 
   # flag calculation
   # if not flag, assume 1
@@ -96,7 +90,7 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   }
   # browser()
 
-  switch (include_src,
+  switch(include_src,
     all = {
       bind_data <- bind_data %>%
         dplyr::group_by(def, clnt_id) %>%
@@ -113,7 +107,8 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
         fill_n <- def$src_labs[which(is.na(dot[["flag_restrict_n"]]))]
         bind_data <- bind_data %>%
           dplyr::mutate(flag_restrict_n = dplyr::case_when(src %in% local(fill_n) ~ 1L,
-                                                             .default = flag_restrict_n)) %>%
+            .default = flag_restrict_n
+          )) %>%
           dplyr::filter(flag_restrict_n > 0L) %>%
           dplyr::group_by(def, clnt_id)
       } else {
@@ -137,9 +132,12 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     if (partial_date_var) {
       warning("'date_var' is missing in some of the sources. Records cannot be sorted by dates.")
     }
-    return(bind_data %>%
-      # dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw))) %>%
-      dplyr::ungroup())
+    if (is_df) {
+      bind_data <- dplyr::ungroup(bind_data)
+    } else {
+      bind_data <- clean_db(bind_data)
+    }
+    return(bind_data)
   }
 
   if (has_date_var == "y") {
@@ -153,6 +151,15 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   # including get the last date
   # then filter valid entries only
   # branching by data type to sum first valid date and valid sources
+  if (!is_df) {
+    win_order <- c("date_var", "src", "uid")
+    bind_data <- bind_data %>%
+      dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
+  } else {
+    bind_data <- bind_data %>%
+      dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
+  }
+
   if (has_date_var == "y") {
     bind_data <- bind_data %>%
       dplyr::mutate(max_date = max(date_var, na.rm = TRUE))
@@ -165,15 +172,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   bind_data <- bind_data %>%
     dplyr::mutate(dplyr::across(src, list(!!!src_formula), .names = "{.fn}"))
 
-  if ("tbl_sql" %in% class(bind_data)) {
-    win_order <- c("date_var", "src", "uid")
-    bind_data <- bind_data %>%
-      dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
-  } else {
-    bind_data <- bind_data %>%
-      dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
-  }
-
   # preserve raw record count before filter out valid records
   bind_data <- bind_data %>%
     dplyr::mutate(dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "raw_{.col}"))
@@ -182,88 +180,29 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     dplyr::filter(flag_valid_record == 1)
 
   switch(has_date_var,
-         y = {
-           bind_data <- bind_data %>%
-             dplyr::summarise(
-               first_valid_date = min(date_var, na.rm = TRUE),
-               last_entry_date = max(max_date, na.rm = TRUE),
-               dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
-             )
-         },
-         n = {
-           bind_data <- bind_data %>%
-             dplyr::summarise(
-               dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
-               dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
-             )
-         }
+    y = {
+      bind_data <- bind_data %>%
+        dplyr::summarise(
+          first_valid_date = min(date_var, na.rm = TRUE),
+          last_entry_date = max(max_date, na.rm = TRUE),
+          dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
+          dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
+        )
+    },
+    n = {
+      bind_data <- bind_data %>%
+        dplyr::summarise(
+          dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
+          dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
+        )
+    }
   )
 
-  # if ("tbl_sql" %in% class(bind_data)) {
-  #   win_order <- c("date_var", "src", "uid")
-  #   bind_data <- bind_data %>%
-  #     dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
-  #
-  #   # SQL server vs SQLite differences
-  #   is_mssql_mysql <- stringr::str_detect(dbplyr::remote_con(bind_data) %>% class(), "SQL Server|Maria") %>% any()
-  #
-  #   if (is_mssql_mysql) {
-  #     switch(has_date_var,
-  #       y = {
-  #         bind_data <- bind_data %>%
-  #           dplyr::summarise(
-  #             first_valid_date = min(date_var, na.rm = TRUE),
-  #             last_entry_date = max(max_date, na.rm = TRUE),
-  #             from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
-  #           )
-  #       },
-  #       n = {
-  #         bind_data <- bind_data %>%
-  #           dplyr::summarise(
-  #             from_src = dbplyr::sql(glue::glue_sql("STRING_AGG(DISTINCT {`src_nm`}, {sep})", .con = dbplyr::remote_con(bind_data), src_nm = "src", sep = ","))
-  #           )
-  #       }
-  #     )
-  #   } else {
-  #     switch(has_date_var,
-  #       y = {
-  #         bind_data <- bind_data %>%
-  #           dplyr::summarise(
-  #             first_valid_date = min(date_var, na.rm = TRUE),
-  #             last_entry_date = max(max_date, na.rm = TRUE),
-  #             from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
-  #           )
-  #       },
-  #       n = {
-  #         bind_data <- bind_data %>%
-  #           dplyr::summarise(
-  #             from_src = dbplyr::sql(glue::glue_sql("GROUP_CONCAT(DISTINCT {`src_nm`})", .con = dbplyr::remote_con(bind_data), src_nm = "src"))
-  #           )
-  #       }
-  #     )
-  #   }
-  # } else {
-  #   bind_data <- bind_data %>%
-  #     dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
-  #
-  #   switch(has_date_var,
-  #     y = {
-  #       bind_data <- bind_data %>%
-  #         dplyr::summarise(
-  #           first_valid_date = min(date_var, na.rm = TRUE),
-  #           last_entry_date = max(max_date, na.rm = TRUE),
-  #           from_src = paste(unique(src), collapse = ",")
-  #         )
-  #     },
-  #     n = {
-  #       bind_data <- bind_data %>%
-  #         dplyr::summarise(
-  #           from_src = paste(unique(src), collapse = ",")
-  #         )
-  #     }
-  #   )
-  # }
+  if (is_df) {
+    bind_data <- dplyr::ungroup(bind_data)
+  } else {
+    bind_data <- clean_db(bind_data)
+  }
 
-  return(bind_data %>% dplyr::ungroup())
+  return(bind_data)
 }

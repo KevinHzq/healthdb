@@ -164,7 +164,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         ),
         error = function(cnd) {
           rlang::warn("The attempt to write a temp table for performance boost failed. Actual error message:\n", parent = cnd)
-          return(data)
+          return(clean_db(data))
         }
       )
     }
@@ -202,7 +202,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       data,
       error = function(cnd) {
         rlang::abort("The attempt of overlap join in SQL failed. Use force_collect = TRUE to download the data before interpreting apart & within condition. Actual error message:\n", parent = cnd)
-        return(data)
+        return(clean_db(data))
       }
     )
 
@@ -236,7 +236,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     rlang::inform(c("i" = glue::glue('Apply restriction that each client must have {n} records that were{ifelse(!is.null(apart), paste(" at least", apart, "days apart"), "")}{ifelse(!is.null(within), paste(" within", within, "days"), "")}. {ifelse(mode == "filter", "Clients/groups which did not met the condition were excluded.", "Records that met the condition were flagged.")}')))
   }
 
-  return(data)
+  return(clean_db(data))
 }
 
 all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {

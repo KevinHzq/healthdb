@@ -47,5 +47,5 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode 
     rlang::inform(c("i" = glue::glue('Apply restriction that each client must have at least {n_per_clnt} {ifelse(has_count_by, paste0("records with distinct ", count_by_nm), "records")}. {ifelse(mode == "filter", "Clients/groups which did not met the condition were excluded.", "Records that met the condition were flagged.")}')))
   }
 
-  return(dplyr::ungroup(db))
+  return(clean_db(db))
 }

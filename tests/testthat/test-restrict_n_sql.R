@@ -4,7 +4,10 @@ test_that("basic use works", {
   keep_id <- 1:3
   out_id <- 5:6
   db <- iclnt_jdates(i = list(keep_id, out_id), j = c(keep_n, keep_n - dup_n - 1), dup = c(0, dup_n), type = "database")
-  output_id <- restrict_n(db, clnt_id = clnt_id, n_per_clnt = keep_n, mode = "filter") %>% dplyr::pull(clnt_id)
+  output_id <- restrict_n(db, clnt_id = clnt_id, n_per_clnt = keep_n, mode = "filter") %>%
+    # test compatibility with compute()
+    dplyr::compute() %>%
+    dplyr::pull(clnt_id)
   expect_setequal(output_id, keep_id)
 })
 
