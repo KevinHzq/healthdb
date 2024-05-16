@@ -2,7 +2,7 @@
 % Please edit documentation in R/if_dates.R
 \name{if_date}
 \alias{if_date}
-\title{Interpret if n dates drawn from a vector could be some days apart within some years}
+\title{Interpret if any n elements drawn from a date vector could be some days apart within some time span}
 \usage{
 if_date(
   x,

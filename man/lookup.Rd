@@ -2,7 +2,7 @@
 % Please edit documentation in R/lookup.R
 \name{lookup}
 \alias{lookup}
-\title{Find value corresponding to input vector using a look-up table}
+\title{Find value corresponding to the input vector using a look-up table}
 \usage{
 lookup(x, link, lu, verbose = getOption("healthdb.verbose"))
 }
@@ -19,7 +19,7 @@ lookup(x, link, lu, verbose = getOption("healthdb.verbose"))
 A vector of matched values.
 }
 \description{
-Find value corresponding to input vector using a look-up table
+Find value corresponding to the input vector using a look-up table
 }
 \examples{
 

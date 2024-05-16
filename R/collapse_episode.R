@@ -1,4 +1,4 @@
-#' Grouping records into episodes by date range
+#' Group records no more than n days apart as episodes
 #'
 #' @md
 #' @description This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable. This function is implemented for data.frame input only.

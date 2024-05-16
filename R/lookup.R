@@ -1,4 +1,4 @@
-#' Find value corresponding to input vector using a look-up table
+#' Find value corresponding to the input vector using a look-up table
 #'
 #' @param x A variable name in a data.frame; this function should be called inside dplyr::mutate().
 #' @param link A formula in the form: name_of_x_in_lu ~ name_of_target_value. The left-hand-side can be omitted if x's name is also x in the look-up.

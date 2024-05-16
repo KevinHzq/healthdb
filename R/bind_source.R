@@ -1,4 +1,4 @@
-#' Row-bind a list of data.frames or remote tables
+#' Row-bind a list of data.frames or remote tables with variable selection and renaming
 #'
 #' @md
 #' @description

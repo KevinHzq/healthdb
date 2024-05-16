@@ -1,4 +1,4 @@
-#' Removes or flags groups with n less than some number
+#' Remove or flag groups with n less than some number
 #'
 #' @md
 #' @description

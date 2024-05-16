@@ -1,4 +1,4 @@
-#' Interpret if n dates drawn from a vector could be some days apart within some years
+#' Interpret if any n elements drawn from a date vector could be some days apart within some time span
 #'
 #' @md
 #' @description

@@ -2,7 +2,7 @@
 % Please edit documentation in R/bind_source.R
 \name{bind_source}
 \alias{bind_source}
-\title{Row-bind a list of data.frames or remote tables}
+\title{Row-bind a list of data.frames or remote tables with variable selection and renaming}
 \usage{
 bind_source(data, ..., force_proceed = getOption("healthdb.force_proceed"))
 }

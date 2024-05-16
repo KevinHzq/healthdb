@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrict_dates.R
 \name{restrict_date}
 \alias{restrict_date}
-\title{Removes or flags groups failed to meet conditions based on dates}
+\title{Remove or flag groups failed to meet conditions based on dates}
 \usage{
 restrict_date(
   data,

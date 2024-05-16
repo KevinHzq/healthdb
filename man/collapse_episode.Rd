@@ -2,7 +2,7 @@
 % Please edit documentation in R/collapse_episode.R
 \name{collapse_episode}
 \alias{collapse_episode}
-\title{Grouping records into episodes by date range}
+\title{Group records no more than n days apart as episodes}
 \usage{
 collapse_episode(
   data,

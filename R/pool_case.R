@@ -1,4 +1,4 @@
-#' Pooling qualified clients from multiple sources
+#' Pool qualified clients from results of multiple definitions
 #'
 #' @md
 #' @description

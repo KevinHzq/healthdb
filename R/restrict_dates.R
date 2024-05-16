@@ -1,4 +1,4 @@
-#' Removes or flags groups failed to meet conditions based on dates
+#' Remove or flag groups failed to meet conditions based on dates
 #'
 #' @md
 #' @description

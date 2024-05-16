@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrict_n.R
 \name{restrict_n}
 \alias{restrict_n}
-\title{Removes or flags groups with n less than some number}
+\title{Remove or flag groups with n less than some number}
 \usage{
 restrict_n(
   data,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pool_case.R
 \name{pool_case}
 \alias{pool_case}
-\title{Pooling qualified clients from multiple sources}
+\title{Pool qualified clients from results of multiple definitions}
 \usage{
 pool_case(
   data,
