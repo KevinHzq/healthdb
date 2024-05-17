@@ -1,5 +1,13 @@
 # healthdb (development version)
 
+## Bug fixes
+
+-   Fixed a critical bug introduced by the new code that cleans the window order remaining in database output. The problem is related to this issue [Inability to remove window_order() leads to weird, unpredictable results](https://github.com/tidyverse/dbplyr/issues/1248).
+
+-   bind_source() will bind correctly if every variable name argument is a single string (i.e., selecting variables with common names only).
+
+-   Fixed a bug in pool_case() when every source had all the flags, the code that fills missing flag == 1 would trigger an error.
+
 # healthdb 0.3.0
 
 ## Improvements

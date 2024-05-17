@@ -9,7 +9,5 @@ memdb_tbl <- function(df) {
 clean_db <- function(db) {
   db %>%
     dplyr::ungroup() %>%
-    dbplyr::window_order() %>%
-    dbplyr::window_frame() %>%
-    dplyr::arrange()
+    dbplyr::window_order()
 }

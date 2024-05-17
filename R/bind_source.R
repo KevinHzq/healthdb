@@ -41,7 +41,8 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
   # input checks
   stopifnot(
     rlang::is_list(data),
-    !rlang::is_empty(data)
+    !rlang::is_empty(data),
+    n_data > 1
   )
 
   var_list <- rlang::list2(...)
@@ -50,8 +51,18 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
   if (any(!(var_len %in% c(1, n_data)))) stop("The number of variable names does not match the number of sources. If a variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., 'var' only come from the first out of three sources, var = c('nm_in_src1', NA, NA).")
 
   var_tab <- data.table::as.data.table(var_list)
+
+  if (nrow(var_tab) == 1) {
+    var_tab <- var_tab[rep(1, n_data)]
+  }
+
+  # if (nrow(var_tab) < n_data) {
+  #   rlang::abort("The number of variable names does not match the number of sources. Did you select variables with common names only? Please repeat names to let at least one new variable having a length equal to the number of sources. For example, for two sources, change from bind_source(data, clnt_id = 'clnt_id', uid = 'uid') to bind_source(data, clnt_id = 'clnt_id', uid = c('uid', 'uid'))\n")
+  # }
+
   var_arg <- lapply(1:nrow(var_tab), function(i) as.list(var_tab[i]))
   var_arg <- lapply(1:nrow(var_tab), function(i) var_arg[[i]][!is.na(var_arg[[i]])])
+  # browser()
   select_calls <- lapply(1:length(data), function(j) rlang::call2("select", .data = data_expr[[j]], !!!var_arg[[j]], .ns = "dplyr"))
 
   result <- purrr::map(select_calls, function(x) eval(x, envir = data_env))

@@ -35,3 +35,11 @@ test_that("different input type works", {
   expect_setequal(colnames(out_db), c("clnt_id", "dx_date", "icd9", "icd10"))
   # 3. all local have been tested before
 })
+
+test_that("edge case all common var works", {
+  df1 <- make_test_dat()
+  df2 <- make_test_dat(vals_kept = paste0("F1", 1:9), seed = 2)
+  out_df <- bind_source(list(df1, df2), clnt_id = "clnt_id", dx_date = "dates", icd9 = "diagx")
+  expect_s3_class(out_df, "data.frame")
+  expect_setequal(names(out_df), c("src_No", "clnt_id", "dx_date", "icd9"))
+})

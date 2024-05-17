@@ -64,6 +64,15 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   has_date_var <- ifelse("date_var" %in% names(dot), "y", "n")
   partial_date_var <- any(is.na(dot[["date_var"]]))
 
+  # treat missing date_var for window order
+  # this has to be up front before the first aggregate function
+  order_df <- c("def", "clnt_id", "date_var", "src", "uid")
+  order_df <- order_df[order_df %in% names(dot)]
+  win_order <- c("date_var", "src", "uid")
+  if (partial_date_var) {
+    order_df <- order_df[order_df != "date_var"]
+  }
+
   # flag calculation
   # if not flag, assume 1
   has_n_flag <- "flag_restrict_n" %in% names(dot)
@@ -79,11 +88,16 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     fill_src <- def$src_labs[which(is.na(dot[["flag_restrict_n"]]))]
   }
 
+  # browser()
+
   if (has_date_flag | has_n_flag) {
-    bind_data <- bind_data %>%
-      dplyr::mutate(flag_valid_record = dplyr::case_when(src %in% local(fill_src) ~ 1L,
-        .default = flag_valid_record
-      ))
+    # there might be cases no need to fill
+    if (length(fill_src > 0)) {
+      bind_data <- bind_data %>%
+        dplyr::mutate(flag_valid_record = dplyr::case_when(src %in% local(fill_src) ~ 1L,
+          .default = flag_valid_record
+        ))
+    }
   } else {
     bind_data <- bind_data %>%
       dplyr::mutate(flag_valid_record = 1L)
@@ -94,23 +108,31 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     all = {
       bind_data <- bind_data %>%
         dplyr::group_by(def, clnt_id) %>%
+        flex_order(is_df = is_df, win_order = win_order) %>%
         dplyr::filter(max(flag_valid_record, na.rm = TRUE) > 0L)
     },
     has_valid = {
       bind_data <- bind_data %>%
         dplyr::group_by(def, clnt_id, src) %>%
+        flex_order(is_df = is_df, win_order = c("date_var", "uid")) %>%
         dplyr::filter(max(flag_valid_record, na.rm = TRUE) > 0L) %>%
-        dplyr::group_by(def, clnt_id)
+        dplyr::group_by(def, clnt_id) %>%
+        flex_order(is_df = is_df, win_order = win_order)
     },
     n_per_clnt = {
       if (has_n_flag) {
+        # there might be cases no need to fill
         fill_n <- def$src_labs[which(is.na(dot[["flag_restrict_n"]]))]
+        if (length(fill_n > 0)) {
+          bind_data <- bind_data %>%
+            dplyr::mutate(flag_restrict_n = dplyr::case_when(src %in% local(fill_n) ~ 1L,
+              .default = flag_restrict_n
+            ))
+        }
         bind_data <- bind_data %>%
-          dplyr::mutate(flag_restrict_n = dplyr::case_when(src %in% local(fill_n) ~ 1L,
-            .default = flag_restrict_n
-          )) %>%
           dplyr::filter(flag_restrict_n > 0L) %>%
-          dplyr::group_by(def, clnt_id)
+          dplyr::group_by(def, clnt_id) %>%
+          flex_order(is_df = is_df, win_order = win_order)
       } else {
         stop("Input data does not contain flag_restrict_n")
       }
@@ -119,13 +141,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
 
   # browser()
 
-  # treat missing date_var
-  order_raw <- c("def", "clnt_id", "date_var", "src", "uid")
-  order_raw <- order_raw[order_raw %in% names(dot)]
-  if (partial_date_var) {
-    order_raw <- order_raw[order_raw != "date_var"]
-  }
-
   # job done if output raw
   # lines after this return is for sum by clients
   if (output_lvl == "raw") {
@@ -133,7 +148,8 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
       warning("'date_var' is missing in some of the sources. Records cannot be sorted by dates.")
     }
     if (is_df) {
-      bind_data <- dplyr::ungroup(bind_data)
+      bind_data <- dplyr::ungroup(bind_data) %>%
+        dplyr::arrange(dplyr::pick(dplyr::any_of(order_df)))
     } else {
       bind_data <- clean_db(bind_data)
     }
@@ -151,14 +167,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   # including get the last date
   # then filter valid entries only
   # branching by data type to sum first valid date and valid sources
-  if (!is_df) {
-    win_order <- c("date_var", "src", "uid")
-    bind_data <- bind_data %>%
-      dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
-  } else {
-    bind_data <- bind_data %>%
-      dplyr::arrange(dplyr::pick(dplyr::any_of(order_raw)))
-  }
 
   if (has_date_var == "y") {
     bind_data <- bind_data %>%
@@ -199,10 +207,19 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   )
 
   if (is_df) {
-    bind_data <- dplyr::ungroup(bind_data)
+    bind_data <- dplyr::ungroup(bind_data) %>%
+      dplyr::arrange(dplyr::pick(dplyr::any_of(order_df)))
   } else {
     bind_data <- clean_db(bind_data)
   }
 
   return(bind_data)
+}
+
+flex_order <- function(data, is_df, win_order) {
+  if (!is_df) {
+    data <- data %>%
+      dbplyr::window_order(dplyr::pick(dplyr::any_of(win_order)))
+  }
+  return(data)
 }

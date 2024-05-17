@@ -83,6 +83,8 @@ test_that("edge case one date_var works", {
   result <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df))
   expect_warning(pool_result <- pool_case(result, def, output_lvl = "clnt"), "date_var")
   expect_gt(nrow(pool_result), 0)
+  # also test df raw level
+  expect_warning(pool_result <- pool_case(result, def, output_lvl = "raw"), "date_var")
 })
 
 test_that("formular generation and translation works", {
@@ -156,4 +158,24 @@ test_that("include has_valid works", {
   # also test include_src works
   pool_result2 <- pool_case(result, def, output_lvl = "raw", include_src = "all") %>% dplyr::collect()
   expect_true(nrow(pool_result2) >= nrow(pool_result))
+})
+
+test_that("edge case full flag works", {
+  db <- make_test_dat(answer_id = "ans", type = "database")
+  def <- build_def("SUD",
+                   src_labs = c("msp", "dad"),
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     match = "start",
+                     mode = c("flag", "flag"),
+                     vals = c(304, 305),
+                     clnt_id = clnt_id,
+                     uid = uid,
+                     date_var = dates,
+                     n_per_clnt = c(3, 2)
+                   )
+  )
+  result <- execute_def(def, with_data = list(msp = db, dad = db))
+  pool_result <- pool_case(result, def, output_lvl = "raw", include_src = "has_valid") %>% dplyr::collect()
+  expect_gt(nrow(pool_result), 0)
 })
