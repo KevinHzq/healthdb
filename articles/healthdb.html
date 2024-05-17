@@ -202,8 +202,9 @@ diagnostic codes</p>
 <span><span class="co">#&gt; 3   3       1 2019-06-17  F133    F159     999</span></span>
 <span><span class="co">#&gt; 4  65       2 2019-01-08   999    &lt;NA&gt;     999</span></span>
 <span><span class="co">#&gt; 5  52       2 2019-06-01   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span></span>
+<span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># convert Date to numeric to be consistent with claim_db</span></span>
 <span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="va">hosp_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">julian</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -219,7 +220,7 @@ steps. The codes could look like the following using dplyr, however, it
 does not work because: 1. SQL does not support multiple patterns in one
 LIKE operation, 2. dbply currently have issue with translating
 n_distinct.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## not run</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># identify the target codes</span></span>
@@ -238,7 +239,7 @@ steps:</p>
 <p>Identify rows contains the target codes. Use
 <code><a href="../reference/identify_row.html">?identify_row</a></code> to see a list of supported matching
 types.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result1</span> <span class="op">&lt;-</span> <span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/identify_row.html">identify_row</a></span><span class="op">(</span></span>
 <span>vars <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>,</span>
@@ -264,7 +265,7 @@ argument) as input. For the former, it performs an anti join matching on
 the by argument (see <code><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">dplyr::join_by()</a></code>). For the latter, it
 is the opposite of filter, i.e.,
 <code>filter(!(some_expression))</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result2</span> <span class="op">&lt;-</span> <span class="va">result1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/exclude.html">exclude</a></span><span class="op">(</span></span>
 <span>excl <span class="op">=</span> <span class="fu"><a href="../reference/identify_row.html">identify_row</a></span><span class="op">(</span><span class="va">claim_db</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="st">"in"</span>, <span class="st">"111"</span><span class="op">)</span>,</span>
@@ -277,7 +278,7 @@ is the opposite of filter, i.e.,
 </li>
 <li>
 <p>Restrict the number of records per client</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result3</span> <span class="op">&lt;-</span> <span class="va">result2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/restrict_n.html">restrict_n</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>,</span>
 <span>  n_per_clnt <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -295,7 +296,7 @@ having n diagnoses at least i days apart within j years. Note that when
 SQL interpret order of dates, the result could be not deterministic if
 there were duplicate dates within client. Therefore, a unique row id
 (uid) has to be supplied to get consistent result.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result4</span> <span class="op">&lt;-</span> <span class="va">result3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/restrict_date.html">restrict_date</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>,</span>
 <span>  date_var <span class="op">=</span> <span class="va">dates</span>,</span>
@@ -313,19 +314,21 @@ there were duplicate dates within client. Therefore, a unique row id
 <p>Up to this point, the result is only a query and have not been
 downloaded. Hopefully, the data has been shrunken to a manageable size
 for collection.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Class of result4</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">result4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "tbl_SQLiteConnection" "tbl_dbi"              "tbl_sql"             </span></span>
-<span><span class="co">#&gt; [4] "tbl_lazy"             "tbl"</span></span>
-<span></span>
+<span><span class="co">#&gt; [4] "tbl_lazy"             "tbl"</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># execute query and download the result</span></span>
 <span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="va">result4</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Number of rows in source</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 100</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] 100</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Number of rows in the current result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 27</span></span></code></pre></div>
@@ -334,7 +337,7 @@ for further analyses. Let’s say we want to gather client demographics
 such as age and sex from other sources. This certainly can be done with
 multiple <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">dplyr::left_join()</a></code> calls. Here we provide the
 <code><a href="../reference/fetch_var.html">fetch_var()</a></code> function to make the codes more concise.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># make two look up tables</span></span>
 <span><span class="va">age_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,</span>
@@ -383,7 +386,7 @@ with hospitalization data. Some studies may use more than a handful of
 data sources to define their sample. We packed steps 1-4 in one function
 <code><a href="../reference/define_case.html">define_case()</a></code>, and provide tools to perform batch execution
 with different data and parameters to meet those needs.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># build the full definition of SUD</span></span>
 <span><span class="va">sud_def</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_def.html">build_def</a></span><span class="op">(</span></span>
 <span>  <span class="co"># name of definition</span></span>
@@ -417,7 +420,7 @@ with different data and parameters to meet those needs.</p>
 data arguments are left empty on purpose for re-usability. For example,
 you may want to repeat the analysis with data from different regions or
 study periods.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sud_def</span><span class="op">$</span><span class="va">fn_call</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; define_case(data = , vars = starts_with("diagx"), match = "start", </span></span>
@@ -435,7 +438,7 @@ explain what has been done. You could append multiple
 <code><a href="../reference/build_def.html">build_def()</a></code> outputs together and execute them all at once.
 Definition and source labels will be added to the result to identify
 outputs from different calls.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute the definition</span></span>
 <span><span class="va">result_list</span> <span class="op">&lt;-</span> <span class="va">sud_def</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/execute_def.html">execute_def</a></span><span class="op">(</span>with_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -478,7 +481,7 @@ outputs from different calls.</p>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1</span></span>
 <span><span class="co">#&gt; → -------------- Output all records--------------</span></span></code></pre></div>
 <p>Let’s check the results!</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># view the results</span></span>
 <span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">walk</a></span><span class="op">(</span><span class="va">result_list</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [6 x 10]</span></span></span>
@@ -505,7 +508,7 @@ collect it manually, do further filtering, and then combine with the
 result from hospitalization data in any way you want. If you just need a
 simple row bind, we have <code><a href="../reference/bind_source.html">bind_source()</a></code> with convenient
 naming feature.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bind_source.html">bind_source</a></span><span class="op">(</span><span class="va">result_list</span>,</span>
 <span>  <span class="co"># output_name = c(names in the list elements)</span></span>
 <span>  src <span class="op">=</span> <span class="st">"src"</span>,</span>
@@ -533,7 +536,7 @@ naming feature.</p>
 also filters records with valid flags and can summarize by client/group.
 Since we had to decide which variables to be summarized in advance, the
 output may not be flexible enough to meet your needs.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pool_case.html">pool_case</a></span><span class="op">(</span><span class="va">result_list</span>,</span>
 <span>          def <span class="op">=</span> <span class="va">sud_def</span>,</span>
 <span>          <span class="co"># your could skip summary with output_lvl = "raw"</span></span>
