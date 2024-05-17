@@ -106,7 +106,8 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     if (is_mssql_mysql) {
       data <- data %>%
         dplyr::mutate(
-          temp_nm_gap = dbplyr::sql(glue::glue_sql("ABS(DATEDIFF(day, {`date_var`}, {`temp_nm_diff`}))", .con = dbplyr::remote_con(data), temp_nm_diff = "temp_nm_diff"))
+          # temp_nm_gap = dbplyr::sql(glue::glue_sql("ABS(DATEDIFF(day, {`date_var`}, {`temp_nm_diff`}))", .con = dbplyr::remote_con(data), temp_nm_diff = "temp_nm_diff"))
+          temp_nm_gap = abs(difftime(.data[[date_var]], temp_nm_diff))
         )
     } else {
       data <- data %>%

@@ -133,7 +133,7 @@ fetch_var <- function(data, keys, linkage, ...) {
 
     one_to_n <- y_n != nrow(data)
 
-    if (any(one_to_n)) rlang::abort(c("i" = glue::glue('The join between data and any of ({stringr::str_flatten_comma(as.character(df$lhs[one_to_n]), last = " and ")}) is not one to one.')))
+    if (any(one_to_n)) rlang::abort(glue::glue('The join between data and any of ({stringr::str_flatten_comma(as.character(df$lhs[one_to_n]), last = " and ")}) is not one to one.'))
 
     vars_df <- purrr::list_cbind(vars_df)
 

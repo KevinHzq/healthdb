@@ -179,3 +179,19 @@ test_that("edge case full flag works", {
   pool_result <- pool_case(result, def, output_lvl = "raw", include_src = "has_valid") %>% dplyr::collect()
   expect_gt(nrow(pool_result), 0)
 })
+
+test_that("test window function behavior", {
+  db <- memdb_tbl(mtcars)
+  db1 <- db %>%
+    dplyr::group_by(gear) %>%
+    dbplyr::window_order(cyl) %>%
+    dplyr::mutate(lag = lag(mpg))
+  db2 <- db %>%
+    dplyr::group_by(gear) %>%
+    dbplyr::window_order(cyl) %>%
+    dplyr::mutate(lag = lag(mpg)) %>%
+    dbplyr::window_order()
+  expect_identical(dbplyr::remote_query(db1), dbplyr::remote_query(db2))
+  expect_true("order_vars" %in% names(db1[["lazy_query"]]))
+  expect_false("order_vars" %in% names(db2[["lazy_query"]]))
+})
