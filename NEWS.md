@@ -1,3 +1,9 @@
+# healthdb (development version)
+
+## Improvements
+
+-   Clarified in documentations that fetch_var() does not accept input from a pipe.
+
 # healthdb 0.3.1
 
 ## Bug fixes
