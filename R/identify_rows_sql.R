@@ -8,7 +8,7 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
     dplyr::select({{ vars }}) %>%
     utils::head(n = 1) %>%
     dplyr::collect()
-  vars <- names(db_head)
+  vars <- colnames(db_head)
 
   if (match %in% c("in", "between")) {
     var_class <- purrr::map_chr(db_head %>% dplyr::select(dplyr::all_of(vars)), class)

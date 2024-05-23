@@ -85,7 +85,7 @@ compute_comorbidity <- function(data, vars, icd_ver = c("ICD-10", "ICD-9-CM-3dig
     dplyr::select({{ vars }}) %>%
     utils::head(n = 1) %>%
     dplyr::collect()
-  vars <- names(db_head)
+  vars <- colnames(db_head)
 
   # capture variable names
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
