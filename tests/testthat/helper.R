@@ -42,7 +42,8 @@ test_apart_within <- function(data, n, apart = 0, within = Inf) {
 
   keep <- data %>%
     dplyr::summarise(met = ifelse(dplyr::n() < n, FALSE,
-                                  utils::combn(.data[["dates"]] %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any()))
+      utils::combn(.data[["dates"]] %>% unique(), n, function(x) all(diff(sort(x)) >= apart) & (diff(c(min(x), max(x))) <= within)) %>% any()
+    ))
 
   keep <- keep %>%
     dplyr::filter(met) %>%
@@ -257,4 +258,38 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
     dplyr::ungroup()
 
   list(answer = ans, data = code_df)
+}
+
+episode_df <- function(n, gap, type = "data.frame") {
+  answer <- data.frame(clnt = 1:n, n_epi = sample(1:5, n, replace = TRUE))
+  answer <- answer %>%
+    dplyr::mutate(
+      epi_start = sample(seq(as.Date("2018-01-01"), as.Date("2020-12-31"), by = 1), size = n, replace = TRUE),
+      epi_end = epi_start + lubridate::days(sample(365:(3 * 365), size = n, replace = TRUE))
+    )
+  answer <- cut_period(answer, epi_start, epi_end, gap)
+  # no. gaps = n_epi - 1
+  answer_with_gap <- answer %>%
+    dplyr::group_by(clnt) %>%
+    dplyr::slice(setdiff(dplyr::row_number(), which(1:(dplyr::n() - 1) %% 2 == 0) %>% sample(dplyr::first(n_epi) - 1)))
+  # make some noise within epi that should be collapsed
+  noise <- answer_with_gap %>%
+    dplyr::slice_sample(prop = 0.2) %>%
+    dplyr::mutate(
+      noise_start = purrr::map2(segment_start, segment_end, ~ sample(seq(.x, .y, by = 1), sample(1:3, 1), replace = TRUE)),
+      noise_end = purrr::map2(noise_start, segment_end, ~ purrr::map_vec(.x, function(i) i + lubridate::days(sample(0:lubridate::time_length(.y - i, unit = "day"), 1))))
+    ) %>%
+    tidyr::unnest(cols = c(noise_start, noise_end)) %>%
+    dplyr::select(-c(segment_start, segment_end)) %>%
+    dplyr::rename(
+      segment_start = noise_start,
+      segment_end = noise_end
+    )
+  data <- dplyr::bind_rows(answer_with_gap, noise) %>% dplyr::arrange(clnt, segment_start)
+
+  if (type != "data.frame") {
+    data <- memdb_tbl(data)
+  }
+
+  return(list(answer, data))
 }

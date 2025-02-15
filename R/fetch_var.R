@@ -6,7 +6,7 @@
 #' **Caution**: this function is intended for one-to-one joins only because it could be problematic when we do not know which source caused a one-to-many join and changed the number of rows. For data.frame input, an error will be given when one-to-many joins were detected. However, such checking could be an expensive operation on remote source. Therefore, for database input, the result will not be checked.
 #'
 #'
-#' @param data A data.frame or remote table (tbl_sql). It would be used as the x argument in left_join().
+#' @param data A data.frame or remote table (tbl_sql) which must be an object and not from a pipe. It would be used as the x argument in left_join().
 #' @param keys A vector of quoted/unquoted variable names, or 'tidyselect' expression (see [dplyr::select()]). These variables must be present in `data` and would be used as the `by` argument in left_join(). The y tables must have a subset of these if not all.
 #' @param linkage A list of formulas in the form of "from_tab ~ get_vars|by_keys":
 #'  - source table on the left-hand-side
@@ -140,6 +140,7 @@ fetch_var <- function(data, keys, linkage, ...) {
     result <- dplyr::bind_cols(data, vars_df)
   } else {
     expr_vec <- purrr::map_chr(mod_calls, rlang::expr_text)
+    expr_vec <- stringr::str_remove_all(expr_vec, "x = ., ")
     pipe_expr_vec <- paste(c(rlang::as_name(data_quo), expr_vec), collapse = " %>% ")
     result <- eval(rlang::parse_expr(pipe_expr_vec), envir = data_env)
   }

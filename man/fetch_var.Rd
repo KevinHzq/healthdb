@@ -7,7 +7,7 @@
 fetch_var(data, keys, linkage, ...)
 }
 \arguments{
-\item{data}{A data.frame or remote table (tbl_sql). It would be used as the x argument in left_join().}
+\item{data}{A data.frame or remote table (tbl_sql) which must be an object and not from a pipe. It would be used as the x argument in left_join().}
 
 \item{keys}{A vector of quoted/unquoted variable names, or 'tidyselect' expression (see \code{\link[dplyr:select]{dplyr::select()}}). These variables must be present in \code{data} and would be used as the \code{by} argument in left_join(). The y tables must have a subset of these if not all.}
 

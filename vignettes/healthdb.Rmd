@@ -178,7 +178,7 @@ Here's how you could use `healthdb` to achieve these steps:
     nrow(result_df)
     ```
 
-    Our data now only contains diagnoses which are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise.
+    Our data now only contains diagnoses which are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise. Note that the input must be a named object and not from a pipe (i.e., don't do this `data %>% some_action %>% fetch_var()`). 
 
     ```{r}
     # make two look up tables
@@ -197,16 +197,15 @@ Here's how you could use `healthdb` to achieve these steps:
     result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
 
     # note that keys must be present in all tables
-    result_df %>%
-      fetch_var(
-    keys = c(clnt_id, year),
-    linkage = list(
-      # the formula means from_table ~ get_variable
-      # |clnt_id means matching on clnt_id only
-      age_tab ~ c(age, sex) | clnt_id,
-      address_tab ~ area_code
-    )
-      ) %>%
+    fetch_var(result_df,
+              keys = c(clnt_id, year),
+              linkage = list(
+                # the formula means from_table ~ get_variable
+                # |clnt_id means matching on clnt_id only
+                age_tab ~ c(age, sex) | clnt_id,
+                address_tab ~ area_code
+              )
+    ) %>%
       select(uid, clnt_id, dates, age, sex, area_code) %>% 
       head()
     ```

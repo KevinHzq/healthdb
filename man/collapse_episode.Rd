@@ -11,13 +11,13 @@ collapse_episode(
   end_dt = NULL,
   gap,
   overwrite = NULL,
-  gap_overwrite = Inf,
+  gap_overwrite = 99999,
   .dt_trans = data.table::as.IDate,
   ...
 )
 }
 \arguments{
-\item{data}{A data.frame that contains the id and date variables.}
+\item{data}{A data.frame or remote table that contains the id and date variables.}
 
 \item{clnt_id}{Column name of subject/person ID.}
 
@@ -25,18 +25,18 @@ collapse_episode(
 
 \item{end_dt}{Column name of the end date of records. The default is NULL assuming the record last one day and only the start date will be used to calculate the gaps between records.}
 
-\item{gap}{A number in days that will be used to separate episodes. For example, gap = 7 means collapsing records no more than 7 days apart. Note that the number of days apart will be calculated as numeric difference between two days, so that Monday and Sunday is considered as 6 days apart.}
+\item{gap}{A number in days that will be used to separate episodes. For example, gap = 7 means collapsing records no more than 7 days apart. Note that the number of days apart will be calculated as numeric difference between two days, so that 2020-01-07 and 2020-01-01 is considered as 6 days apart.}
 
 \item{overwrite}{Column name of a grouping variable determining whether the consecutive records are related and should have a different gap value. For example, dispensing records may have the same original prescription number, and a different gap value can be assigned for such situation, e.g., the days between two records is > gap, but these records still belong to the same prescription.}
 
-\item{gap_overwrite}{A different gap value used for related records. The default is Inf, which means all records with the same overwrite variable will be collapsed.}
+\item{gap_overwrite}{A different gap value used for related records. The default is 99999, which practically means all records with the same overwrite variable will be collapsed.}
 
-\item{.dt_trans}{Function to transform start_dt/end_dt. Default is \code{\link[data.table:IDateTime]{data.table::as.IDate()}}.}
+\item{.dt_trans}{Function to transform start_dt/end_dt. For data.frame input only. Default is \code{\link[data.table:IDateTime]{data.table::as.IDate()}}.}
 
-\item{...}{Additional arguments passing to the .dt_trans function.}
+\item{...}{Additional arguments passing to the .dt_trans function. For data.frame input only.}
 }
 \value{
-The original data.frame with new columns indicating episode grouping. The new variables include:
+The original data.frame or remote table with new columns indicating episode grouping. The new variables include:
 \itemize{
 \item epi_id: unique identifier of episodes across the whole data set
 \item epi_no: identifier of episodes within a client/group
@@ -45,7 +45,7 @@ The original data.frame with new columns indicating episode grouping. The new va
 }
 }
 \description{
-This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable. This function is implemented for data.frame input only.
+This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable.
 }
 \examples{
 # make toy data

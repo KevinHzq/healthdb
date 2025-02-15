@@ -222,7 +222,10 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   }
 
   if (mode == "filter") {
-    data <- data %>% dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0L)
+    data <- data %>%
+      dplyr::group_by(.data[[clnt_id]]) %>%
+      dbplyr::window_order(.data[[uid]]) %>%
+      dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0L)
   }
 
   data <- data %>%
