@@ -20,7 +20,7 @@ pool_case(
 \item{output_lvl}{Either:
 \itemize{
 \item "raw" - output all records (default),
-\item or "clnt" - output one record per client with summaries including date of first valid record ('first_valid_date'), date of the latest record ('last_entry_date'), and sources that contain valid records.
+\item or "clnt" - output one record per client with summaries including date and source of the first valid record ('first_valid_date/src'), and the latest record ('last_entry_date/src'). Source-specific record counts are also provided (see the return section).
 }}
 
 \item{include_src}{Character. It determines records from which sources should be included. This matters when clients were identified only from, not all, but some of the sources. This choice will not impact the number of client that would be identified but has impact on the number of records and the latest entry date. The options are one of:
