@@ -48,7 +48,7 @@
 #' # pool results from src1 and src2 together at client level
 #' pool_case(sud_by_src, sud_def, output_lvl = "clnt")
 pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c("all", "has_valid", "n_per_clnt"), ...) {
-  . <- clnt_id <- date_var <- flag_restrict_date <- flag_restrict_n <- flag_valid_record <- src <- max_date <- NULL
+  . <- clnt_id <- date_var <- flag_restrict_date <- flag_restrict_n <- flag_valid_record <- src <- max_date <- first_valid_src <- last_entry_src <- NULL
 
   output_lvl <- rlang::arg_match0(output_lvl, c("raw", "clnt"))
   include_src <- rlang::arg_match0(include_src, c("all", "has_valid", "n_per_clnt"), )
@@ -170,7 +170,8 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
 
   if (has_date_var == "y") {
     bind_data <- bind_data %>%
-      dplyr::mutate(max_date = max(date_var, na.rm = TRUE))
+      dplyr::mutate(max_date = max(date_var, na.rm = TRUE),
+                    last_entry_src = dplyr::last(src))
   }
 
   # getting source indicators
@@ -190,11 +191,12 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
   switch(has_date_var,
     y = {
       bind_data <- bind_data %>%
+        dplyr::mutate(first_valid_src = dplyr::first(src)) %>%
         dplyr::summarise(
           first_valid_date = min(date_var, na.rm = TRUE),
-          first_valid_src = src[date_var == min(date_var, na.rm = TRUE)],
+          first_valid_src = min(first_valid_src, na.rm = TRUE),
           last_entry_date = max(max_date, na.rm = TRUE),
-          last_entry_src = src[max_date == max(max_date, na.rm = TRUE)],
+          last_entry_src = min(last_entry_src, na.rm = TRUE),
           dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
           dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
         )
