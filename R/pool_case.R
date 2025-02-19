@@ -192,9 +192,9 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
       bind_data <- bind_data %>%
         dplyr::summarise(
           first_valid_date = min(date_var, na.rm = TRUE),
-          first_valid_src = src[min(date_var, na.rm = TRUE)],
+          first_valid_src = src[date_var == min(date_var, na.rm = TRUE)],
           last_entry_date = max(max_date, na.rm = TRUE),
-          last_entry_src = src[max(max_date, na.rm = TRUE)],
+          last_entry_src = src[max_date == max(max_date, na.rm = TRUE)],
           dplyr::across(dplyr::starts_with("raw_"), ~ mean(., na.rm = TRUE)),
           dplyr::across(dplyr::starts_with("in_"), ~ sum(as.integer(.), na.rm = TRUE), .names = "valid_{.col}")
         )
