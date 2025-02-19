@@ -22,6 +22,9 @@ collapse_episode.tbl_sql <- function(data, clnt_id, start_dt, end_dt = NULL, gap
   gap <- as.integer(gap)
   gap_overwrite <- as.integer(gap_overwrite)
 
+  # SQL server does not accept date math
+  is_mssql_mysql <- use.datediff(data)
+
   # place holder for temp column names
   latest_end_dt <- epi_id <- epi_no <- epi_seq <- last_end_dt <- last_overwrite <- scenario <- NULL
 
@@ -55,18 +58,33 @@ collapse_episode.tbl_sql <- function(data, clnt_id, start_dt, end_dt = NULL, gap
     data <- data %>%
       dplyr::mutate(last_overwrite = dplyr::lag(.data[[overwrite_nm]], 1L))
     # get cumulative maximum of expiry date up to the previous row
-    data <- data %>%
-      dplyr::mutate(scenario = dplyr::case_when(last_overwrite != .data[[overwrite_nm]] & .data[[start_dt_nm]] > (latest_end_dt + local(gap)) ~ 1L,
-        last_overwrite == .data[[overwrite_nm]] & .data[[start_dt_nm]] > (latest_end_dt + local(gap_overwrite)) ~ 1L,
-        .default = 0L
-      ))
+    if (is_mssql_mysql) {
+      data <- data %>%
+        dplyr::mutate(scenario = dplyr::case_when(last_overwrite != .data[[overwrite_nm]] & .data[[start_dt_nm]] > clock::add_days(latest_end_dt, local(gap)) ~ 1L,
+          last_overwrite == .data[[overwrite_nm]] & .data[[start_dt_nm]] > clock::add_days(latest_end_dt, local(gap_overwrite)) ~ 1L,
+          .default = 0L
+        ))
+    } else {
+      data <- data %>%
+        dplyr::mutate(scenario = dplyr::case_when(last_overwrite != .data[[overwrite_nm]] & .data[[start_dt_nm]] > (latest_end_dt + local(gap)) ~ 1L,
+          last_overwrite == .data[[overwrite_nm]] & .data[[start_dt_nm]] > (latest_end_dt + local(gap_overwrite)) ~ 1L,
+          .default = 0L
+        ))
+    }
 
     temp_cols <- c(temp_cols, "last_overwrite")
   } else {
-    data <- data %>%
-      dplyr::mutate(scenario = dplyr::case_when(.data[[start_dt_nm]] > (latest_end_dt + local(gap)) ~ 1L,
-        .default = 0L
-      ))
+    if (is_mssql_mysql) {
+      data <- data %>%
+        dplyr::mutate(scenario = dplyr::case_when(.data[[start_dt_nm]] > clock::add_days(latest_end_dt, local(gap)) ~ 1L,
+          .default = 0L
+        ))
+    } else {
+      data <- data %>%
+        dplyr::mutate(scenario = dplyr::case_when(.data[[start_dt_nm]] > (latest_end_dt + local(gap)) ~ 1L,
+          .default = 0L
+        ))
+    }
   }
 
 
