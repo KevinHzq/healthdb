@@ -1,7 +1,7 @@
 Package: healthdb
 Type: Package
 Title: Working with Healthcare Databases
-Version: 0.4.0
+Version: 0.4.0.9000
 Authors@R: person("Kevin", "Hu",
     email = "kevin.hu@bccdc.ca",
     role = c("aut", "cre", "cph"),
