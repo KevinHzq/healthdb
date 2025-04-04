@@ -81,6 +81,9 @@ fetch_var <- function(data, keys, linkage, ...) {
 
   # stopifnot(is.data.frame(data))
   is_df <- is.data.frame(data)
+  if(!is_df) {
+    check_con(data)
+  }
 
   keys <- dplyr::select(data, {{ keys }}) %>% colnames()
 

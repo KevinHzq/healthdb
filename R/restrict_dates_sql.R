@@ -1,5 +1,7 @@
 #' @export
 restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), check_missing = FALSE, ...) {
+  check_con(data)
+
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
   flag_at <- rlang::arg_match0(flag_at, c("left", "right"))
   rlang::check_dots_used()

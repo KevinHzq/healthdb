@@ -1,5 +1,6 @@
 #' @export
 collapse_episode.tbl_sql <- function(data, clnt_id, start_dt, end_dt = NULL, gap, overwrite = NULL, gap_overwrite = 99999, .dt_trans = data.table::as.IDate, ...) {
+  check_con(data)
   # input checks
   # if (any(sapply(list(clnt_id_nm, start_dt_nm, end_dt_nm, overwrite_nm), function(x) !is.null(x) & !is.character(x)))) stop("Arguments ended with _nm must be characters.")
 

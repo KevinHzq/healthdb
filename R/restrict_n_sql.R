@@ -1,5 +1,7 @@
 #' @export
 restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode = c("flag", "filter"), verbose = getOption("healthdb.verbose")) {
+  check_con(data)
+
   mode <- rlang::arg_match0(mode, c("flag", "filter"))
 
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
