@@ -29,7 +29,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Compute duration between two dates</h1>
-      <small class="dont-index">Source: <a href="https://github.com/KevinHzq/healthdb/blob/master/R/compute_duration.R" class="external-link"><code>R/compute_duration.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/KevinHzq/healthdb/blob/v0.4.1/R/compute_duration.R" class="external-link"><code>R/compute_duration.R</code></a></small>
       <div class="d-none name"><code>compute_duration.Rd</code></div>
     </div>
 
@@ -105,28 +105,28 @@
 <span class="r-in"><span> age_grp <span class="op">=</span> <span class="fu">compute_duration</span><span class="op">(</span><span class="va">start_dt</span>, <span class="st">"2023-01-01"</span>, lower_brks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">19</span>, <span class="fl">25</span>, <span class="fl">35</span>, <span class="fl">45</span>, <span class="fl">55</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   25.89   28.48   33.43   35.22   40.45   47.85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   28.50   34.41   43.42   39.98   44.86   48.72 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;19 19-24 25-34 35-44 45-54   55+ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0     0     3     1     1     0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     0     0     2     2     1     0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id   start_dt     end_dt age_grp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1994-07-08 2005-12-17   25-34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1997-02-11 2002-08-27   25-34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1975-02-25 2018-07-09   45-54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1989-07-26 2019-08-06   25-34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1982-07-20 2010-08-02   35-44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1988-08-05 2018-12-14   25-34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1979-08-02 2021-10-26   35-44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1974-04-14 2004-05-31   45-54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1978-02-21 2023-12-28   35-44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1994-07-02 2007-12-07   25-34</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute gaps between two dates in weeks</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span> gap_wks <span class="op">=</span> <span class="fu">compute_duration</span><span class="op">(</span><span class="va">start_dt</span>, <span class="va">end_dt</span>, unit <span class="op">=</span> <span class="st">"week"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   289.0   597.1  1462.9  1235.7  1566.9  2262.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   700.9  1572.1  1584.0  1690.6  2203.7  2392.3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id   start_dt     end_dt   gap_wks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1994-07-08 2005-12-17  597.1429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1997-02-11 2002-08-27  289.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1975-02-25 2018-07-09 2262.8571</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1989-07-26 2019-08-06 1566.8571</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1982-07-20 2010-08-02 1462.8571</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 1988-08-05 2018-12-14 1584.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1979-08-02 2021-10-26 2203.7143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 1974-04-14 2004-05-31 1572.1429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 1978-02-21 2023-12-28 2392.2857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  5 1994-07-02 2007-12-07  700.8571</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -138,7 +138,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

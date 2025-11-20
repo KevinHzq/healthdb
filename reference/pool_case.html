@@ -29,7 +29,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Pool qualified clients from results of multiple definitions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/KevinHzq/healthdb/blob/master/R/pool_case.R" class="external-link"><code>R/pool_case.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/KevinHzq/healthdb/blob/v0.4.1/R/pool_case.R" class="external-link"><code>R/pool_case.R</code></a></small>
       <div class="d-none name"><code>pool_case.Rd</code></div>
     </div>
 
@@ -117,12 +117,12 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^304</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3053 3054 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3054 3055 3056 3057 3058 3059  999 NA's </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3055 3056 3057 3058 3059  999 NA's </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 29 clients in the input, 20 were flagged as 0 by restricting that each client must have at least 2 records </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 27 clients in the input, 17 were flagged as 0 by restricting that each client must have at least 2 records </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Actions for definition SUD using source df2:</span>
@@ -132,12 +132,12 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^305</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  304 3040 3041 3042 3043 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 3054 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 3054 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3055 3056 3057 3058 3059  999 NA's </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1    1    1    1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 24 clients in the input, 21 were flagged as 0 by restricting that each client must have at least 3 records </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 27 clients in the input, 25 were flagged as 0 by restricting that each client must have at least 3 records </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pool results from src1 and src2 together at client level</span></span></span>
@@ -145,18 +145,18 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    def   clnt_id raw_in_src1 raw_in_src2 valid_in_src1 valid_in_src2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SUD         1           0           1             0             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SUD         4           1           1             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> SUD         7           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SUD        15           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SUD        18           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> SUD        19           1           0             1             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> SUD        20           0           1             0             1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> SUD        21           1           1             1             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> SUD        22           1           0             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> SUD        23           1           1             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> SUD        25           1           0             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> SUD        29           1           0             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> SUD        34           1           1             0             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> SUD        39           1           1             1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> SUD        42           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> SUD        24           1           0             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> SUD        27           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> SUD        28           0           1             0             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> SUD        29           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> SUD        45           1           1             1             0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> SUD        47           1           0             1             0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -168,7 +168,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
