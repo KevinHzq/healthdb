@@ -312,13 +312,13 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
     if ((n - i * 2) == 0) {
       if (n == 2) {
         data <- data %>%
-          dplyr::mutate(temp_nm_flag_apart = difftime(min(.data[[date_var]], na.rm = TRUE), max(.data[[date_var]], na.rm = TRUE), units = "days") >= apart)
+          dplyr::mutate(temp_nm_flag_apart = abs(difftime(max(.data[[date_var]], na.rm = TRUE), min(.data[[date_var]], na.rm = TRUE), units = "days")) >= apart)
         break
       }
       expr_flag <- rlang::expr({
         data %>%
           dplyr::mutate(
-            final_win_gap = difftime(min(date_var[in_win_x == 1L], na.rm = TRUE), max(date_var[in_win_x == 1L], na.rm = TRUE), units = "days"),
+            final_win_gap = abs(difftime(max(date_var[in_win_x == 1L], na.rm = TRUE), min(date_var[in_win_x == 1L], na.rm = TRUE), units = "days")),
             temp_nm_flag_apart = dplyr::case_when(final_win_gap * !!rlang::parse_expr(paste0("sum_win_", 1:(i - 1), collapse = " * ")) >= apart ~ 1L, .default = 0L)
           )
       })
