@@ -1,5 +1,7 @@
 # Changelog
 
+## healthdb (development version)
+
 ## healthdb 0.4.1
 
 CRAN release: 2025-04-05
