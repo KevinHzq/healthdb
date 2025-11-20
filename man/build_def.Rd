@@ -11,7 +11,7 @@ build_def(def_lab, src_labs, def_fn = define_case, fn_args)
 
 \item{src_labs}{A character vector of place-holder names for the data sources that will be used to execute the definition.}
 
-\item{def_fn}{A list of functions (default: \code{\link[=define_case]{define_case()}}) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of \code{src_labs}. If length = 1, the same function will be applied to all sources; otherwise, \code{def_fn} should match \code{src_lab} by position. User can supply custom functions but must put input data as the first argument and name it \code{data}.}
+\item{def_fn}{A list of functions (default: \code{\link[=define_case]{define_case()}}) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of \code{src_labs}. If length = 1, the same function will be applied to all sources; otherwise, \code{def_fn} should match \code{src_lab} by position. User can supply custom functions but must put input data as the first argument and name it \code{data}. Note: Mixing define functions (e.g., \code{\link[=define_case]{define_case()}} and \code{\link[=define_case_with_age]{define_case_with_age()}}) that accept \code{...} additional arguments may cause error. It is recommended to use the same define function for all sources.}
 
 \item{fn_args}{A named list of arguments passing to the \code{def_fn}. Each element in the list should have the same name as an argument in the source-specific \code{def_fn}, and the element length should also be either 1 or equal to the number of sources. If you have \code{def_fn} functions taking different sets of arguments, include the union in one list.}
 }
@@ -44,5 +44,5 @@ sud_def <- build_def("SUD", # usually a disease name
 sud_def
 
 # the fn_call column stores the code that can be ran with execute_def
-sud_def#fn_call
+sud_def # fn_call
 }

@@ -18,15 +18,12 @@
 #' @examples
 #' # flag cyl groups with less than 8 cars
 #' restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8, mode = "flag") %>%
-#' head()
+#'   head()
 #'
-#' #remove cyl groups with less than 2 types of gear boxes
+#' # remove cyl groups with less than 2 types of gear boxes
 #' restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear, mode = "filter")
 restrict_n <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode = c("flag", "filter"), verbose = getOption("healthdb.verbose")) {
   rlang::check_required(clnt_id)
   stopifnot(is.numeric(n_per_clnt))
   UseMethod("restrict_n")
 }
-
-
-

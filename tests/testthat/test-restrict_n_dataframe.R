@@ -31,7 +31,9 @@ test_that("count_by works", {
   out_id <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, count_by = dates, mode = "filter") %>% dplyr::pull(clnt_id)
   expect_setequal(out_id, keep_id)
   # also test flag  mode
-  out_flag <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, count_by = dates) %>% dplyr::filter(flag_restrict_n> 0) %>% dplyr::pull(clnt_id)
+  out_flag <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n, count_by = dates) %>%
+    dplyr::filter(flag_restrict_n > 0) %>%
+    dplyr::pull(clnt_id)
   expect_equal(out_flag, out_id)
 })
 
@@ -55,6 +57,8 @@ test_that("mode works", {
   df <- iclnt_jdates(i = list(keep_id, out_id), j = c(keep_n, keep_n - dup_n - 1), dup = c(0, dup_n))
   output_id <- restrict_n(df, clnt_id = clnt_id, n_per_clnt = keep_n)
   expect_in("flag_restrict_n", names(output_id))
-  output_id <- output_id %>% dplyr::filter(flag_restrict_n > 0) %>% dplyr::pull(clnt_id)
+  output_id <- output_id %>%
+    dplyr::filter(flag_restrict_n > 0) %>%
+    dplyr::pull(clnt_id)
   expect_setequal(output_id, keep_id)
 })

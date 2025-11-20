@@ -114,4 +114,3 @@ test_that("check apart and within works for even and odd ns", {
     expect_setequal(subset(output_df, flag_restrict_date == 1)$clnt_id, ans_id)
   })
 })
-

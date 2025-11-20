@@ -41,8 +41,9 @@
 #' # Keep clients with 2 records that were 1 week apart within 1 month
 #' restrict_date(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
 restrict_date <- function(
-    data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), check_missing = FALSE,
-    ...) {
+  data, clnt_id, date_var, n, apart = NULL, within = NULL, uid = NULL, mode = c("flag", "filter"), flag_at = c("left", "right"), dup.rm = TRUE, force_collect = FALSE, verbose = getOption("healthdb.verbose"), check_missing = FALSE,
+  ...
+) {
   rlang::check_required(clnt_id)
   rlang::check_required(date_var)
   stopifnot(n > 1, is.wholenumber(n))

@@ -76,7 +76,7 @@
 #'   sum_by = "clnt"
 #' )
 compute_comorbidity <- function(data, vars, icd_ver = c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits"), clnt_id, uid = NULL, sum_by = c("row", "clnt"), excl = NULL) {
-  if(!is.data.frame(data)) {
+  if (!is.data.frame(data)) {
     check_con(data)
   }
 

@@ -75,5 +75,3 @@ test_that("edge case - vals in an external vector works", {
   out_df <- identify_rows(df, c(diagx, diagx_1, diagx_2), "in", val)
   expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
 })
-
-

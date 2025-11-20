@@ -63,7 +63,7 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
     with_data_expr <- with_data_quo %>% rlang::call_args()
     n_data <- length(with_data_expr)
   }
-  #with_data_expr <- with_data_quo %>% rlang::call_args()
+  # with_data_expr <- with_data_quo %>% rlang::call_args()
   with_data_env <- with_data_quo %>% rlang::quo_get_env()
 
   # input checks

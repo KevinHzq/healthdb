@@ -29,6 +29,6 @@ lu <- data.frame(drug_id = 1:20, drug_code = as.character(1:10), drug_name = sam
 df \%>\% dplyr::mutate(
   drug_nm = lookup(drug_code, drug_id ~ drug_name, lu),
   # this will work as lu also has drug_code column
-  drug_nm = lookup(drug_code, ~ drug_name, lu)
+  drug_nm = lookup(drug_code, ~drug_name, lu)
 )
 }

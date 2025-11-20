@@ -1,15 +1,20 @@
 #' @export
 collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, gap, overwrite = NULL, gap_overwrite = Inf, .dt_trans = data.table::as.IDate, ...) {
-
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
   start_dt_nm <- rlang::as_name(rlang::enquo(start_dt))
   has_end <- !rlang::quo_is_null(rlang::enquo(end_dt))
   has_overwrite <- !rlang::quo_is_null(rlang::enquo(overwrite))
-  if (has_end) end_dt_nm <- rlang::as_name(rlang::enquo(end_dt))
-  else end_dt_nm <- NULL
-  if (has_overwrite) overwrite_nm <- rlang::as_name(rlang::enquo(overwrite))
-  else overwrite_nm <- NULL
+  if (has_end) {
+    end_dt_nm <- rlang::as_name(rlang::enquo(end_dt))
+  } else {
+    end_dt_nm <- NULL
+  }
+  if (has_overwrite) {
+    overwrite_nm <- rlang::as_name(rlang::enquo(overwrite))
+  } else {
+    overwrite_nm <- NULL
+  }
 
   # place holder for temp column names
   latest_end_dt <- epi_id <- epi_no <- epi_seq <- last_end_dt <- last_overwrite <- scenario <- NULL
@@ -55,9 +60,7 @@ collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, 
     data[, scenario := data.table::fifelse(last_overwrite != .SD[[overwrite_nm]], .SD[[start_dt_nm]] > (latest_end_dt + gap), .SD[[start_dt_nm]] > (latest_end_dt + gap_overwrite))]
 
     data[, last_overwrite := NULL]
-  }
-
-  else {
+  } else {
     # get last end date/overwrite for each row
     data[, last_end_dt := lapply(.SD, function(x) data.table::shift(x, n = 1, fill = data.table::first(x))), by = clnt_id_nm, .SDcols = end_dt_nm]
     # get cumulative maximum of expiry date up to the previous row

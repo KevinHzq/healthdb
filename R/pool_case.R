@@ -170,8 +170,10 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
 
   if (has_date_var == "y") {
     bind_data <- bind_data %>%
-      dplyr::mutate(max_date = max(date_var, na.rm = TRUE),
-                    last_entry_src = dplyr::last(src))
+      dplyr::mutate(
+        max_date = max(date_var, na.rm = TRUE),
+        last_entry_src = dplyr::last(src)
+      )
   }
 
   # getting source indicators

@@ -22,7 +22,7 @@
 #' @examples
 #' # make toy data
 #' df <- make_test_dat() %>%
-#' dplyr::select(clnt_id, dates)
+#'   dplyr::select(clnt_id, dates)
 #'
 #' head(df)
 #'

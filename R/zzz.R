@@ -1,4 +1,4 @@
-#set option for verbose
+# set option for verbose
 .onLoad <- function(libname, pkgname) {
   op <- options()
   op.healthdb <- list(
@@ -11,7 +11,7 @@
   invisible()
 }
 
-#clean up
+# clean up
 .onUnload <- function(libpath) {
   op <- options()
   op.healthdb <- list(

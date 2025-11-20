@@ -81,7 +81,7 @@ fetch_var <- function(data, keys, linkage, ...) {
 
   # stopifnot(is.data.frame(data))
   is_df <- is.data.frame(data)
-  if(!is_df) {
+  if (!is_df) {
     check_con(data)
   }
 

@@ -8,7 +8,7 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
   df_head <- data %>%
     dplyr::select({{ vars }}) %>%
     utils::head(n = 1)
-    vars <- names(df_head)
+  vars <- names(df_head)
 
   if (match %in% c("in", "between")) {
     var_class <- purrr::map_chr(df_head %>% dplyr::select(dplyr::all_of(vars)), class)
@@ -89,16 +89,24 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
     #   "\n - where", ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the")), paste0(vars, collapse = ", "), "column(s) in each record",
     #   "\n   - contains a value", match_msg, match_str, "\n"
     # )
-    rlang::inform(c("i" = "Identify records with condition(s):",
-                    "*" = glue::glue('where {ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the"))} {paste0(vars, collapse = ", ")} column(s) in each record'),
-                    "*" = glue::glue('contains a value {match_msg} {match_str}')))
+    rlang::inform(c(
+      "i" = "Identify records with condition(s):",
+      "*" = glue::glue('where {ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the"))} {paste0(vars, collapse = ", ")} column(s) in each record'),
+      "*" = glue::glue("contains a value {match_msg} {match_str}")
+    ))
 
     cat(ifelse(is.numeric(result_vals), "\nSummary of values in the result", "\nAll unique value(s) and frequency in the result"), ifelse(!if_all & length(vars) > 1, "(as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns):", ":"), "\n")
 
     switch(match,
-      "between" = {cat("Range: "); print(range(result_vals))},
-      if (is.character(result_vals)) print(summary(factor(result_vals)), max = 100)
-      else print(summary(result_vals))
+      "between" = {
+        cat("Range: ")
+        print(range(result_vals))
+      },
+      if (is.character(result_vals)) {
+        print(summary(factor(result_vals)), max = 100)
+      } else {
+        print(summary(result_vals))
+      }
     )
   }
 

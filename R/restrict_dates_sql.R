@@ -52,7 +52,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::group_by(.data[[clnt_id]]) %>%
       dbplyr::window_order(.data[[date_var]], .data[[uid]])
 
-    if(is_mssql_mysql) {
+    if (is_mssql_mysql) {
       data <- all_apart_mssql(data, date_var, n, apart, clnt_id, uid)
     } else {
       data <- all_apart_sqlite(data, date_var, n, apart, clnt_id, uid)
@@ -212,7 +212,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       dplyr::group_by(.data[[clnt_id]], .data[[uid]]) %>%
       dbplyr::window_order(temp_nm_date)
 
-    if(is_mssql_mysql) {
+    if (is_mssql_mysql) {
       data <- all_apart_mssql(data, "temp_nm_date", n, apart, clnt_id, uid)
     } else {
       data <- all_apart_sqlite(data, "temp_nm_date", n, apart, clnt_id, uid)
@@ -335,7 +335,8 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
           dplyr::mutate(
             in_win_1 = dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)),
             sum_win_1 = dplyr::case_when(sum(in_win_1, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
-                                          .default = 0L)
+              .default = 0L
+            )
           )
       } else {
         expr_win_i <- rlang::expr({
@@ -343,7 +344,8 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
             dplyr::mutate(
               in_win_i = dplyr::between(date_var, clock::add_days(min(date_var[in_win_x == 1L], na.rm = TRUE), apart), clock::add_days(max(date_var[in_win_x == 1L], na.rm = TRUE), -apart)),
               sum_win_i = dplyr::case_when(sum(in_win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
-                                            .default = 0L)
+                .default = 0L
+              )
             )
         })
         data <- rlang::expr_text(expr_win_i) %>%

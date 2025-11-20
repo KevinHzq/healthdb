@@ -84,40 +84,40 @@ Here's how you could use `healthdb` to implement the SUD definition above:
 1.  Identify rows contains the target codes in the claim database
 
     ```{r}
-    result1 <- claim_db %>%
-      identify_row(
+result1 <- claim_db %>%
+  identify_row(
     vars = starts_with("diagx"),
     match = "start",
     vals = c(291:292, 303:305)
-      )
+  )
     ```
 
 2.  Restrict the number of records per client
 
     ```{r}
-    result2 <- result1 %>% restrict_n(
-      clnt_id = clnt_id,
-      n_per_clnt = 2,
-      count_by = dates,
-      # here we use filter mode to remove records that failed the restriction
-      mode = "filter"
-    )
-    result2 %>% head()
+result2 <- result1 %>% restrict_n(
+  clnt_id = clnt_id,
+  n_per_clnt = 2,
+  count_by = dates,
+  # here we use filter mode to remove records that failed the restriction
+  mode = "filter"
+)
+result2 %>% head()
     ```
 
 3.  Restrict the temporal pattern of diagnoses
 
     ```{r}
-    result3 <- result2 %>% restrict_date(
-      clnt_id = clnt_id,
-      date_var = dates,
-      n = 2,
-      within = 365,
-      uid = uid,
-      # here we use flag mode to flag records that met the restriction instead of removing those
-      mode = "flag"
-    )
-    result3 %>% head()
+result3 <- result2 %>% restrict_date(
+  clnt_id = clnt_id,
+  date_var = dates,
+  n = 2,
+  within = 365,
+  uid = uid,
+  # here we use flag mode to flag records that met the restriction instead of removing those
+  mode = "flag"
+)
+result3 %>% head()
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.

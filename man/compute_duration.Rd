@@ -41,17 +41,19 @@ This function is meant to be for data frame input only and used with \code{\link
 \examples{
 # toy data
 n <- 5
-df <- data.frame(id = 1:n,
-start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
-end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n))
+df <- data.frame(
+  id = 1:n,
+  start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
+  end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n)
+)
 
 # get age group at a cut-off
 df \%>\% dplyr::mutate(
- age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
+  age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
 )
 
 # compute gaps between two dates in weeks
 df \%>\% dplyr::mutate(
- gap_wks = compute_duration(start_dt, end_dt, unit = "week")
+  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 )
 }

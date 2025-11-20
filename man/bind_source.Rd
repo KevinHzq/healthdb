@@ -30,5 +30,5 @@ bind_source(list(df1, df2, df3),
   p_l_setosa = c("Petal.Length", NA, NA),
   p_l_virginica = c(NA, NA, "Petal.Length")
 ) \%>\%
-head()
+  head()
 }

@@ -71,7 +71,7 @@ define_case(
 
 \item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
-\item{...}{Additional arguments, e.g., \code{mode}, passing to \code{\link[=restrict_date]{restrict_date()}}.}
+\item{...}{Additional arguments, e.g., \code{flag_at}, passing to \code{\link[=restrict_date]{restrict_date()}}.}
 }
 \value{
 A subset of input data satisfied the specified case definition.

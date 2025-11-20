@@ -7,7 +7,7 @@
 #'
 #' @param def_lab A single character label for the definition, e.g., some disease.
 #' @param src_labs A character vector of place-holder names for the data sources that will be used to execute the definition.
-#' @param def_fn A list of functions (default: [define_case()]) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but must put input data as the first argument and name it `data`.
+#' @param def_fn A list of functions (default: [define_case()]) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of `src_labs`. If length = 1, the same function will be applied to all sources; otherwise, `def_fn` should match `src_lab` by position. User can supply custom functions but must put input data as the first argument and name it `data`. Note: Mixing define functions (e.g., [define_case()] and [define_case_with_age()]) that accept `...` additional arguments may cause error. It is recommended to use the same define function for all sources.
 #' @param fn_args A named list of arguments passing to the `def_fn`. Each element in the list should have the same name as an argument in the source-specific `def_fn`, and the element length should also be either 1 or equal to the number of sources. If you have `def_fn` functions taking different sets of arguments, include the union in one list.
 #'
 #' @return A tibble with a number of rows equal to the length of `src_labs`, containing the input arguments and the synthetic function call in the `fn_call` column.
@@ -36,7 +36,7 @@
 #' sud_def
 #'
 #' # the fn_call column stores the code that can be ran with execute_def
-#' sud_def#fn_call
+#' sud_def # fn_call
 build_def <- function(def_lab, src_labs, def_fn = define_case, fn_args) {
   # input checking
   stopifnot(

@@ -22,7 +22,7 @@
 #' # exclude with another data
 #' exclude(mtcars, cyl_not_4, dplyr::join_by(cyl), report_on = cyl)
 exclude <- function(data, excl = NULL, by = NULL, condition = NULL, verbose = getOption("healthdb.verbose"), report_on = NULL, ...) {
-  if(!is.data.frame(data)) {
+  if (!is.data.frame(data)) {
     check_con(data)
   }
 

@@ -22,7 +22,7 @@
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
 #' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
-#' @param ... Additional arguments, e.g., `mode`, passing to [restrict_date()].
+#' @param ... Additional arguments, e.g., `flag_at`, passing to [restrict_date()].
 #'
 #' @return A subset of input data satisfied the specified case definition.
 #' @export

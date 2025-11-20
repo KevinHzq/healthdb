@@ -130,7 +130,7 @@ test_that("database x works", {
   out_df <- fetch_var(db1,
     keys = c(clnt_id, ans),
     linkage = list(
-      df2 ~ sex|clnt_id,
+      df2 ~ sex | clnt_id,
       db3 ~ age
     ),
     copy = TRUE

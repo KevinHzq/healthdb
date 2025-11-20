@@ -7,11 +7,17 @@ test_that("basic use works", {
   out_df_start_only <- collapse_episode(df, clnt_id = clnt, start_dt = segment_start, gap = 30)
   out_df_with_end <- collapse_episode(df, clnt_id = clnt, start_dt = "segment_start", end_dt = segment_end, gap = 30)
   # test if episode grouping is correct
-  expect_equal(out_df_start_only %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(epi_no)),
-               answer %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(n_epi)))
+  expect_equal(
+    out_df_start_only %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(epi_no)),
+    answer %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(n_epi))
+  )
   # test the summary of start/end is correct
-  epi_sum_with_end <- out_df_with_end %>% dplyr::group_by(epi_id) %>% dplyr::summarise(dplyr::across(c(segment_start, epi_start_dt), min),
-                                                                                           dplyr::across(c(segment_end, epi_stop_dt), max))
+  epi_sum_with_end <- out_df_with_end %>%
+    dplyr::group_by(epi_id) %>%
+    dplyr::summarise(
+      dplyr::across(c(segment_start, epi_start_dt), min),
+      dplyr::across(c(segment_end, epi_stop_dt), max)
+    )
   expect_equal(epi_sum_with_end$epi_start_dt, epi_sum_with_end$segment_start)
   expect_equal(epi_sum_with_end$epi_stop_dt, epi_sum_with_end$segment_end)
   # test if overwrite works
@@ -30,11 +36,17 @@ test_that("database input works", {
   out_df_with_end <- collapse_episode(db, clnt_id = clnt, start_dt = "segment_start", end_dt = segment_end, gap = 30) %>%
     dplyr::collect()
   # test if episode grouping is correct
-  expect_equal(out_df_start_only %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(epi_no)),
-               answer %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(n_epi)))
+  expect_equal(
+    out_df_start_only %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(epi_no)),
+    answer %>% dplyr::group_by(clnt) %>% dplyr::summarise(n_epi = max(n_epi))
+  )
   # test the summary of start/end is correct
-  epi_sum_with_end <- out_df_with_end %>% dplyr::group_by(epi_id) %>% dplyr::summarise(dplyr::across(c(segment_start, epi_start_dt), min),
-                                                                                       dplyr::across(c(segment_end, epi_stop_dt), max))
+  epi_sum_with_end <- out_df_with_end %>%
+    dplyr::group_by(epi_id) %>%
+    dplyr::summarise(
+      dplyr::across(c(segment_start, epi_start_dt), min),
+      dplyr::across(c(segment_end, epi_stop_dt), max)
+    )
   expect_equal(epi_sum_with_end$epi_start_dt, epi_sum_with_end$segment_start)
   expect_equal(epi_sum_with_end$epi_stop_dt, epi_sum_with_end$segment_end)
   # test if overwrite works

@@ -85,10 +85,9 @@ test_that("align with apart works", {
 })
 
 test_that("sort back works", {
-  x <- as.Date(c("2017-05-07", "2015-02-01", "2010-01-01", "2012-05-03", "2015-01-07",  "2017-02-08"))
+  x <- as.Date(c("2017-05-07", "2015-02-01", "2010-01-01", "2012-05-03", "2015-01-07", "2017-02-08"))
   ans <- c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)
   w <- 365
   out <- if_dates(x, n = 2, within = w, detail = TRUE, align = "right")
   expect_equal(out, ans)
 })
-

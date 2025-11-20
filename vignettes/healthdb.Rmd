@@ -66,25 +66,25 @@ We are going to implement this definition. First, let's make a demo data sets fo
 1.  Physician claims with multiple columns of [ICD-9](https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/physicians/diagnostic-code-descriptions-icd-9) diagnostic codes
 
     ```{r}
-    # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
-    claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
+# make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
+claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
 
-    # this is a database table
-    # note that in-memory SQLite database stores dates as numbers
-    claim_db %>% head()
+# this is a database table
+# note that in-memory SQLite database stores dates as numbers
+claim_db %>% head()
     ```
 
 2.  Hospitalization with [ICD-10](https://en.wikipedia.org/wiki/ICD-10) codes
 
     ```{r}
-    hosp_df <- make_test_dat(vals_kept = c(glue("F{10:19}"), glue("F{100:199}"), noise_val = "999"), type = "data.frame")
+hosp_df <- make_test_dat(vals_kept = c(glue("F{10:19}"), glue("F{100:199}"), noise_val = "999"), type = "data.frame")
 
-    # this is a local data.frame/tibble
-    hosp_df %>% head()
-    
-    # convert Date to numeric to be consistent with claim_db
-    hosp_df <- hosp_df %>% 
-      mutate(dates = julian(dates))
+# this is a local data.frame/tibble
+hosp_df %>% head()
+
+# convert Date to numeric to be consistent with claim_db
+hosp_df <- hosp_df %>%
+  mutate(dates = julian(dates))
     ```
 
 ## Interactive functions
@@ -110,12 +110,12 @@ Here's how you could use `healthdb` to achieve these steps:
 1.  Identify rows contains the target codes. Use `?identify_row` to see a list of supported matching types.
 
     ```{r}
-    result1 <- claim_db %>%
-      identify_row(
+result1 <- claim_db %>%
+  identify_row(
     vars = starts_with("diagx"),
     match = "start",
     vals = c(291:292, 303:305)
-      )
+  )
     ```
 
 2.  Bonus: remove clients with exclusion codes
@@ -125,23 +125,23 @@ Here's how you could use `healthdb` to achieve these steps:
     We first identify "111" from the source, then exclude clients in the output from the previous step's result. `exclude()` take either a data set (via the excl argument) or expression (condition argument) as input. For the former, it performs an anti join matching on the by argument (see `dplyr::join_by()`). For the latter, it is the opposite of filter, i.e., `filter(!(some_expression))`.
 
     ```{r}
-    result2 <- result1 %>%
-      exclude(
+result2 <- result1 %>%
+  exclude(
     excl = identify_row(claim_db, starts_with("diagx"), "in", "111"),
     by = "clnt_id"
-      )
+  )
     ```
 
 3.  Restrict the number of records per client
 
     ```{r}
-    result3 <- result2 %>% restrict_n(
-      clnt_id = clnt_id,
-      n_per_clnt = 2,
-      count_by = dates,
-      # here we use filter mode to remove records that failed the restriction
-      mode = "filter"
-    )
+result3 <- result2 %>% restrict_n(
+  clnt_id = clnt_id,
+  n_per_clnt = 2,
+  count_by = dates,
+  # here we use filter mode to remove records that failed the restriction
+  mode = "filter"
+)
     ```
 
 4.  Restrict the temporal pattern of diagnoses
@@ -149,15 +149,15 @@ Here's how you could use `healthdb` to achieve these steps:
     `restrict_date()` supports more complicated patterns like having n diagnoses at least i days apart within j years. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id (uid) has to be supplied to get consistent result.
 
     ```{r}
-    result4 <- result3 %>% restrict_date(
-      clnt_id = clnt_id,
-      date_var = dates,
-      n = 2,
-      within = 365,
-      uid = uid,
-      # here we use flag mode to flag records that met the restriction instead of removing those
-      mode = "flag"
-    )
+result4 <- result3 %>% restrict_date(
+  clnt_id = clnt_id,
+  date_var = dates,
+  n = 2,
+  within = 365,
+  uid = uid,
+  # here we use flag mode to flag records that met the restriction instead of removing those
+  mode = "flag"
+)
     ```
 
 5.  Fetch variables from other tables by matching common keys
@@ -165,49 +165,49 @@ Here's how you could use `healthdb` to achieve these steps:
     Up to this point, the result is only a query and have not been downloaded. Hopefully, the data has been shrunken to a manageable size for collection.
 
     ```{r}
-    # Class of result4
-    class(result4)
+# Class of result4
+class(result4)
 
-    # execute query and download the result
-    result_df <- result4 %>% collect()
+# execute query and download the result
+result_df <- result4 %>% collect()
 
-    # Number of rows in source
-    nrow(claim_db %>% collect())
+# Number of rows in source
+nrow(claim_db %>% collect())
 
-    # Number of rows in the current result
-    nrow(result_df)
+# Number of rows in the current result
+nrow(result_df)
     ```
 
     Our data now only contains diagnoses which are probably not enough for further analyses. Let's say we want to gather client demographics such as age and sex from other sources. This certainly can be done with multiple `dplyr::left_join()` calls. Here we provide the `fetch_var()` function to make the codes more concise. Note that the input must be a named object and not from a pipe (i.e., don't do this `data %>% some_action %>% fetch_var()`). 
 
     ```{r}
-    # make two look up tables
-    age_tab <- data.frame(
-      clnt_id = 1:50,
-      age = sample(1:90, 50),
-      sex = sample(c("F", "M"), 50, replace = TRUE)
-    )
-    address_tab <- data.frame(
-      clnt_id = rep(1:50, 5), year = rep(2016:2020, each = 50),
-      area_code = sample(0:200, 50, replace = TRUE)
-    )
+# make two look up tables
+age_tab <- data.frame(
+  clnt_id = 1:50,
+  age = sample(1:90, 50),
+  sex = sample(c("F", "M"), 50, replace = TRUE)
+)
+address_tab <- data.frame(
+  clnt_id = rep(1:50, 5), year = rep(2016:2020, each = 50),
+  area_code = sample(0:200, 50, replace = TRUE)
+)
 
-    # get year from dates for matching
+# get year from dates for matching
 
-    result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
+result_df <- result_df %>% mutate(year = lubridate::year(as.Date(dates, origin = "1970-01-01")))
 
-    # note that keys must be present in all tables
-    fetch_var(result_df,
-              keys = c(clnt_id, year),
-              linkage = list(
-                # the formula means from_table ~ get_variable
-                # |clnt_id means matching on clnt_id only
-                age_tab ~ c(age, sex) | clnt_id,
-                address_tab ~ area_code
-              )
-    ) %>%
-      select(uid, clnt_id, dates, age, sex, area_code) %>% 
-      head()
+# note that keys must be present in all tables
+fetch_var(result_df,
+  keys = c(clnt_id, year),
+  linkage = list(
+    # the formula means from_table ~ get_variable
+    # |clnt_id means matching on clnt_id only
+    age_tab ~ c(age, sex) | clnt_id,
+    address_tab ~ area_code
+  )
+) %>%
+  select(uid, clnt_id, dates, age, sex, area_code) %>%
+  head()
     ```
 
 ## Call-building functions
@@ -282,10 +282,11 @@ bind_source(result_list,
 
 ```{r}
 pool_case(result_list,
-          def = sud_def,
-          # your could skip summary with output_lvl = "raw"
-          output_lvl = "clnt",
-          # include records only from sources having valid records, see function documentation for more detail and other options
-          include_src = "has_valid",
-          force_proceed = TRUE)
+  def = sud_def,
+  # your could skip summary with output_lvl = "raw"
+  output_lvl = "clnt",
+  # include records only from sources having valid records, see function documentation for more detail and other options
+  include_src = "has_valid",
+  force_proceed = TRUE
+)
 ```

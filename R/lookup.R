@@ -16,12 +16,14 @@
 #' df %>% dplyr::mutate(
 #'   drug_nm = lookup(drug_code, drug_id ~ drug_name, lu),
 #'   # this will work as lu also has drug_code column
-#'   drug_nm = lookup(drug_code, ~ drug_name, lu)
+#'   drug_nm = lookup(drug_code, ~drug_name, lu)
 #' )
 lookup <- function(x, link, lu, verbose = getOption("healthdb.verbose")) {
   # input checks
-  stopifnot(rlang::is_formula(link),
-            is.data.frame(lu))
+  stopifnot(
+    rlang::is_formula(link),
+    is.data.frame(lu)
+  )
 
   # capture variable name of x
   x_nm <- rlang::as_name(rlang::enquo(x))
@@ -30,18 +32,22 @@ lookup <- function(x, link, lu, verbose = getOption("healthdb.verbose")) {
   lhs <- rlang::f_lhs(link)
   rhs <- rlang::f_text(link)
 
-  if (is.null(lhs)) lhs <- x_nm
-  else lhs <- rlang::as_name(lhs)
+  if (is.null(lhs)) {
+    lhs <- x_nm
+  } else {
+    lhs <- rlang::as_name(lhs)
+  }
 
   if (is.character(x)) {
     index <- data.table::chmatch(x, as.character(lu[[lhs]]))
+  } else {
+    index <- match(x, lu[[lhs]])
   }
-  else index <- match(x, lu[[lhs]])
 
   y <- lu[[rhs]][index]
 
   if (verbose) {
-    if(any(is.na(y))) warning("Matched output contains missing value(s)")
+    if (any(is.na(y))) warning("Matched output contains missing value(s)")
   }
 
   y

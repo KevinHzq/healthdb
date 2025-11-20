@@ -10,7 +10,9 @@ all_apart <- function(x, n, apart) {
     is.wholenumber(n)
   )
 
-  if (length(x) < n) return(FALSE)
+  if (length(x) < n) {
+    return(FALSE)
+  }
 
   dtx <- data.table::data.table(x = x)
   incl <- c(NULL)

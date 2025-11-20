@@ -22,7 +22,7 @@
 #'   p_l_setosa = c("Petal.Length", NA, NA),
 #'   p_l_virginica = c(NA, NA, "Petal.Length")
 #' ) %>%
-#' head()
+#'   head()
 bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_proceed")) {
   # capture data names in the original env before any eval
   data_quo <- rlang::enquo(data)
@@ -83,10 +83,10 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
     # if the data are all remote, do union in SQL;
     # union_all not necessary as already labeled by def and src; rows would not collapse across srcs
     result <- rlang::try_fetch(purrr::reduce(result, dplyr::union),
-                               error = function(cnd) {
-                                 rlang::warn("Returned unbinded result. Binding failed probably due to combining tables from different databases, which cannot be binded without collecting. Use force_collect = TRUE. Actual error message:\n", parent = cnd)
-                                 return(result)
-                               }
+      error = function(cnd) {
+        rlang::warn("Returned unbinded result. Binding failed probably due to combining tables from different databases, which cannot be binded without collecting. Use force_collect = TRUE. Actual error message:\n", parent = cnd)
+        return(result)
+      }
     )
     # manual return here to simplify the subsequent if logic
     return(result)
@@ -97,12 +97,12 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
     result <- purrr::map_if(result, !is_local, dplyr::collect, .progress = TRUE)
   }
 
-  #dplyr::bind_rows(result, .id = "src_id")
+  # dplyr::bind_rows(result, .id = "src_id")
   result <- rlang::try_fetch(purrr::list_rbind(result, names_to = "src_No") %>% dplyr::distinct(),
-                             error = function(cnd) {
-                               rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources. Actual error message:\n", parent = cnd)
-                               return(result)
-                             }
+    error = function(cnd) {
+      rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources. Actual error message:\n", parent = cnd)
+      return(result)
+    }
   )
 
   return(result)

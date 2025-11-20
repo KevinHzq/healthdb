@@ -57,7 +57,7 @@ test_that("output is correct for database", {
     dplyr::collect()
   expect_gt(nrow(output_df_flag), nrow(output_df))
   expect_setequal(dplyr::filter(output_df_flag, dplyr::if_all(dplyr::starts_with("flag_"), ~ . == 1)) %>% dplyr::pull(clnt_id), ans_id)
-  #also test df input
+  # also test df input
   output_df2 <- define_case(df, starts_with("diagx"), "start", c("304", "305"), excl_vals = "999", clnt_id = clnt_id, mode = "filter", n_per_clnt = n, date_var = dates, apart = apart, within = within)
   expect_setequal(output_df2$clnt_id, ans_id)
 })

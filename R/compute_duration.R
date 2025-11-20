@@ -19,21 +19,23 @@
 #' @examples
 #' # toy data
 #' n <- 5
-#' df <- data.frame(id = 1:n,
-#' start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
-#' end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n))
+#' df <- data.frame(
+#'   id = 1:n,
+#'   start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
+#'   end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n)
+#' )
 #'
 #' # get age group at a cut-off
 #' df %>% dplyr::mutate(
-#'  age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
+#'   age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
 #' )
 #'
 #' # compute gaps between two dates in weeks
 #' df %>% dplyr::mutate(
-#'  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
+#'   gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 #' )
 compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day", "week", "month"), trans = FALSE, .transfn = lubridate::ymd, verbose = getOption("healthdb.verbose"), ...) {
-  #compute age with lubridate functions (more accurate than /365.25) and built-in transformations
+  # compute age with lubridate functions (more accurate than /365.25) and built-in transformations
   unit <- rlang::arg_match0(unit, c("year", "day", "week", "month"))
 
   if (trans) {
@@ -45,32 +47,35 @@ compute_duration <- function(from, to, lower_brks = NULL, unit = c("year", "day"
 
   age <- lubridate::interval(from, to) / lubridate::duration(1, units = unit)
 
-  #warnings for unreasonable values
-  if (verbose)
-  {
-    if(any(is.na(age))) warning("Output contains missing value(s)")
+  # warnings for unreasonable values
+  if (verbose) {
+    if (any(is.na(age))) warning("Output contains missing value(s)")
     print(summary(age))
   }
 
   if (!is.null(lower_brks)) {
     stopifnot(is.numeric(lower_brks))
-    #create labels based on breaks
-    labs <- sapply(1:length(lower_brks),
-                   function(i) dplyr::case_when(i == 1 ~ paste0("<", lower_brks[i+1]),
-                                                i == length(lower_brks) ~ paste0(lower_brks[i], "+"),
-                                                .default = paste(lower_brks[i], lower_brks[i+1]-1, sep = "-")))
+    # create labels based on breaks
+    labs <- sapply(
+      1:length(lower_brks),
+      function(i) {
+        dplyr::case_when(i == 1 ~ paste0("<", lower_brks[i + 1]),
+          i == length(lower_brks) ~ paste0(lower_brks[i], "+"),
+          .default = paste(lower_brks[i], lower_brks[i + 1] - 1, sep = "-")
+        )
+      }
+    )
 
-    #make age group with the lower boundary of breaks
+    # make age group with the lower boundary of breaks
     agegrp <- cut(age, breaks = c(lower_brks, Inf), labels = labs, right = FALSE, ...)
 
-    #warning if the breaks don't cover the full range
+    # warning if the breaks don't cover the full range
     if (verbose) {
       if (sum(is.na(agegrp)) > sum(is.na(age))) warning("More NA than raw age. Breaks do not cover the full range.")
       print(summary(agegrp))
     }
 
     return(agegrp)
-
   }
 
   return(age)

@@ -26,7 +26,6 @@ restrict_n.tbl_sql <- function(data, clnt_id, n_per_clnt, count_by = NULL, mode 
         temp_n_collapsed = max(temp_n_collapsed_id, na.rm = TRUE),
         flag_restrict_n = ifelse(temp_n_collapsed >= n_per_clnt, 1L, 0L)
       )
-
   } else {
     db <- data %>%
       dplyr::group_by(.data[[clnt_id_nm]]) %>%

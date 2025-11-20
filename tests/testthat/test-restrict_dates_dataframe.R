@@ -45,4 +45,3 @@ test_that("check missing dates works", {
   df$dates[sample(1:nrow(df), 5)] <- NA
   expect_warning(restrict_dates(df, clnt_id, dates, n, within = within, uid = uid, check_missing = TRUE), "Removed 5 records")
 })
-

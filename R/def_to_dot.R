@@ -15,8 +15,10 @@ def_to_dot <- function(def, add_aux = TRUE) {
   def_long <- def %>%
     tidyr::unnest(fn_args) %>%
     # dplyr::mutate(fn_arg_names = sapply(def$fn_args, function(x) names(x)) %>% c()) %>%
-    dplyr::mutate(fn_arg_names = names(fn_args),
-                  src_labs = glue::glue("{def_lab}_{src_labs}")) %>%
+    dplyr::mutate(
+      fn_arg_names = names(fn_args),
+      src_labs = glue::glue("{def_lab}_{src_labs}")
+    ) %>%
     dplyr::select(-def_lab, -def_fn, -fn_call) %>%
     dplyr::distinct() %>%
     dplyr::filter(fn_arg_names %in% c(key_args, flag_args))

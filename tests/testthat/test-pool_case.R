@@ -139,18 +139,18 @@ test_that("pool multiple def works", {
 test_that("include has_valid works", {
   db <- make_test_dat(answer_id = "ans", type = "database")
   def <- build_def("SUD",
-                   src_labs = c("msp", "dad"),
-                   fn_args = list(
-                     vars = starts_with("diagx"),
-                     match = "start",
-                     mode = c("flag", "flag"),
-                     vals = c(304, 305),
-                     clnt_id = clnt_id,
-                     uid = uid,
-                     date_var = dates,
-                     n_per_clnt = c(3, 1),
-                     within = c(NULL, NULL)
-                   )
+    src_labs = c("msp", "dad"),
+    fn_args = list(
+      vars = starts_with("diagx"),
+      match = "start",
+      mode = c("flag", "flag"),
+      vals = c(304, 305),
+      clnt_id = clnt_id,
+      uid = uid,
+      date_var = dates,
+      n_per_clnt = c(3, 1),
+      within = c(NULL, NULL)
+    )
   )
   result <- execute_def(def, with_data = list(msp = db, dad = db))
   pool_result <- pool_case(result, def, output_lvl = "raw", include_src = "has_valid") %>% dplyr::collect()
@@ -163,17 +163,17 @@ test_that("include has_valid works", {
 test_that("edge case full flag works", {
   db <- make_test_dat(answer_id = "ans", type = "database")
   def <- build_def("SUD",
-                   src_labs = c("msp", "dad"),
-                   fn_args = list(
-                     vars = starts_with("diagx"),
-                     match = "start",
-                     mode = c("flag", "flag"),
-                     vals = c(304, 305),
-                     clnt_id = clnt_id,
-                     uid = uid,
-                     date_var = dates,
-                     n_per_clnt = c(3, 2)
-                   )
+    src_labs = c("msp", "dad"),
+    fn_args = list(
+      vars = starts_with("diagx"),
+      match = "start",
+      mode = c("flag", "flag"),
+      vals = c(304, 305),
+      clnt_id = clnt_id,
+      uid = uid,
+      date_var = dates,
+      n_per_clnt = c(3, 2)
+    )
   )
   result <- execute_def(def, with_data = list(msp = db, dad = db))
   pool_result <- pool_case(result, def, output_lvl = "raw", include_src = "has_valid") %>% dplyr::collect()

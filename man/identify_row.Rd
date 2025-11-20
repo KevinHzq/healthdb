@@ -54,23 +54,25 @@ A data.frame or tbl_sql object depending on the input.
 Filter rows which values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:across]{dplyr::if_any()}} or \code{\link[dplyr:across]{dplyr::if_all()}}, but it used the 'data.table' package \code{vignette("datatable-intro", package = "data.table")} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
 }
 \examples{
-#applying to data.frame; both sepal length and width in range 3-5
+# applying to data.frame; both sepal length and width in range 3-5
 identify_row(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
 
-#applying to remote table; species starts with se or ends with ca
+# applying to remote table; species starts with se or ends with ca
 iris_db <- dbplyr::memdb_frame(iris)
 identify_row(iris_db, Species, "like", c("se\%", "\%ca"))
 
-#using glue_sql to write the WHERE clause
-#use {`vars`} to refer to the variables selected by vars
-#supply additional values required in the query through '...'
-#note that if you use LIKE here, you cannot supply multiple patterns in what
+# using glue_sql to write the WHERE clause
+# use {`vars`} to refer to the variables selected by vars
+# supply additional values required in the query through '...'
+# note that if you use LIKE here, you cannot supply multiple patterns in what
 identify_row(iris_db, Species, "glue_sql",
- "{`vars`} LIKE {what}",
-  what = "se\%")
+  "{`vars`} LIKE {what}",
+  what = "se\%"
+)
 
-#add * after a vector
+# add * after a vector
 identify_row(iris_db, Species, "glue_sql",
- "{`vars`} IN ({what*})",
- what = c("setosa", "virginica"))
+  "{`vars`} IN ({what*})",
+  what = c("setosa", "virginica")
+)
 }

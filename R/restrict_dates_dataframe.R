@@ -22,7 +22,7 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   # place holder for temp var names
   flag_restrict_date <- temp.nm_keep <- temp.nm_keep_cum <- NULL
 
-  if(verbose) {
+  if (verbose) {
     initial_n <- report_n(data, on = {{ clnt_id }})
   }
 
