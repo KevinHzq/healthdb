@@ -6,7 +6,7 @@ def_to_dot <- function(def, add_aux = TRUE) {
 
   # n_source <- dplyr::n_distinct(def[["src_labs"]])
 
-  if (any(!(def$def_fn %in% c("define_case", "healthdb::define_case")))) warning("'def' was not built by define_case(). Unexpected issues may occur. Please check output thoroughly.")
+  if (any(!(def$def_fn %in% c("define_case", "healthdb::define_case", "define_case_with_age", "healthdb::define_case_with_age")))) warning("'def' was not built by define_case() or define_case_with_age(). Unexpected issues may occur. Please check output thoroughly.")
 
   key_args <- c("uid", "clnt_id", "date_var")
   flag_args <- c("n_per_clnt", "apart", "within")
