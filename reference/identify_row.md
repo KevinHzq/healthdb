@@ -118,7 +118,7 @@ A data.frame or tbl_sql object depending on the input.
 ## Examples
 
 ``` r
-#applying to data.frame; both sepal length and width in range 3-5
+# applying to data.frame; both sepal length and width in range 3-5
 identify_row(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
 #> ℹ Identify records with condition(s):
 #> • where all of the Sepal.Length, Sepal.Width column(s) in each record
@@ -154,7 +154,7 @@ identify_row(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
 #> 25          4.6         3.2          1.4         0.2  setosa
 #> 26          5.0         3.3          1.4         0.2  setosa
 
-#applying to remote table; species starts with se or ends with ca
+# applying to remote table; species starts with se or ends with ca
 iris_db <- dbplyr::memdb_frame(iris)
 identify_row(iris_db, Species, "like", c("se%", "%ca"))
 #> ℹ Identify records with condition(s):
@@ -176,13 +176,14 @@ identify_row(iris_db, Species, "like", c("se%", "%ca"))
 #> 10          4.7         3.2          1.3         0.2 setosa 
 #> # ℹ more rows
 
-#using glue_sql to write the WHERE clause
-#use {`vars`} to refer to the variables selected by vars
-#supply additional values required in the query through '...'
-#note that if you use LIKE here, you cannot supply multiple patterns in what
+# using glue_sql to write the WHERE clause
+# use {`vars`} to refer to the variables selected by vars
+# supply additional values required in the query through '...'
+# note that if you use LIKE here, you cannot supply multiple patterns in what
 identify_row(iris_db, Species, "glue_sql",
- "{`vars`} LIKE {what}",
-  what = "se%")
+  "{`vars`} LIKE {what}",
+  what = "se%"
+)
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` LIKE 'se%'
@@ -202,10 +203,11 @@ identify_row(iris_db, Species, "glue_sql",
 #> 10          4.9         3.1          1.5         0.1 setosa 
 #> # ℹ more rows
 
-#add * after a vector
+# add * after a vector
 identify_row(iris_db, Species, "glue_sql",
- "{`vars`} IN ({what*})",
- what = c("setosa", "virginica"))
+  "{`vars`} IN ({what*})",
+  what = c("setosa", "virginica")
+)
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` IN ('setosa', 'virginica')

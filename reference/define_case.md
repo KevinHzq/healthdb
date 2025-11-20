@@ -156,7 +156,7 @@ define_case(
 
 - ...:
 
-  Additional arguments, e.g., `mode`, passing to
+  Additional arguments, e.g., `flag_at`, passing to
   [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
 
 ## Value

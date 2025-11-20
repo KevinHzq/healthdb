@@ -2,6 +2,17 @@
 
 ## healthdb (development version)
 
+### Bug fix
+
+- Fixed a bug in the apart feature in restrict_date() caused by ‘dbplyr’
+  2.5.1 update where the input order of the SQL translation for
+  difftime() was flipped.
+
+### Improvements
+
+- Added a new define function with age restriction -
+  define_case_with_age()
+
 ## healthdb 0.4.1
 
 CRAN release: 2025-04-05

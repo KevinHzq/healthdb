@@ -76,13 +76,15 @@ A numeric or factor vector of the duration.
 ``` r
 # toy data
 n <- 5
-df <- data.frame(id = 1:n,
-start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
-end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n))
+df <- data.frame(
+  id = 1:n,
+  start_dt = sample(seq(as.Date("1970-01-01"), as.Date("2000-12-31"), by = 1), size = n),
+  end_dt = sample(seq(as.Date("2001-01-01"), as.Date("2023-12-31"), by = 1), size = n)
+)
 
 # get age group at a cut-off
 df %>% dplyr::mutate(
- age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
+  age_grp = compute_duration(start_dt, "2023-01-01", lower_brks = c(0, 19, 25, 35, 45, 55))
 )
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>   28.50   34.41   43.42   39.98   44.86   48.72 
@@ -97,7 +99,7 @@ df %>% dplyr::mutate(
 
 # compute gaps between two dates in weeks
 df %>% dplyr::mutate(
- gap_wks = compute_duration(start_dt, end_dt, unit = "week")
+  gap_wks = compute_duration(start_dt, end_dt, unit = "week")
 )
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>   700.9  1572.1  1584.0  1690.6  2203.7  2392.3 

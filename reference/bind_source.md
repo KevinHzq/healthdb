@@ -53,7 +53,7 @@ bind_source(list(df1, df2, df3),
   p_l_setosa = c("Petal.Length", NA, NA),
   p_l_virginica = c(NA, NA, "Petal.Length")
 ) %>%
-head()
+  head()
 #>   src_No s_l s_w p_l_setosa p_l_virginica
 #> 1      1 5.1 3.5        1.4            NA
 #> 2      1 4.9 3.0        1.4            NA

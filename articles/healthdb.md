@@ -136,7 +136,7 @@ sets for the two sources:
     #> 6  75       3 2016-07-11   999    <NA>    <NA>
 
     # convert Date to numeric to be consistent with claim_db
-    hosp_df <- hosp_df %>% 
+    hosp_df <- hosp_df %>%
       mutate(dates = julian(dates))
     ```
 
@@ -302,15 +302,15 @@ Here’s how you could use `healthdb` to achieve these steps:
 
     # note that keys must be present in all tables
     fetch_var(result_df,
-              keys = c(clnt_id, year),
-              linkage = list(
-                # the formula means from_table ~ get_variable
-                # |clnt_id means matching on clnt_id only
-                age_tab ~ c(age, sex) | clnt_id,
-                address_tab ~ area_code
-              )
+      keys = c(clnt_id, year),
+      linkage = list(
+    # the formula means from_table ~ get_variable
+    # |clnt_id means matching on clnt_id only
+    age_tab ~ c(age, sex) | clnt_id,
+    address_tab ~ area_code
+      )
     ) %>%
-      select(uid, clnt_id, dates, age, sex, area_code) %>% 
+      select(uid, clnt_id, dates, age, sex, area_code) %>%
       head()
     #> # A tibble: 6 × 6
     #>     uid clnt_id dates   age sex   area_code
@@ -502,12 +502,13 @@ flexible enough to meet your needs.
 
 ``` r
 pool_case(result_list,
-          def = sud_def,
-          # your could skip summary with output_lvl = "raw"
-          output_lvl = "clnt",
-          # include records only from sources having valid records, see function documentation for more detail and other options
-          include_src = "has_valid",
-          force_proceed = TRUE)
+  def = sud_def,
+  # your could skip summary with output_lvl = "raw"
+  output_lvl = "clnt",
+  # include records only from sources having valid records, see function documentation for more detail and other options
+  include_src = "has_valid",
+  force_proceed = TRUE
+)
 #> # A tibble: 29 × 10
 #>    def   clnt_id first_valid_date first_valid_src last_entry_date last_entry_src
 #>    <chr>   <int>            <dbl> <chr>                     <dbl> <chr>         

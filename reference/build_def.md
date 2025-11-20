@@ -34,7 +34,13 @@ build_def(def_lab, src_labs, def_fn = define_case, fn_args)
   length of `src_labs`. If length = 1, the same function will be applied
   to all sources; otherwise, `def_fn` should match `src_lab` by
   position. User can supply custom functions but must put input data as
-  the first argument and name it `data`.
+  the first argument and name it `data`. Note: Mixing define functions
+  (e.g.,
+  [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+  and
+  [`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md))
+  that accept `...` additional arguments may cause error. It is
+  recommended to use the same define function for all sources.
 
 - fn_args:
 
@@ -80,7 +86,7 @@ sud_def
 #> 2 SUD     src2     mean        <named list [6]> <language>  
 
 # the fn_call column stores the code that can be ran with execute_def
-sud_def#fn_call
+sud_def # fn_call
 #> # A tibble: 2 × 5
 #>   def_lab src_labs def_fn      fn_args          fn_call     
 #>   <chr>   <chr>    <chr>       <named list>     <named list>

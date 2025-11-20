@@ -93,7 +93,7 @@ episode grouping. The new variables include:
 ``` r
 # make toy data
 df <- make_test_dat() %>%
-dplyr::select(clnt_id, dates)
+  dplyr::select(clnt_id, dates)
 
 head(df)
 #>   clnt_id      dates

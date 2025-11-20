@@ -74,7 +74,7 @@ input data with an new flag column.
 ``` r
 # flag cyl groups with less than 8 cars
 restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8, mode = "flag") %>%
-head()
+  head()
 #> ℹ Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 8 records 
 #>    mpg cyl disp  hp drat    wt  qsec vs am gear carb flag_restrict_n
 #> 1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4               0
@@ -84,7 +84,7 @@ head()
 #> 5 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2               1
 #> 6 18.1   6  225 105 2.76 3.460 20.22  1  0    3    1               0
 
-#remove cyl groups with less than 2 types of gear boxes
+# remove cyl groups with less than 2 types of gear boxes
 restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear, mode = "filter")
 #> ℹ Of the 3 clients in the input, 1 were excluded by restricting that each client must have at least 3 records with distinct gear
 #>     mpg cyl  disp  hp drat    wt  qsec vs am gear carb flag_restrict_n

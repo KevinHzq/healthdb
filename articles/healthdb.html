@@ -180,7 +180,7 @@ diagnostic codes</p>
 <span><span class="co">#&gt; 6  75       3 2016-07-11   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
 <span></span>
 <span><span class="co"># convert Date to numeric to be consistent with claim_db</span></span>
-<span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="va">hosp_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="va">hosp_df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">julian</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
@@ -329,15 +329,15 @@ do this <code>data %&gt;% some_action %&gt;% fetch_var()</code>).</p>
 <span></span>
 <span><span class="co"># note that keys must be present in all tables</span></span>
 <span><span class="fu"><a href="../reference/fetch_var.html">fetch_var</a></span><span class="op">(</span><span class="va">result_df</span>,</span>
-<span>          keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">clnt_id</span>, <span class="va">year</span><span class="op">)</span>,</span>
-<span>          linkage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>            <span class="co"># the formula means from_table ~ get_variable</span></span>
-<span>            <span class="co"># |clnt_id means matching on clnt_id only</span></span>
-<span>            <span class="va">age_tab</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span> <span class="op">|</span> <span class="va">clnt_id</span>,</span>
-<span>            <span class="va">address_tab</span> <span class="op">~</span> <span class="va">area_code</span></span>
-<span>          <span class="op">)</span></span>
+<span>  keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">clnt_id</span>, <span class="va">year</span><span class="op">)</span>,</span>
+<span>  linkage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span><span class="co"># the formula means from_table ~ get_variable</span></span>
+<span><span class="co"># |clnt_id means matching on clnt_id only</span></span>
+<span><span class="va">age_tab</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span> <span class="op">|</span> <span class="va">clnt_id</span>,</span>
+<span><span class="va">address_tab</span> <span class="op">~</span> <span class="va">area_code</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">uid</span>, <span class="va">clnt_id</span>, <span class="va">dates</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">area_code</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">uid</span>, <span class="va">clnt_id</span>, <span class="va">dates</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">area_code</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;     uid clnt_id dates   age sex   area_code</span></span>
@@ -511,12 +511,13 @@ Since we had to decide which variables to be summarized in advance, the
 output may not be flexible enough to meet your needs.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pool_case.html">pool_case</a></span><span class="op">(</span><span class="va">result_list</span>,</span>
-<span>          def <span class="op">=</span> <span class="va">sud_def</span>,</span>
-<span>          <span class="co"># your could skip summary with output_lvl = "raw"</span></span>
-<span>          output_lvl <span class="op">=</span> <span class="st">"clnt"</span>,</span>
-<span>          <span class="co"># include records only from sources having valid records, see function documentation for more detail and other options</span></span>
-<span>          include_src <span class="op">=</span> <span class="st">"has_valid"</span>,</span>
-<span>          force_proceed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  def <span class="op">=</span> <span class="va">sud_def</span>,</span>
+<span>  <span class="co"># your could skip summary with output_lvl = "raw"</span></span>
+<span>  output_lvl <span class="op">=</span> <span class="st">"clnt"</span>,</span>
+<span>  <span class="co"># include records only from sources having valid records, see function documentation for more detail and other options</span></span>
+<span>  include_src <span class="op">=</span> <span class="st">"has_valid"</span>,</span>
+<span>  force_proceed <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 29 × 10</span></span></span>
 <span><span class="co">#&gt;    def   clnt_id first_valid_date first_valid_src last_entry_date last_entry_src</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>

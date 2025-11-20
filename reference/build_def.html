@@ -55,7 +55,7 @@
 
 
 <dt id="arg-def-fn">def_fn<a class="anchor" aria-label="anchor" href="#arg-def-fn"></a></dt>
-<dd><p>A list of functions (default: <code><a href="define_case.html">define_case()</a></code>) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of <code>src_labs</code>. If length = 1, the same function will be applied to all sources; otherwise, <code>def_fn</code> should match <code>src_lab</code> by position. User can supply custom functions but must put input data as the first argument and name it <code>data</code>.</p></dd>
+<dd><p>A list of functions (default: <code><a href="define_case.html">define_case()</a></code>) that will filter the source data sets and keep clients met the case definition. The length of the list should be either 1 or equal to the length of <code>src_labs</code>. If length = 1, the same function will be applied to all sources; otherwise, <code>def_fn</code> should match <code>src_lab</code> by position. User can supply custom functions but must put input data as the first argument and name it <code>data</code>. Note: Mixing define functions (e.g., <code><a href="define_case.html">define_case()</a></code> and <code><a href="define_case_with_age.html">define_case_with_age()</a></code>) that accept <code>...</code> additional arguments may cause error. It is recommended to use the same define function for all sources.</p></dd>
 
 
 <dt id="arg-fn-args">fn_args<a class="anchor" aria-label="anchor" href="#arg-fn-args"></a></dt>
@@ -96,7 +96,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> SUD     src2     mean        <span style="color: #949494;">&lt;named list [6]&gt;</span> <span style="color: #949494;">&lt;language&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the fn_call column stores the code that can be ran with execute_def</span></span></span>
-<span class="r-in"><span><span class="va">sud_def</span><span class="co">#fn_call</span></span></span>
+<span class="r-in"><span><span class="va">sud_def</span> <span class="co"># fn_call</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   def_lab src_labs def_fn      fn_args          fn_call     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;named list&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;named list&gt;</span></span>
