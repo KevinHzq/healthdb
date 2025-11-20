@@ -75,4 +75,56 @@ test_that("incorrect recycling does not work", {
                          )), "recycle")
 })
 
+test_that("define_case_with_age works as def_fn", {
+  def <- build_def("SUD",
+                   src_labs = c("msp", "dad"),
+                   def_fn = define_case_with_age,
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     vals = letters,
+                     clnt_id = clnt_id,
+                     age = age,
+                     age_range = list(c(18, 65), c(21, NA))
+                   ))
+  if_call <- purrr::map_lgl(def$fn_call, rlang::is_call)
+  expect_true(all(if_call))
+  expect_equal(unname(def$def_fn), rep("define_case_with_age", 2))
+  # check that age_range is in the calls
+  expect_true(all(purrr::map_lgl(def$fn_call, ~ any(stringr::str_detect(deparse(.), "age_range")))))
+})
+
+test_that("define_case_with_age with birth_date works", {
+  def <- build_def("SUD",
+                   src_labs = c("msp", "dad"),
+                   def_fn = define_case_with_age,
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     vals = letters,
+                     clnt_id = clnt_id,
+                     date_var = dates,
+                     birth_date = birth_dt,
+                     age_range = c(18, 65)
+                   ))
+  if_call <- purrr::map_lgl(def$fn_call, rlang::is_call)
+  expect_true(all(if_call))
+  # check that birth_date is in the calls
+  expect_true(all(purrr::map_lgl(def$fn_call, ~ any(stringr::str_detect(deparse(.), "birth_date")))))
+})
+
+test_that("mixed def_fn with define_case_with_age works", {
+  def <- build_def("SUD",
+                   src_labs = c("msp", "dad"),
+                   def_fn = list(define_case, define_case_with_age),
+                   fn_args = list(
+                     vars = starts_with("diagx"),
+                     vals = letters,
+                     clnt_id = clnt_id,
+                     age = age,
+                     age_range = c(18, 65)
+                   ))
+  if_call <- purrr::map_lgl(def$fn_call, rlang::is_call)
+  expect_true(all(if_call))
+  expect_equal(unname(def$def_fn), c("define_case", "define_case_with_age"))
+})
+
 
