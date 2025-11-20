@@ -144,19 +144,19 @@ df <- data.frame(
 
 # Keep clients with 2 records that were 1 week apart within 1 month
 restrict_date(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
-#> ℹ Of the 18 clients in the input, 12 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days
+#> ℹ Of the 20 clients in the input, 16 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days
 #> # A tibble: 30 × 6
 #>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_date
 #>      <int> <date>     <chr> <chr>   <chr>                <dbl>
-#>  1       2 2020-01-15 c     v       u                        1
-#>  2       2 2020-01-19 r     NA      a                        0
-#>  3       2 2020-01-22 d     g       x                        0
-#>  4       4 2020-01-25 f     u       p                        0
-#>  5       5 2020-01-21 s     l       o                        0
-#>  6       6 2020-01-11 i     o       b                        0
-#>  7       9 2020-01-01 s     v       x                        0
-#>  8      11 2020-01-11 v     w       NA                       1
-#>  9      11 2020-01-31 u     q       e                        0
-#> 10      12 2020-01-08 h     r       k                        0
+#>  1       1 2020-01-11 g     v       m                        0
+#>  2       3 2020-01-01 o     u       z                        0
+#>  3       5 2020-01-01 o     v       l                        0
+#>  4       5 2020-01-06 c     p       m                        0
+#>  5       6 2020-01-08 b     c       i                        0
+#>  6       7 2020-01-01 m     f       e                        1
+#>  7       7 2020-01-16 l     r       d                        0
+#>  8       8 2020-01-07 z     g       p                        0
+#>  9      11 2020-01-23 z     w       o                        0
+#> 10      12 2020-01-05 o     q       x                        0
 #> # ℹ 20 more rows
 ```

@@ -44,14 +44,14 @@ df %>% dplyr::mutate(
   drug_nm = lookup(drug_code, ~ drug_name, lu)
 )
 #>    drug_code drug_nm
-#> 1          1       t
-#> 2          2       p
-#> 3          3       w
-#> 4          4       n
-#> 5          5       z
-#> 6          6       g
-#> 7          7       a
-#> 8          8       v
-#> 9          9       h
-#> 10        10       k
+#> 1          1       f
+#> 2          2       o
+#> 3          3       x
+#> 4          4       r
+#> 5          5       b
+#> 6          6       s
+#> 7          7       j
+#> 8          8       q
+#> 9          9       e
+#> 10        10       v
 ```

@@ -17,6 +17,9 @@
   : Cut the time period in one row into multiple rows by interval
 - [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
   : Identify diseases/events from administrative records
+- [`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md)
+  : Identify diseases/events from administrative records with age
+  restriction
 - [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md)
   : Remove rows based on conditions or another data set
 - [`execute_def()`](https://kevinhzq.github.io/healthdb/reference/execute_def.md)

@@ -115,12 +115,12 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> • contains a value satisfied regular expression: ^304
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3053 3054 
+#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
-#> 3055 3056 3057 3058 3059  999 NA's 
+#> 3054 3055 3056 3058 3059  999 NA's 
 #>    1    1    1    1    1    1    1 
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 27 clients in the input, 17 were flagged as 0 by restricting that each client must have at least 2 records 
+#> ℹ Of the 26 clients in the input, 18 were flagged as 0 by restricting that each client must have at least 2 records 
 #> → -------------- Output all records--------------
 #> 
 #> Actions for definition SUD using source df2:
@@ -130,29 +130,27 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> • contains a value satisfied regular expression: ^305
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 3054 
+#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
-#> 3055 3056 3057 3058 3059  999 NA's 
-#>    1    1    1    1    1    1    1 
+#> 3054 3055 3056 3057 3058 3059  999 NA's 
+#>    1    1    1    1    1    1    1    1 
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 27 clients in the input, 25 were flagged as 0 by restricting that each client must have at least 3 records 
+#> ℹ Of the 26 clients in the input, 23 were flagged as 0 by restricting that each client must have at least 3 records 
 #> → -------------- Output all records--------------
 
 # pool results from src1 and src2 together at client level
 pool_case(sud_by_src, sud_def, output_lvl = "clnt")
-#> # A tibble: 12 × 6
+#> # A tibble: 10 × 6
 #>    def   clnt_id raw_in_src1 raw_in_src2 valid_in_src1 valid_in_src2
 #>    <chr>   <int>       <dbl>       <dbl>         <int>         <int>
-#>  1 SUD        15           1           0             1             0
-#>  2 SUD        18           1           0             1             0
-#>  3 SUD        19           1           0             1             0
-#>  4 SUD        20           0           1             0             1
-#>  5 SUD        21           1           1             1             0
-#>  6 SUD        22           1           0             1             0
-#>  7 SUD        24           1           0             1             0
-#>  8 SUD        27           1           1             1             0
-#>  9 SUD        28           0           1             0             1
-#> 10 SUD        29           1           1             1             0
-#> 11 SUD        45           1           1             1             0
-#> 12 SUD        47           1           0             1             0
+#>  1 SUD         7           0           1             0             1
+#>  2 SUD        13           1           1             1             0
+#>  3 SUD        19           1           1             1             0
+#>  4 SUD        30           1           1             1             0
+#>  5 SUD        31           1           0             1             0
+#>  6 SUD        34           1           0             1             0
+#>  7 SUD        36           0           1             0             1
+#>  8 SUD        38           1           0             1             0
+#>  9 SUD        41           1           1             1             0
+#> 10 SUD        44           1           1             1             1
 ```
