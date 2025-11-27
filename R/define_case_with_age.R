@@ -2,7 +2,11 @@
 #'
 #' @md
 #' @description
-#' This function is a composite of [identify_row()], [exclude()], [restrict_n()], age restriction, and [restrict_date()]. It extends the standard case definition functionality by allowing age-based filtering. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years for patients aged 18-65. The component functions mentioned above are chained in the following order if all arguments were supplied: `identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% age_restriction() %>% restrict_date()`. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if `date_var` is supplied, `n_per_clnt` will be counted by distinct dates instead of number of records.
+#' This function extends the standard case definition function [define_case()] by allowing age-based filtering. See [define_case()] for more general description of what this function does.
+#'
+#' Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range will be remove before interpreting the temporal relationship between records. In other words, the age restriction is applied before [restrict_date()].
+#'
+#' For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of [define_case()] instead of using this function.
 #'
 #' @inheritParams identify_row
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_row()] for detail.
@@ -20,9 +24,9 @@
 #' * "flag" - add new columns starting with "flag_" indicating if the client met the condition,
 #' * or "filter" - remove clients that did not meet the condition from the data.
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
-#' @param birth_date Optional. The name of the column containing birth dates. Used to calculate age when `age_range` is specified. Requires `date_var` to be supplied.
+#' @param birth_date Optional. The name of the column containing birth dates. Used to calculate age when `age_range` is specified. Requires `date_var` to be supplied. Age will be calculated as (date_var - birth_date)/365.25.
 #' @param age Optional. The name of the column containing age values. Used directly for age filtering when `age_range` is specified.
-#' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided.
+#' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range in years. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided.
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
 #' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `mode`, passing to [restrict_date()].

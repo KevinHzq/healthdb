@@ -70,11 +70,11 @@ define_case_with_age(
 \item This will be passed to both \code{\link[=restrict_n]{restrict_n()}} AND \code{\link[=restrict_date]{restrict_date()}}. Default is "flag".
 }}
 
-\item{birth_date}{Optional. The name of the column containing birth dates. Used to calculate age when \code{age_range} is specified. Requires \code{date_var} to be supplied.}
+\item{birth_date}{Optional. The name of the column containing birth dates. Used to calculate age when \code{age_range} is specified. Requires \code{date_var} to be supplied. Age will be calculated as (date_var - birth_date)/365.25.}
 
 \item{age}{Optional. The name of the column containing age values. Used directly for age filtering when \code{age_range} is specified.}
 
-\item{age_range}{Optional. A length 2 numeric vector \code{c(min, max)} specifying the age range. Use \code{NA} for one-sided bounds (e.g., \code{c(10, NA)} for age >= 10, or \code{c(NA, 65)} for age <= 65). At least one non-NA value must be provided.}
+\item{age_range}{Optional. A length 2 numeric vector \code{c(min, max)} specifying the age range in years. Use \code{NA} for one-sided bounds (e.g., \code{c(10, NA)} for age >= 10, or \code{c(NA, 65)} for age <= 65). At least one non-NA value must be provided.}
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
@@ -86,7 +86,11 @@ define_case_with_age(
 A subset of input data satisfied the specified case definition.
 }
 \description{
-This function is a composite of \code{\link[=identify_row]{identify_row()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, age restriction, and \code{\link[=restrict_date]{restrict_date()}}. It extends the standard case definition functionality by allowing age-based filtering. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years for patients aged 18-65. The component functions mentioned above are chained in the following order if all arguments were supplied: \code{identify_row(vals) \%>\% exclude(identify_row(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% age_restriction() \%>\% restrict_date()}. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if \code{date_var} is supplied, \code{n_per_clnt} will be counted by distinct dates instead of number of records.
+This function extends the standard case definition function \code{\link[=define_case]{define_case()}} by allowing age-based filtering. See \code{\link[=define_case]{define_case()}} for more general description of what this function does.
+
+Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range will be remove before interpreting the temporal relationship between records. In other words, the age restriction is applied before \code{\link[=restrict_date]{restrict_date()}}.
+
+For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of \code{\link[=define_case]{define_case()}} instead of using this function.
 }
 \examples{
 sample_size <- 30
