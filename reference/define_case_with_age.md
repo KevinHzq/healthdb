@@ -1,24 +1,23 @@
 # Identify diseases/events from administrative records with age restriction
 
-This function is a composite of
-[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md),
-[`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
-[`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md),
-age restriction, and
+This function extends the standard case definition function
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+by allowing age-based filtering. See
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+for more general description of what this function does.
+
+Note that when using this function with an existing age variable, the
+age should be determined at the time of the record. Records that are not
+in the eligible age range will be remove before interpreting the
+temporal relationship between records. In other words, the age
+restriction is applied before
 [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
-It extends the standard case definition functionality by allowing
-age-based filtering. It is aimed to implement common case definitions in
-epidemiological studies using administrative database as a one-shot big
-query. The intended use case is for definitions in the form of, e.g.,
-two or more physician visits with some diagnostic code at least 30 days
-apart within two years for patients aged 18-65. The component functions
-mentioned above are chained in the following order if all arguments were
-supplied:
-`identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% age_restriction() %>% restrict_date()`.
-Only necessary steps in the chain will be ran if some arguments are
-missing, see the verbose output for what was done. Note that if
-`date_var` is supplied, `n_per_clnt` will be counted by distinct dates
-instead of number of records.
+
+For other age restrictions based on a fixed time point (e.g., age at the
+baseline of follow-up), it can be done by filtering the input data or
+output of
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+instead of using this function.
 
 ## Usage
 
@@ -151,7 +150,7 @@ define_case_with_age(
 
   Optional. The name of the column containing birth dates. Used to
   calculate age when `age_range` is specified. Requires `date_var` to be
-  supplied.
+  supplied. Age will be calculated as (date_var - birth_date)/365.25.
 
 - age:
 
@@ -161,9 +160,9 @@ define_case_with_age(
 - age_range:
 
   Optional. A length 2 numeric vector `c(min, max)` specifying the age
-  range. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age \>=
-  10, or `c(NA, 65)` for age \<= 65). At least one non-NA value must be
-  provided.
+  range in years. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for
+  age \>= 10, or `c(NA, 65)` for age \<= 65). At least one non-NA value
+  must be provided.
 
 - force_collect:
 
