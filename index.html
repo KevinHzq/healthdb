@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">healthdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,16 +91,16 @@
 <span><span class="co"># this is a database table</span></span>
 <span><span class="co"># note that in-memory SQLite database stores dates as numbers</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   SQL [6 x 6]</span></span>
-<span><span class="co">#&gt; # Database: sqlite 3.45.2 [:memory:]</span></span>
+<span><span class="co">#&gt; # Source:   SQL [?? x 6]</span></span>
+<span><span class="co">#&gt; # Database: sqlite 3.51.0 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1    87       1 17740 999   &lt;NA&gt;    999    </span></span>
-<span><span class="co">#&gt; 2    66       1 18375 999   999     999    </span></span>
-<span><span class="co">#&gt; 3     2       2 18546 2920  3041    999    </span></span>
-<span><span class="co">#&gt; 4    21       3 17345 2917  2916    999    </span></span>
-<span><span class="co">#&gt; 5    28       3 18167 111   3035    &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 6    92       3 18528 999   999     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    59       1 16650 999   &lt;NA&gt;    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 2    14       1 17100 3046  3058    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 3    65       1 17381 999   &lt;NA&gt;    &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4    19       1 17948 2916  2915    999    </span></span>
+<span><span class="co">#&gt; 5    71       1 18479 999   999     999    </span></span>
+<span><span class="co">#&gt; 6    66       2 16553 999   &lt;NA&gt;    999</span></span></code></pre></div>
 <p>Hospitalization</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hosp_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_test_dat.html">make_test_dat</a></span><span class="op">(</span>vals_kept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{10:19}"</span><span class="op">)</span>, <span class="fu">str_glue</span><span class="op">(</span><span class="st">"F{100:199}"</span><span class="op">)</span>, noise_val <span class="op">=</span> <span class="st">"999"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -108,12 +108,12 @@
 <span><span class="co"># this is a local data.frame/tibble</span></span>
 <span><span class="va">hosp_df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   uid clnt_id      dates diagx diagx_1 diagx_2</span></span>
-<span><span class="co">#&gt; 1  57       1 2020-09-19   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2  91       2 2015-02-15   999    &lt;NA&gt;     999</span></span>
-<span><span class="co">#&gt; 3  92       2 2016-09-03   999     999     999</span></span>
-<span><span class="co">#&gt; 4  66       2 2018-07-02   999     999     999</span></span>
-<span><span class="co">#&gt; 5  89       2 2018-11-03   999     999    &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  62       2 2019-03-14   999    &lt;NA&gt;     999</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  96       1 2016-01-04   999     999     999</span></span>
+<span><span class="co">#&gt; 2 100       1 2020-09-15   999    &lt;NA&gt;    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3  79       1 2020-12-26   999     999    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4  15       2 2019-08-24  F185    F170    &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5  48       2 2020-02-12  F102    F138    F180</span></span>
+<span><span class="co">#&gt; 6  10       3 2016-02-06  F163    F174     999</span></span></code></pre></div>
 <p>Here’s how you could use <code>healthdb</code> to implement the SUD definition above:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -144,17 +144,16 @@
 <span><span class="co">#&gt; ℹ Apply restriction that each client must have at least 2 records with distinct</span></span>
 <span><span class="co">#&gt; dates. Clients/groups which did not met the condition were excluded.</span></span>
 <span><span class="va">result2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     SQL [6 x 7]</span></span>
-<span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
-<span><span class="co">#&gt; # Ordered by: dates</span></span>
+<span><span class="co">#&gt; # Source:   SQL [?? x 7]</span></span>
+<span><span class="co">#&gt; # Database: sqlite 3.51.0 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    21       3 17345 2917  2916    999                   1</span></span>
-<span><span class="co">#&gt; 2    28       3 18167 111   3035    &lt;NA&gt;                  1</span></span>
-<span><span class="co">#&gt; 3    35       4 16955 3038  3033    999                   1</span></span>
-<span><span class="co">#&gt; 4    11       4 18473 3040  2920    999                   1</span></span>
-<span><span class="co">#&gt; 5    36      11 16752 3047  3047    999                   1</span></span>
-<span><span class="co">#&gt; 6    12      11 17752 3046  3057    999                   1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    14       1 17100 3046  3058    &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 2    19       1 17948 2916  2915    999                   1</span></span>
+<span><span class="co">#&gt; 3    36       3 17235 3047  3037    999                   1</span></span>
+<span><span class="co">#&gt; 4    37       3 17984 3055  292     &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 5    16       3 18169 3051  999     &lt;NA&gt;                  1</span></span>
+<span><span class="co">#&gt; 6    49       5 17935 3051  2922    3052                  1</span></span></code></pre></div>
 </li>
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
@@ -171,17 +170,16 @@
 <span><span class="co">#&gt; ℹ Apply restriction that each client must have 2 records that were within 365</span></span>
 <span><span class="co">#&gt; days. Records that met the condition were flagged.</span></span>
 <span><span class="va">result3</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     SQL [6 x 8]</span></span>
-<span><span class="co">#&gt; # Database:   sqlite 3.45.2 [:memory:]</span></span>
-<span><span class="co">#&gt; # Ordered by: dates, uid</span></span>
+<span><span class="co">#&gt; # Source:   SQL [?? x 8]</span></span>
+<span><span class="co">#&gt; # Database: sqlite 3.51.0 [:memory:]</span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date</span></span>
 <span><span class="co">#&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;int&gt;              &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1    21       3 17345 2917  2916    999                   1                  0</span></span>
-<span><span class="co">#&gt; 2    28       3 18167 111   3035    &lt;NA&gt;                  1                  0</span></span>
-<span><span class="co">#&gt; 3    35       4 16955 3038  3033    999                   1                  0</span></span>
-<span><span class="co">#&gt; 4    11       4 18473 3040  2920    999                   1                  0</span></span>
-<span><span class="co">#&gt; 5    36      11 16752 3047  3047    999                   1                  0</span></span>
-<span><span class="co">#&gt; 6    12      11 17752 3046  3057    999                   1                  1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    14       1 17100 3046  3058    &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 2    19       1 17948 2916  2915    999                   1                  0</span></span>
+<span><span class="co">#&gt; 3    36       3 17235 3047  3037    999                   1                  0</span></span>
+<span><span class="co">#&gt; 4    37       3 17984 3055  292     &lt;NA&gt;                  1                  1</span></span>
+<span><span class="co">#&gt; 5    16       3 18169 3051  999     &lt;NA&gt;                  1                  0</span></span>
+<span><span class="co">#&gt; 6    49       5 17935 3051  2922    3052                  1                  1</span></span></code></pre></div>
 </li>
 <li><p>Repeat these steps for hospitalization and row bind the results.</p></li>
 </ol>

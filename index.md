@@ -74,16 +74,16 @@ claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", str_g
 # this is a database table
 # note that in-memory SQLite database stores dates as numbers
 claim_db %>% head()
-#> # Source:   SQL [6 x 6]
-#> # Database: sqlite 3.45.2 [:memory:]
+#> # Source:   SQL [?? x 6]
+#> # Database: sqlite 3.51.0 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
-#> 1    87       1 17740 999   <NA>    999    
-#> 2    66       1 18375 999   999     999    
-#> 3     2       2 18546 2920  3041    999    
-#> 4    21       3 17345 2917  2916    999    
-#> 5    28       3 18167 111   3035    <NA>   
-#> 6    92       3 18528 999   999     999
+#> 1    59       1 16650 999   <NA>    <NA>   
+#> 2    14       1 17100 3046  3058    <NA>   
+#> 3    65       1 17381 999   <NA>    <NA>   
+#> 4    19       1 17948 2916  2915    999    
+#> 5    71       1 18479 999   999     999    
+#> 6    66       2 16553 999   <NA>    999
 ```
 
 Hospitalization
@@ -94,12 +94,12 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 # this is a local data.frame/tibble
 hosp_df %>% head()
 #>   uid clnt_id      dates diagx diagx_1 diagx_2
-#> 1  57       1 2020-09-19   999    <NA>    <NA>
-#> 2  91       2 2015-02-15   999    <NA>     999
-#> 3  92       2 2016-09-03   999     999     999
-#> 4  66       2 2018-07-02   999     999     999
-#> 5  89       2 2018-11-03   999     999    <NA>
-#> 6  62       2 2019-03-14   999    <NA>     999
+#> 1  96       1 2016-01-04   999     999     999
+#> 2 100       1 2020-09-15   999    <NA>    <NA>
+#> 3  79       1 2020-12-26   999     999    <NA>
+#> 4  15       2 2019-08-24  F185    F170    <NA>
+#> 5  48       2 2020-02-12  F102    F138    F180
+#> 6  10       3 2016-02-06  F163    F174     999
 ```
 
 Here’s how you could use `healthdb` to implement the SUD definition
@@ -134,17 +134,16 @@ above:
     #> ℹ Apply restriction that each client must have at least 2 records with distinct
     #> dates. Clients/groups which did not met the condition were excluded.
     result2 %>% head()
-    #> # Source:     SQL [6 x 7]
-    #> # Database:   sqlite 3.45.2 [:memory:]
-    #> # Ordered by: dates
+    #> # Source:   SQL [?? x 7]
+    #> # Database: sqlite 3.51.0 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
-    #> 1    21       3 17345 2917  2916    999                   1
-    #> 2    28       3 18167 111   3035    <NA>                  1
-    #> 3    35       4 16955 3038  3033    999                   1
-    #> 4    11       4 18473 3040  2920    999                   1
-    #> 5    36      11 16752 3047  3047    999                   1
-    #> 6    12      11 17752 3046  3057    999                   1
+    #> 1    14       1 17100 3046  3058    <NA>                  1
+    #> 2    19       1 17948 2916  2915    999                   1
+    #> 3    36       3 17235 3047  3037    999                   1
+    #> 4    37       3 17984 3055  292     <NA>                  1
+    #> 5    16       3 18169 3051  999     <NA>                  1
+    #> 6    49       5 17935 3051  2922    3052                  1
     ```
 
 3.  Restrict the temporal pattern of diagnoses
@@ -162,17 +161,16 @@ above:
     #> ℹ Apply restriction that each client must have 2 records that were within 365
     #> days. Records that met the condition were flagged.
     result3 %>% head()
-    #> # Source:     SQL [6 x 8]
-    #> # Database:   sqlite 3.45.2 [:memory:]
-    #> # Ordered by: dates, uid
+    #> # Source:   SQL [?? x 8]
+    #> # Database: sqlite 3.51.0 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
-    #> 1    21       3 17345 2917  2916    999                   1                  0
-    #> 2    28       3 18167 111   3035    <NA>                  1                  0
-    #> 3    35       4 16955 3038  3033    999                   1                  0
-    #> 4    11       4 18473 3040  2920    999                   1                  0
-    #> 5    36      11 16752 3047  3047    999                   1                  0
-    #> 6    12      11 17752 3046  3057    999                   1                  1
+    #> 1    14       1 17100 3046  3058    <NA>                  1                  0
+    #> 2    19       1 17948 2916  2915    999                   1                  0
+    #> 3    36       3 17235 3047  3037    999                   1                  0
+    #> 4    37       3 17984 3055  292     <NA>                  1                  1
+    #> 5    16       3 18169 3051  999     <NA>                  1                  0
+    #> 6    49       5 17935 3051  2922    3052                  1                  1
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.

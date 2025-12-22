@@ -126,7 +126,7 @@ sud_def %>% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = 
 #> 
 #> $SUD.src2
 #> # Source:   SQL [?? x 8]
-#> # Database: sqlite 3.51.0 [:memory:]
+#> # Database: sqlite 3.51.1 [:memory:]
 #> # ℹ 8 variables: def <lgl>, src <lgl>, clnt_id <int>, service_dt <int>,
 #> #   diagx <chr>, diagx_1 <chr>, diagx_2 <chr>, flag_restrict_n <lgl>
 #> 

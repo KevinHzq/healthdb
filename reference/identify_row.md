@@ -161,7 +161,7 @@ identify_row(iris_db, Species, "like", c("se%", "%ca"))
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL LIKE pattern: se% OR %ca
 #> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.51.0 [:memory:]
+#> # Database: sqlite 3.51.1 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          4.3         3            1.1         0.1 setosa 
@@ -188,7 +188,7 @@ identify_row(iris_db, Species, "glue_sql",
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` LIKE 'se%'
 #> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.51.0 [:memory:]
+#> # Database: sqlite 3.51.1 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          5.1         3.5          1.4         0.2 setosa 
@@ -212,7 +212,7 @@ identify_row(iris_db, Species, "glue_sql",
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` IN ('setosa', 'virginica')
 #> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.51.0 [:memory:]
+#> # Database: sqlite 3.51.1 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          5.1         3.5          1.4         0.2 setosa 
