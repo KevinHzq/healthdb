@@ -1,4 +1,4 @@
-# healthdb (development version)
+# healthdb 0.5.0
 
 ## Bug fix
 
