@@ -93,5 +93,7 @@ if_date(dates_of_records, n = 3, apart = 30, within = 365 * 2)
 
 # specified either apart or within or both
 if_date(dates_of_records, n = 2, within = 365)
+#> Warning: 'x' is deprecated in frollapply, use 'X' instead
+#> Warning: 'n' is deprecated in frollapply, use 'N' instead
 #> [1] TRUE
 ```
