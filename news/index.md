@@ -2,6 +2,8 @@
 
 ## healthdb 0.5.0
 
+CRAN release: 2026-01-08
+
 ### Bug fix
 
 - Fixed a bug in the apart feature in restrict_date() caused by ‘dbplyr’
