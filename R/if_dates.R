@@ -63,7 +63,7 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
       x <- unique(x)
     }
 
-    x_roll <- data.table::frollapply(x = x, n = n, align = align, FUN = function(x) sum(diff(x)) <= within)
+    x_roll <- data.table::frollapply(X = x, N = n, align = align, FUN = function(x) sum(diff(x)) <= within)
     dtx <- data.table::data.table(x = as.numeric(x_roll == 1))
     data.table::setnafill(dtx, fill = 0)
 
