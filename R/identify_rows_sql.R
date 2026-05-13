@@ -62,39 +62,29 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
   }
 
   # run different filter by match type
-  # the action expressions were captured for replacing if_any if needed
-  # altering expression approach is necessary because if_any/all cannot simply be replaced by different name because dbplyr would fail to translate
-  switch(match,
+  across <- if (if_all) quote(dplyr::if_all) else quote(dplyr::if_any)
+  q_match <- switch(match,
     # left start empty so getting action from like
     "start" = ,
-    "like" = act_expr <- rlang::expr({
-      like_list <- lapply(vals, function(x) data %>% dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ stringr::str_like(., dbplyr::sql(dbplyr::escape_ansi(x))))))
-      q_match <- Reduce(dplyr::union, like_list)
-    }),
+    "like" = {
+      like_list <- lapply(vals, function(x) data %>% dplyr::filter((!!across)(dplyr::all_of(vars), ~ stringr::str_like(., !!x))))
+      Reduce(dplyr::union, like_list)
+    },
     "regex" = ,
-    "in" = act_expr <- rlang::expr({
-      q_match <- data %>%
-        dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ . %in% dbplyr::sql(dbplyr::escape_ansi(vals, collapse = ",", parens = TRUE))))
-    }),
-    "between" = act_expr <- rlang::expr({
+    "in" = {
+      data %>% dplyr::filter((!!across)(dplyr::all_of(vars), ~ . %in% !!vals))
+    },
+    "between" = {
       stopifnot(
         length(vals) == 2,
         vals[1] <= vals[2]
       )
-      q_match <- data %>% dplyr::filter(dplyr::if_any(dplyr::all_of(vars), ~ dplyr::between(., dbplyr::sql(dbplyr::escape_ansi(vals[1])), dbplyr::sql(dbplyr::escape_ansi(vals[2])))))
-    }),
-    "glue_sql" = act_expr <- rlang::expr({
-      q_match <- data %>% dplyr::filter(dbplyr::sql(match_str))
-    })
+      data %>% dplyr::filter((!!across)(dplyr::all_of(vars), ~ dplyr::between(., !!vals[1], !!vals[2])))
+    },
+    "glue_sql" = {
+      data %>% dplyr::filter(dbplyr::sql(match_str))
+    }
   )
-
-  if (if_all) {
-    act_expr <- rlang::expr_text(act_expr) %>%
-      stringr::str_replace("if_any", "if_all") %>%
-      rlang::parse_expr()
-  }
-
-  eval(act_expr)
 
   # explain the configuration in plain language to prompt user thinking
   if (verbose) {
