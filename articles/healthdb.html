@@ -74,7 +74,7 @@ included:</p></li>
 tweaks that fix SQL translation or add features that are not natively
 support by SQL. They also work for local data.frame, and some use
 ‘data.table’ package
-(<code><a href="https://rdatatable.gitlab.io/data.table/articles/datatable-intro.html" class="external-link">vignette("datatable-intro", package = "data.table")</a></code>) to
+(<code><a href="https://cran.rstudio.com/web/packages/data.table/vignettes/datatable-intro.html" class="external-link">vignette("datatable-intro", package = "data.table")</a></code>) to
 speed up processing time for large data. These functions are not as
 flexible as <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter()</a></code>, but they are general enough to
 be useful even outside health research.</p></li>
@@ -154,7 +154,7 @@ diagnostic codes</p>
 <span><span class="co"># note that in-memory SQLite database stores dates as numbers</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [?? x 6]</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.51.1 [:memory:]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.52.0 [:memory:]</span></span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>     </span></span>
@@ -450,7 +450,7 @@ outputs from different calls.</p>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
 <span><span class="co">#&gt; F162 F164 F165 F166 F168  F17 F170 F172 F173 F174 F175 F176 F179 F181 F183 F184 </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 </span></span>
-<span><span class="co">#&gt; F185 F187 F188 F189  F19 F191 F192 F193 F196 F197 F198 NA's </span></span>
+<span><span class="co">#&gt; F185 F187 F188 F189  F19 F191 F192 F193 F196 F197 F198  NAs </span></span>
 <span><span class="co">#&gt;    1    1    1    1    1    1    1    1    1    1    1    1</span></span>
 <span><span class="co">#&gt; → -------------- Output all records--------------</span></span></code></pre></div>
 <p>Let’s check the results!</p>
@@ -458,7 +458,7 @@ outputs from different calls.</p>
 <code class="sourceCode R"><span><span class="co"># view the results</span></span>
 <span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">walk</a></span><span class="op">(</span><span class="va">result_list</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [?? x 10]</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.51.1 [:memory:]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.52.0 [:memory:]</span></span></span>
 <span><span class="co">#&gt;   def   src     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SUD   claim    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>                    0</span></span>

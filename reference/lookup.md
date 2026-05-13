@@ -35,6 +35,7 @@ A vector of matched values.
 ## Examples
 
 ``` r
+
 df <- data.frame(drug_code = 1:10)
 lu <- data.frame(drug_id = 1:20, drug_code = as.character(1:10), drug_name = sample(letters, 20))
 
@@ -44,14 +45,14 @@ df %>% dplyr::mutate(
   drug_nm = lookup(drug_code, ~drug_name, lu)
 )
 #>    drug_code drug_nm
-#> 1          1       f
-#> 2          2       o
-#> 3          3       x
-#> 4          4       r
-#> 5          5       b
-#> 6          6       s
-#> 7          7       j
-#> 8          8       q
-#> 9          9       e
-#> 10        10       v
+#> 1          1       x
+#> 2          2       s
+#> 3          3       w
+#> 4          4       o
+#> 5          5       g
+#> 6          6       m
+#> 7          7       l
+#> 8          8       h
+#> 9          9       v
+#> 10        10       d
 ```

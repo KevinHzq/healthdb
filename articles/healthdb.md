@@ -15,7 +15,7 @@
   based on filter and joins from dplyr with tweaks that fix SQL
   translation or add features that are not natively support by SQL. They
   also work for local data.frame, and some use ‘data.table’ package
-  ([`vignette("datatable-intro", package = "data.table")`](https://rdatatable.gitlab.io/data.table/articles/datatable-intro.html))
+  ([`vignette("datatable-intro", package = "data.table")`](https://cran.rstudio.com/web/packages/data.table/vignettes/datatable-intro.html))
   to speed up processing time for large data. These functions are not as
   flexible as
   [`dplyr::filter()`](https://dplyr.tidyverse.org/reference/filter.html),
@@ -69,12 +69,14 @@ common use cases.
 Simply run:
 
 ``` r
+
 install.packages("healthdb")
 ```
 
 We will need the following packages for this demo.
 
 ``` r
+
 library(dplyr)
 library(dbplyr)
 library(lubridate)
@@ -101,6 +103,7 @@ sets for the two sources:
     diagnostic codes
 
     ``` r
+
     # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
     claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
 
@@ -108,7 +111,7 @@ sets for the two sources:
     # note that in-memory SQLite database stores dates as numbers
     claim_db %>% head()
     #> # Source:   SQL [?? x 6]
-    #> # Database: sqlite 3.51.1 [:memory:]
+    #> # Database: sqlite 3.52.0 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
     #> 1    25       3 17909 3030  2921    NA     
@@ -123,6 +126,7 @@ sets for the two sources:
     codes
 
     ``` r
+
     hosp_df <- make_test_dat(vals_kept = c(glue("F{10:19}"), glue("F{100:199}"), noise_val = "999"), type = "data.frame")
 
     # this is a local data.frame/tibble
@@ -150,6 +154,7 @@ LIKE operation, 2. dbply currently have issue with translating
 n_distinct.
 
 ``` r
+
 ## not run
 claim_db %>%
   # identify the target codes
@@ -170,6 +175,7 @@ Here’s how you could use `healthdb` to achieve these steps:
     to see a list of supported matching types.
 
     ``` r
+
     result1 <- claim_db %>%
       identify_row(
     vars = starts_with("diagx"),
@@ -201,6 +207,7 @@ Here’s how you could use `healthdb` to achieve these steps:
     `filter(!(some_expression))`.
 
     ``` r
+
     result2 <- result1 %>%
       exclude(
     excl = identify_row(claim_db, starts_with("diagx"), "in", "111"),
@@ -215,6 +222,7 @@ Here’s how you could use `healthdb` to achieve these steps:
 3.  Restrict the number of records per client
 
     ``` r
+
     result3 <- result2 %>% restrict_n(
       clnt_id = clnt_id,
       n_per_clnt = 2,
@@ -236,6 +244,7 @@ Here’s how you could use `healthdb` to achieve these steps:
     supplied to get consistent result.
 
     ``` r
+
     result4 <- result3 %>% restrict_date(
       clnt_id = clnt_id,
       date_var = dates,
@@ -256,6 +265,7 @@ Here’s how you could use `healthdb` to achieve these steps:
     size for collection.
 
     ``` r
+
     # Class of result4
     class(result4)
     #> [1] "tbl_SQLiteConnection" "tbl_dbi"              "tbl_sql"             
@@ -285,6 +295,7 @@ Here’s how you could use `healthdb` to achieve these steps:
     `data %>% some_action %>% fetch_var()`).
 
     ``` r
+
     # make two look up tables
     age_tab <- data.frame(
       clnt_id = 1:50,
@@ -333,6 +344,7 @@ and provide tools to perform batch execution with different data and
 parameters to meet those needs.
 
 ``` r
+
 # build the full definition of SUD
 sud_def <- build_def(
   # name of definition
@@ -370,6 +382,7 @@ empty on purpose for re-usability. For example, you may want to repeat
 the analysis with data from different regions or study periods.
 
 ``` r
+
 sud_def$fn_call
 #> [[1]]
 #> define_case(data = , vars = starts_with("diagx"), match = "start", 
@@ -393,6 +406,7 @@ labels will be added to the result to identify outputs from different
 calls.
 
 ``` r
+
 # execute the definition
 result_list <- sud_def %>%
   execute_def(with_data = list(
@@ -431,7 +445,7 @@ result_list <- sud_def %>%
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
 #> F162 F164 F165 F166 F168  F17 F170 F172 F173 F174 F175 F176 F179 F181 F183 F184 
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
-#> F185 F187 F188 F189  F19 F191 F192 F193 F196 F197 F198 NA's 
+#> F185 F187 F188 F189  F19 F191 F192 F193 F196 F197 F198  NAs 
 #>    1    1    1    1    1    1    1    1    1    1    1    1
 #> → -------------- Output all records--------------
 ```
@@ -439,10 +453,11 @@ result_list <- sud_def %>%
 Let’s check the results!
 
 ``` r
+
 # view the results
 purrr::walk(result_list, ~ head(.) %>% print())
 #> # Source:   SQL [?? x 10]
-#> # Database: sqlite 3.51.1 [:memory:]
+#> # Database: sqlite 3.52.0 [:memory:]
 #>   def   src     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
 #>   <chr> <chr> <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
 #> 1 SUD   claim    25       3 17909 3030  2921    NA                    0
@@ -469,6 +484,7 @@ any way you want. If you just need a simple row bind, we have
 with convenient naming feature.
 
 ``` r
+
 bind_source(result_list,
   # output_name = c(names in the list elements)
   src = "src",
@@ -501,6 +517,7 @@ which variables to be summarized in advance, the output may not be
 flexible enough to meet your needs.
 
 ``` r
+
 pool_case(result_list,
   def = sud_def,
   # your could skip summary with output_lvl = "raw"

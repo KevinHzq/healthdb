@@ -166,14 +166,14 @@ compute_comorbidity(df,
 #> # A tibble: 10 × 34
 #>    clnt_id   uid   chf arrhy    vd   pcd   pvd hptn_nc hptn_c  para othnd  copd
 #>      <int> <int> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
-#>  1       1     8     0     0     1     0     0       0      0     0     0     0
-#>  2       1    10     0     0     0     0     0       0      0     0     0     0
-#>  3       2     1     0     0     0     0     0       0      0     0     0     0
-#>  4       2     2     0     0     0     0     0       0      0     0     0     0
-#>  5       2     3     0     0     1     0     0       0      0     0     0     0
-#>  6       2     5     0     0     0     1     0       0      0     0     0     1
-#>  7       2     6     0     0     0     0     0       1      1     0     0     0
-#>  8       2     9     0     0     0     0     0       0      0     0     0     0
+#>  1       1     2     0     0     0     0     0       0      0     0     0     0
+#>  2       1     6     0     0     0     0     0       1      1     0     0     0
+#>  3       2     3     0     0     1     0     0       0      0     0     0     0
+#>  4       2     5     0     0     0     1     0       0      0     0     0     1
+#>  5       2     8     0     0     1     0     0       0      0     0     0     0
+#>  6       2     9     0     0     0     0     0       0      0     0     0     0
+#>  7       2    10     0     0     0     0     0       0      0     0     0     0
+#>  8       3     1     0     0     0     0     0       0      0     0     0     0
 #>  9       3     4     1     0     0     0     0       0      0     0     0     0
 #> 10       3     7     0     0     0     0     0       1      0     0     0     0
 #> # ℹ 22 more variables: diab_nc <dbl>, diab_c <dbl>, hptothy <dbl>, rf <dbl>,
@@ -192,8 +192,8 @@ compute_comorbidity(df,
 #> # A tibble: 3 × 33
 #>   clnt_id   chf arrhy    vd   pcd   pvd hptn_nc hptn_c  para othnd  copd diab_nc
 #>     <int> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl>
-#> 1       1     0     0     1     0     0       0      0     0     0     0       0
-#> 2       2     0     0     1     1     0       1      1     0     0     1       0
+#> 1       1     0     0     0     0     0       1      1     0     0     0       0
+#> 2       2     0     0     1     1     0       0      0     0     0     1       0
 #> 3       3     1     0     0     0     0       1      0     0     0     0       0
 #> # ℹ 21 more variables: diab_c <dbl>, hptothy <dbl>, rf <dbl>, ld <dbl>,
 #> #   pud_nb <dbl>, hiv <dbl>, lymp <dbl>, mets <dbl>, tumor <dbl>,

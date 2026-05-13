@@ -116,7 +116,7 @@ restrict_date(
 - ...:
 
   Additional argument passing to
-  [`data.table::as.IDate()`](https://rdatatable.gitlab.io/data.table/reference/IDateTime.html)
+  [`data.table::as.IDate()`](https://rdrr.io/pkg/data.table/man/IDateTime.html)
   for date conversion.
 
 ## Value
@@ -144,19 +144,19 @@ df <- data.frame(
 
 # Keep clients with 2 records that were 1 week apart within 1 month
 restrict_date(df, clnt_id, service_dt, n = 2, apart = 7, within = 30)
-#> ℹ Of the 20 clients in the input, 16 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days
+#> ℹ Of the 20 clients in the input, 15 were flagged as 0 by restricting that each client must have 2 records that were at least 7 days apart within 30 days
 #> # A tibble: 30 × 6
 #>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_date
 #>      <int> <date>     <chr> <chr>   <chr>                <dbl>
-#>  1       1 2020-01-11 g     v       m                        0
-#>  2       3 2020-01-01 o     u       z                        0
-#>  3       5 2020-01-01 o     v       l                        0
-#>  4       5 2020-01-06 c     p       m                        0
-#>  5       6 2020-01-08 b     c       i                        0
-#>  6       7 2020-01-01 m     f       e                        1
-#>  7       7 2020-01-16 l     r       d                        0
-#>  8       8 2020-01-07 z     g       p                        0
-#>  9      11 2020-01-23 z     w       o                        0
-#> 10      12 2020-01-05 o     q       x                        0
+#>  1       1 2020-01-25 s     l       v                        0
+#>  2       2 2020-01-13 g     d       c                        0
+#>  3       2 2020-01-14 q     e       u                        0
+#>  4       3 2020-01-11 z     f       n                        0
+#>  5       5 2020-01-27 x     o       y                        0
+#>  6       6 2020-01-13 k     n       u                        0
+#>  7      10 2020-01-04 f     d       u                        0
+#>  8      12 2020-01-07 w     a       j                        1
+#>  9      12 2020-01-28 u     x       g                        0
+#> 10      13 2020-01-25 k     t       e                        0
 #> # ℹ 20 more rows
 ```

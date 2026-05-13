@@ -35,6 +35,7 @@ for an example of implementing such case definition.
 Install from CRAN:
 
 ``` r
+
 install.packages("healthdb")
 ```
 
@@ -42,6 +43,7 @@ You could also install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("KevinHzq/healthdb")
 ```
@@ -65,6 +67,7 @@ First, let’s make a demo data sets for the two sources:
 Physician claims
 
 ``` r
+
 library(healthdb)
 library(tidyverse)
 
@@ -89,6 +92,7 @@ claim_db %>% head()
 Hospitalization
 
 ``` r
+
 hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199}"), noise_val = "999"), type = "data.frame")
 
 # this is a local data.frame/tibble
@@ -108,6 +112,7 @@ above:
 1.  Identify rows contains the target codes in the claim database
 
     ``` r
+
     result1 <- claim_db %>%
       identify_row(
     vars = starts_with("diagx"),
@@ -124,6 +129,7 @@ above:
 2.  Restrict the number of records per client
 
     ``` r
+
     result2 <- result1 %>% restrict_n(
       clnt_id = clnt_id,
       n_per_clnt = 2,
@@ -149,6 +155,7 @@ above:
 3.  Restrict the temporal pattern of diagnoses
 
     ``` r
+
     result3 <- result2 %>% restrict_date(
       clnt_id = clnt_id,
       date_var = dates,

@@ -70,7 +70,7 @@ if_date(
 - ...:
 
   Additional argument passing to
-  [`data.table::as.IDate()`](https://rdatatable.gitlab.io/data.table/reference/IDateTime.html)
+  [`data.table::as.IDate()`](https://rdrr.io/pkg/data.table/man/IDateTime.html)
   for date conversion.
 
 ## Value
