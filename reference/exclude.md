@@ -8,7 +8,7 @@ When a second data set is supplied through the `excl` argument, anti
 join would be performed; otherwise, `data` would be filtered with the
 expression given via the `condition` argument, and the filter result
 would in turn be removed using
-[`dplyr::setdiff()`](https://dplyr.tidyverse.org/reference/setops.html).
+[`dplyr::setdiff()`](https://generics.r-lib.org/reference/setops.html).
 
 ## Usage
 

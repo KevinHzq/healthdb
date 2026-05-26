@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction to healthdb • healthdb</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to healthdb">
 </head>
@@ -154,7 +154,7 @@ diagnostic codes</p>
 <span><span class="co"># note that in-memory SQLite database stores dates as numbers</span></span>
 <span><span class="va">claim_db</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [?? x 6]</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.52.0 [:memory:]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.53.1 [:memory:]</span></span></span>
 <span><span class="co">#&gt;     uid clnt_id dates diagx diagx_1 diagx_2</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>     </span></span>
@@ -458,7 +458,7 @@ outputs from different calls.</p>
 <code class="sourceCode R"><span><span class="co"># view the results</span></span>
 <span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">walk</a></span><span class="op">(</span><span class="va">result_list</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [?? x 10]</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.52.0 [:memory:]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.53.1 [:memory:]</span></span></span>
 <span><span class="co">#&gt;   def   src     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SUD   claim    25       3 <span style="text-decoration: underline;">17</span>909 3030  2921    <span style="color: #BB0000;">NA</span>                    0</span></span>

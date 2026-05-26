@@ -111,7 +111,7 @@ sets for the two sources:
     # note that in-memory SQLite database stores dates as numbers
     claim_db %>% head()
     #> # Source:   SQL [?? x 6]
-    #> # Database: sqlite 3.52.0 [:memory:]
+    #> # Database: sqlite 3.53.1 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
     #> 1    25       3 17909 3030  2921    NA     
@@ -457,7 +457,7 @@ Let’s check the results!
 # view the results
 purrr::walk(result_list, ~ head(.) %>% print())
 #> # Source:   SQL [?? x 10]
-#> # Database: sqlite 3.52.0 [:memory:]
+#> # Database: sqlite 3.53.1 [:memory:]
 #>   def   src     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
 #>   <chr> <chr> <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
 #> 1 SUD   claim    25       3 17909 3030  2921    NA                    0

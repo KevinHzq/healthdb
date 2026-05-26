@@ -23,3 +23,8 @@ Useful links:
 
 **Maintainer**: Kevin Hu <kevin.hu@bccdc.ca>
 ([ORCID](https://orcid.org/0000-0003-0254-5277)) \[copyright holder\]
+
+Authors:
+
+- Kevin Hu <kevin.hu@bccdc.ca>
+  ([ORCID](https://orcid.org/0000-0003-0254-5277)) \[copyright holder\]

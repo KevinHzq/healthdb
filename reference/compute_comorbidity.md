@@ -30,7 +30,7 @@ compute_comorbidity(
   An expression passing to
   [`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html).
   It can be quoted/unquoted column names, or helper functions, such as
-  [`dplyr::starts_with()`](https://dplyr.tidyverse.org/reference/reexports.html).
+  [`dplyr::starts_with()`](https://tidyselect.r-lib.org/reference/starts_with.html).
 
 - icd_ver:
 
