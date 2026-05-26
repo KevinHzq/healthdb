@@ -17,7 +17,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     clock,
-    data.table,
+    data.table (>= 1.18.4),
     dbplyr (>= 2.5.1),
     dplyr (>= 1.1.0),
     glue,
@@ -27,7 +27,6 @@ Imports:
     rlang,
     stringr (>= 1.5.0),
     tidyr
-RoxygenNote: 7.3.3
 URL: https://github.com/KevinHzq/healthdb, https://kevinhzq.github.io/healthdb/
 BugReports: https://github.com/KevinHzq/healthdb/issues
 Suggests: 
@@ -38,3 +37,4 @@ Suggests:
     RSQLite
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

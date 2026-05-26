@@ -17,9 +17,9 @@ exclude(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}}). A subset will be removed from this data.}
 
-\item{excl}{Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from \code{data} if there is a match. This will be passed to \code{\link[dplyr:filter-joins]{dplyr::anti_join()}} as the second argument.}
+\item{excl}{Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from \code{data} if there is a match. This will be passed to \code{\link[dplyr:anti_join]{dplyr::anti_join()}} as the second argument.}
 
-\item{by}{Column names that should be matched by \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, or a expressions with \code{\link[dplyr:join_by]{dplyr::join_by()}}. See \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}'s \code{by} argument for detail. Default NULL is the same as \code{setdiff(data, excl)}.}
+\item{by}{Column names that should be matched by \code{\link[dplyr:anti_join]{dplyr::anti_join()}}, or a expressions with \code{\link[dplyr:join_by]{dplyr::join_by()}}. See \code{\link[dplyr:anti_join]{dplyr::anti_join()}}'s \code{by} argument for detail. Default NULL is the same as \code{setdiff(data, excl)}.}
 
 \item{condition}{An expression that will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}. The rows that satisfy \code{condition} are those to be removed from \code{data}.}
 
@@ -27,13 +27,13 @@ exclude(
 
 \item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from \code{data}, e.g., counting how many client IDs were removed. Default is NULL.}
 
-\item{...}{Additional arguments passing to \code{\link[dplyr:filter]{dplyr::filter()}}/\code{\link[dplyr:filter-joins]{dplyr::anti_join()}} for finer control of matching, e.g., na action, by-group filtering, etc.}
+\item{...}{Additional arguments passing to \code{\link[dplyr:filter]{dplyr::filter()}}/\code{\link[dplyr:anti_join]{dplyr::anti_join()}} for finer control of matching, e.g., na action, by-group filtering, etc.}
 }
 \value{
 A data frame or remote table that is a subset of \code{data}.
 }
 \description{
-This function combines \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, and negation of \code{\link[dplyr:filter]{dplyr::filter()}}. When a second data set is supplied through the \code{excl} argument, anti join would be performed; otherwise, \code{data} would be filtered with the expression given via the \code{condition} argument, and the filter result would in turn be removed using \code{\link[dplyr:setops]{dplyr::setdiff()}}.
+This function combines \code{\link[dplyr:anti_join]{dplyr::anti_join()}}, and negation of \code{\link[dplyr:filter]{dplyr::filter()}}. When a second data set is supplied through the \code{excl} argument, anti join would be performed; otherwise, \code{data} would be filtered with the expression given via the \code{condition} argument, and the filter result would in turn be removed using \code{\link[dplyr:setdiff]{dplyr::setdiff()}}.
 }
 \examples{
 # exclude with condition

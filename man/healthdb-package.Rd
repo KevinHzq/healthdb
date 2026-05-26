@@ -22,5 +22,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Kevin Hu \email{kevin.hu@bccdc.ca} (\href{https://orcid.org/0000-0003-0254-5277}{ORCID}) [copyright holder]
 
+Authors:
+\itemize{
+  \item Kevin Hu \email{kevin.hu@bccdc.ca} (\href{https://orcid.org/0000-0003-0254-5277}{ORCID}) [copyright holder]
+}
+
 }
 \keyword{internal}

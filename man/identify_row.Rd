@@ -18,7 +18,7 @@ identify_row(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
-\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:starts_with]{dplyr::starts_with()}}.}
 
 \item{match}{One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. The operations under each type:
 \itemize{
@@ -51,7 +51,7 @@ identify_row(
 A data.frame or tbl_sql object depending on the input.
 }
 \description{
-Filter rows which values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:across]{dplyr::if_any()}} or \code{\link[dplyr:across]{dplyr::if_all()}}, but it used the 'data.table' package \code{vignette("datatable-intro", package = "data.table")} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
+Filter rows which values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:if_any]{dplyr::if_any()}} or \code{\link[dplyr:if_all]{dplyr::if_all()}}, but it used the 'data.table' package \code{vignette("datatable-intro", package = "data.table")} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
 }
 \examples{
 # applying to data.frame; both sepal length and width in range 3-5

@@ -28,7 +28,7 @@ define_case(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
-\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:starts_with]{dplyr::starts_with()}}.}
 
 \item{match}{One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See \code{\link[=identify_row]{identify_row()}} for detail.}
 

@@ -41,5 +41,5 @@ restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 8, mode = "flag") \%>\%
 restrict_n(mtcars, clnt_id = cyl, n_per_clnt = 3, count_by = gear, mode = "filter")
 }
 \seealso{
-\code{\link[dplyr:context]{dplyr::n()}}, \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}}
+\code{\link[dplyr:n]{dplyr::n()}}, \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}}
 }

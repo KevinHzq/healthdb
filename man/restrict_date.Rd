@@ -52,7 +52,7 @@ restrict_date(
 
 \item{check_missing}{A logical for whether to check and remove missing entries in \code{date_var} before applying the conditions. Default is FALSE for faster run time.}
 
-\item{...}{Additional argument passing to \code{\link[data.table:IDateTime]{data.table::as.IDate()}} for date conversion.}
+\item{...}{Additional argument passing to \code{\link[data.table:as.IDate]{data.table::as.IDate()}} for date conversion.}
 }
 \value{
 A subset of input data satisfied the dates requirement, or raw input data with an new flag column.

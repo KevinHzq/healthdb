@@ -30,7 +30,7 @@ if_date(
 
 \item{dup.rm}{Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when \code{within} is supplied without \code{apart}; duplicated dates have no impact when \code{apart} is present as the n dates must be distinct if they were apart. Default is TRUE.}
 
-\item{...}{Additional argument passing to \code{\link[data.table:IDateTime]{data.table::as.IDate()}} for date conversion.}
+\item{...}{Additional argument passing to \code{\link[data.table:as.IDate]{data.table::as.IDate()}} for date conversion.}
 }
 \value{
 Single or a vector of logical for whether there is any draw from x satisfied the conditions

@@ -17,7 +17,7 @@ compute_comorbidity(
 \arguments{
 \item{data}{Data.frames or remote tables (e.g., from \code{\link[dbplyr:tbl_sql]{dbplyr::tbl_sql()}})}
 
-\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:reexports]{dplyr::starts_with()}}.}
+\item{vars}{An expression passing to \code{\link[dplyr:select]{dplyr::select()}}. It can be quoted/unquoted column names, or helper functions, such as \code{\link[dplyr:starts_with]{dplyr::starts_with()}}.}
 
 \item{icd_ver}{One of \code{c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")}. Specify the ICD code version used in \code{data}. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit codes (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).}
 
