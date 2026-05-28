@@ -1,5 +1,7 @@
 # Changelog
 
+## healthdb (development version)
+
 ## healthdb 0.5.1
 
 CRAN release: 2026-05-26
