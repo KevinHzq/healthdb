@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/KevinHzq/healthdb/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/KevinHzq/healthdb/blob/v0.5.1/DESCRIPTION)
 
 Hu K (2026). *healthdb: Working with Healthcare Databases*. R package
 version 0.5.1, <https://github.com/KevinHzq/healthdb>.

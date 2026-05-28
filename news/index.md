@@ -2,6 +2,8 @@
 
 ## healthdb 0.5.1
 
+CRAN release: 2026-05-26
+
 - Updated identify_row() to accommodate changes in upcoming ‘dbplyr’
   release - Thanks the ‘dbplyr’ devs for the fix!
 
