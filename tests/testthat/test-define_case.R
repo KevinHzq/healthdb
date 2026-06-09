@@ -95,3 +95,19 @@ test_that("passing ... works", {
   output_r <- define_case(df, starts_with("diagx"), "start", c("304"), clnt_id = clnt_id, mode = "filter", n_per_clnt = 2, date_var = dates, apart = 2, within = 365, uid = uid, force_collect = TRUE, flag_at = "right")
   expect_false(identical(output_l, output_r))
 })
+
+test_that("keep last works with column names containing 'min'/'max'", {
+  # regression: keep = "last" used to be implemented by string-replacing the
+  # first "min" in the deparsed pipeline, which corrupted column names such
+  # as "admin_id" (-> "admax_id")
+  df <- data.frame(
+    admin_id = rep(1:2, each = 3),
+    dates = as.Date("2020-01-01") + 1:6,
+    diagx = "304", uid = 1:6
+  )
+  out <- define_case(df,
+    vars = diagx, match = "in", vals = "304",
+    clnt_id = admin_id, date_var = dates, keep = "last", mode = "filter"
+  )
+  expect_equal(out$dates, as.Date(c("2020-01-04", "2020-01-07")))
+})

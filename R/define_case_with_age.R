@@ -215,22 +215,16 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
   #   # date_var <- rlang::expr(!!date_var)
   # }
 
-  # replacing slice_ function in expression
+  # keep the first/last record per client
+  # use filter(date == min/max(date)) instead of problematic slice_min/max
+  # (slice_min/max SQL translation failed with .data; row_number() translation
+  # didn't work for MS SQL)
   if (keep != "all") {
-    expr_slice <- rlang::expr(
-      result <- result %>%
-        dplyr::group_by(.data[[!!clnt_id]]) %>%
-        # dplyr::slice_min(!!date_var, n = 1, with_ties = FALSE) %>%
-        # switch to filter(date = min/max(date)) instead of problematic slice_min/max
-        dplyr::filter(.data[[!!date_var]] == min(.data[[!!date_var]], na.rm = TRUE))
-      # row_number translation didn't work for MS SQL
-      # dplyr::filter(dplyr::row_number() == 1) %>%
-    ) %>%
-      rlang::expr_text()
-
-    if (keep == "last") expr_slice <- expr_slice %>% stringr::str_replace("min", "max")
-    expr_slice <- expr_slice %>% rlang::parse_expr()
-    eval(expr_slice)
+    result <- result %>% dplyr::group_by(.data[[clnt_id]])
+    result <- switch(keep,
+      first = result %>% dplyr::filter(.data[[date_var]] == min(.data[[date_var]], na.rm = TRUE)),
+      last = result %>% dplyr::filter(.data[[date_var]] == max(.data[[date_var]], na.rm = TRUE))
+    )
 
     if (!is.data.frame(result)) {
       if (!has_uid) stop("`uid` must be supplied for sorting database if not keeping all records")

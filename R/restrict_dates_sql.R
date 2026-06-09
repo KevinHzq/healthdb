@@ -190,19 +190,11 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         dplyr::mutate(temp_nm_range = .data[[date_var]] + within)
     }
 
-    expr_overlap <- rlang::expr({
-      data %>%
-        dplyr::left_join(row_date, by = dplyr::join_by(clnt_id, date_var <= temp_nm_date, temp_nm_range >= temp_nm_date))
-    })
-
-    data <- rlang::expr_text(expr_overlap) %>%
-      stringr::str_replace_all("clnt_id", glue::glue("{clnt_id}")) %>%
-      stringr::str_replace_all("date_var", glue::glue("{date_var}")) %>%
-      rlang::parse_expr() %>%
-      eval()
-
     data <- rlang::try_fetch(
-      data,
+      rlang::inject(
+        data %>%
+          dplyr::left_join(row_date, by = dplyr::join_by(!!rlang::sym(clnt_id), !!rlang::sym(date_var) <= temp_nm_date, temp_nm_range >= temp_nm_date))
+      ),
       error = function(cnd) {
         rlang::abort("The attempt of overlap join in SQL failed. Use force_collect = TRUE to download the data before interpreting apart & within condition. Actual error message:\n", parent = cnd)
       }
@@ -244,29 +236,35 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
 }
 
 all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {
-  in_win_1 <- in_win_i <- in_win_x <- final_win_gap <- NULL
-  # browser()
-  # same sliding window from both ends approach as all_apart
+  # place holder for temp var names
+  in_win_1 <- final_win_gap <- NULL
+
+  date_sym <- rlang::sym(date_var)
+
+  # same sliding window from both ends approach as all_apart;
+  # window/indicator column names are generated per iteration and injected
+  # with !! so user column names can never interfere
   for (i in 1:(n %/% 2)) {
+    win_i <- rlang::sym(paste0("in_win_", i))
+    win_prev <- rlang::sym(paste0("in_win_", i - 1))
+    sum_i <- rlang::sym(paste0("sum_win_", i))
+
     if ((n - i * 2) == 0) {
       if (n == 2) {
         data <- data %>%
           dplyr::mutate(temp_nm_flag_apart = max(.data[[date_var]], na.rm = TRUE) - min(.data[[date_var]], na.rm = TRUE) >= apart)
         break
       }
-      expr_flag <- rlang::expr({
-        data %>%
-          dplyr::mutate(
-            final_win_gap = max(date_var[in_win_x == 1L], na.rm = TRUE) - min(date_var[in_win_x == 1L], na.rm = TRUE),
-            temp_nm_flag_apart = final_win_gap * !!rlang::parse_expr(paste0("sum_win_", 1:(i - 1), collapse = " * ")) >= apart
-          )
-      })
-      data <- rlang::expr_text(expr_flag) %>%
-        stringr::str_replace_all("_x", glue::glue("_{i - 1}")) %>%
-        stringr::str_replace_all("date_var", glue::glue("{date_var}")) %>%
-        rlang::parse_expr() %>%
-        eval()
-      # browser()
+      # product of all previous sum_win_* indicators
+      sum_prod <- Reduce(
+        function(x, y) rlang::expr(!!x * !!y),
+        rlang::syms(paste0("sum_win_", 1:(i - 1)))
+      )
+      data <- data %>%
+        dplyr::mutate(
+          final_win_gap = max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) - min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE),
+          temp_nm_flag_apart = final_win_gap * !!sum_prod >= apart
+        )
       break
     } else {
       if (i == 1) {
@@ -276,26 +274,18 @@ all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {
             sum_win_1 = sum(in_win_1, na.rm = TRUE) >= n - i * 2L
           )
       } else {
-        expr_win_i <- rlang::expr({
-          data %>%
-            dplyr::mutate(
-              in_win_i = dplyr::between(date_var, min(date_var[in_win_x == 1L], na.rm = TRUE) + apart, max(date_var[in_win_x == 1L], na.rm = TRUE) - apart),
-              sum_win_i = sum(in_win_i, na.rm = TRUE) >= n - i * 2L
-            )
-        })
-        data <- rlang::expr_text(expr_win_i) %>%
-          stringr::str_replace_all("_i", glue::glue("_{i}")) %>%
-          stringr::str_replace_all("_x", glue::glue("_{i - 1}")) %>%
-          stringr::str_replace_all("date_var", glue::glue("{date_var}")) %>%
-          rlang::parse_expr() %>%
-          eval()
+        data <- data %>%
+          dplyr::mutate(
+            !!win_i := dplyr::between(!!date_sym, min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) + apart, max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) - apart),
+            !!sum_i := sum(!!win_i, na.rm = TRUE) >= n - i * 2L
+          )
       }
     }
   }
 
   if (!("temp_nm_flag_apart" %in% colnames(data))) {
     data <- data %>%
-      dplyr::mutate(temp_nm_flag_apart = !!rlang::parse_expr(paste0("sum_win_", i)))
+      dplyr::mutate(temp_nm_flag_apart = !!rlang::sym(paste0("sum_win_", i)))
   }
 
   data <- data %>%
@@ -305,29 +295,35 @@ all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {
 }
 
 all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
-  # browser()
-  # same sliding window from both ends approach as all_apart
-  in_win_x <- NULL
+  # place holder for temp var names
+  in_win_1 <- final_win_gap <- NULL
+
+  date_sym <- rlang::sym(date_var)
+
+  # same sliding window from both ends approach as all_apart;
+  # window/indicator column names are generated per iteration and injected
+  # with !! so user column names can never interfere
   for (i in 1:(n %/% 2)) {
+    win_i <- rlang::sym(paste0("in_win_", i))
+    win_prev <- rlang::sym(paste0("in_win_", i - 1))
+    sum_i <- rlang::sym(paste0("sum_win_", i))
+
     if ((n - i * 2) == 0) {
       if (n == 2) {
         data <- data %>%
           dplyr::mutate(temp_nm_flag_apart = abs(difftime(max(.data[[date_var]], na.rm = TRUE), min(.data[[date_var]], na.rm = TRUE), units = "days")) >= apart)
         break
       }
-      expr_flag <- rlang::expr({
-        data %>%
-          dplyr::mutate(
-            final_win_gap = abs(difftime(max(date_var[in_win_x == 1L], na.rm = TRUE), min(date_var[in_win_x == 1L], na.rm = TRUE), units = "days")),
-            temp_nm_flag_apart = dplyr::case_when(final_win_gap * !!rlang::parse_expr(paste0("sum_win_", 1:(i - 1), collapse = " * ")) >= apart ~ 1L, .default = 0L)
-          )
-      })
-      data <- rlang::expr_text(expr_flag) %>%
-        stringr::str_replace_all("_x", glue::glue("_{i - 1}")) %>%
-        stringr::str_replace_all("date_var", glue::glue("{date_var}")) %>%
-        rlang::parse_expr() %>%
-        eval()
-      # browser()
+      # product of all previous sum_win_* indicators
+      sum_prod <- Reduce(
+        function(x, y) rlang::expr(!!x * !!y),
+        rlang::syms(paste0("sum_win_", 1:(i - 1)))
+      )
+      data <- data %>%
+        dplyr::mutate(
+          final_win_gap = abs(difftime(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), units = "days")),
+          temp_nm_flag_apart = dplyr::case_when(final_win_gap * !!sum_prod >= apart ~ 1L, .default = 0L)
+        )
       break
     } else {
       if (i == 1) {
@@ -339,28 +335,20 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
             )
           )
       } else {
-        expr_win_i <- rlang::expr({
-          data %>%
-            dplyr::mutate(
-              in_win_i = dplyr::between(date_var, clock::add_days(min(date_var[in_win_x == 1L], na.rm = TRUE), apart), clock::add_days(max(date_var[in_win_x == 1L], na.rm = TRUE), -apart)),
-              sum_win_i = dplyr::case_when(sum(in_win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
-                .default = 0L
-              )
+        data <- data %>%
+          dplyr::mutate(
+            !!win_i := dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)),
+            !!sum_i := dplyr::case_when(sum(!!win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
+              .default = 0L
             )
-        })
-        data <- rlang::expr_text(expr_win_i) %>%
-          stringr::str_replace_all("_i", glue::glue("_{i}")) %>%
-          stringr::str_replace_all("_x", glue::glue("_{i - 1}")) %>%
-          stringr::str_replace_all("date_var", glue::glue("{date_var}")) %>%
-          rlang::parse_expr() %>%
-          eval()
+          )
       }
     }
   }
 
   if (!("temp_nm_flag_apart" %in% colnames(data))) {
     data <- data %>%
-      dplyr::mutate(temp_nm_flag_apart = !!rlang::parse_expr(paste0("sum_win_", i)))
+      dplyr::mutate(temp_nm_flag_apart = !!rlang::sym(paste0("sum_win_", i)))
   }
 
   data <- data %>%

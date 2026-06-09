@@ -1,5 +1,9 @@
 # healthdb (development version)
 
+-   Fixed a bug in define_case() and define_case_with_age(): with `keep = "last"`, the first occurrence of "min" anywhere in the internally generated code was string-replaced with "max", which corrupted column names containing "min" (e.g., a `clnt_id` named "admin_id" became "admax_id" and caused an error).
+
+-   Internal refactoring: restrict_date() (database method), define_case(), and define_case_with_age() no longer build queries by string-replacing names in deparsed code; column names are now injected as symbols with 'rlang'. The generated SQL is unchanged, but column names that contain substrings such as "clnt_id", "date_var", "_i", or "_x" no longer risk corrupting the query.
+
 -   **Behavior change**: compute_comorbidity() now matches ICD-10 codes by prefix instead of exactly. Codes in `data` are truncated to their first 3 and 4 characters and compared with the 3-character (e.g., I50) and 4-character (e.g., E115) codes in Quan et al. (2005), respectively, which cover all their subdivisions. Previously, exact matching missed subdivisions of the listed codes, e.g., "I500" was not counted as Congestive Heart Failure ("I50" on the list), and "E1152" (ICD-10-CA) was not counted as Diabetes Complicated ("E115" on the list). ICD-10 scores may therefore be higher than in previous versions. Records with codes that belong to multiple categories in Quan et al. (e.g., I11.0 in both Congestive Heart Failure and Hypertension Complicated) are now counted in all matching categories.
 
 -   Fixed a bug in the data.frame method of identify_row(): when the input contained columns named `rid` or `incl`, the function renamed those columns in the user's original data frame by reference (e.g., `rid` became `rid.og`) and silently overwrote then dropped them from the output. Internal working columns are now given names guaranteed not to clash with the input, and the input is never modified.
