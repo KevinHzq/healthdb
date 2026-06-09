@@ -15,17 +15,17 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
     if (!any(class(vals) %in% var_class)) warning("`vals` (", class(vals), ") is not the same type as the `var` columns (", paste(var_class, collapse = ", "), ").")
   }
 
-  # place holder for temp column names
-  rid <- N <- incl <- NULL
-
   # use data.table to speed up the performance
   dt <- data.table::as.data.table(data)
 
-  # treat potential name conflicts
-  temp_cols <- c("rid", "incl")
-  data.table::setnames(data, old = temp_cols, new = paste(temp_cols, "og", sep = "."), skip_absent = TRUE)
+  # internal working columns named to never clash with user's columns;
+  # the user's data must not be renamed/overwritten (data.table::setnames
+  # would mutate the input by reference)
+  temp_rid_nm <- setdiff(make.unique(c(names(dt), "temp_rid")), names(dt))
+  temp_incl_nm <- setdiff(make.unique(c(names(dt), "temp_incl")), names(dt))
+  temp_cols <- c(temp_rid_nm, temp_incl_nm)
 
-  dt[, rid := .I]
+  dt[, c(temp_rid_nm) := .I]
 
   # code filter by match types:
   # logic to preserve original record as a row without copying the original data (use extra memory):
@@ -70,13 +70,16 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
 
   # use %chin% to speed up character matching
   if (all(is.character(matched_vals), sapply(dt[, vars, with = FALSE], is.character))) {
-    dt[, incl := data.table::`%chin%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = "rid", .SDcols = vars]
+    dt[, c(temp_incl_nm) := data.table::`%chin%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = c(temp_rid_nm), .SDcols = vars]
   } else {
-    dt[, incl := `%in%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = "rid", .SDcols = vars]
+    dt[, c(temp_incl_nm) := `%in%`(unlist(.SD), matched_vals) %>% combine_fn(na.rm = TRUE), by = c(temp_rid_nm), .SDcols = vars]
   }
 
   # run filter and save; the above filter only updates the dat with new columns
-  dt <- dt[incl == TRUE]
+  # compute the row index outside the data.table frame, then inject it with
+  # `env` so user columns can never mask it
+  keep_idx <- which(dt[[temp_incl_nm]])
+  dt <- dt[keep_idx, env = list(keep_idx = I(keep_idx))]
 
   dt[, c(temp_cols) := NULL]
 

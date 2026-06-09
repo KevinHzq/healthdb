@@ -75,3 +75,17 @@ test_that("edge case - vals in an external vector works", {
   out_df <- identify_rows(df, c(diagx, diagx_1, diagx_2), "in", val)
   expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
 })
+
+test_that("edge case - input with reserved column names (rid/incl) is preserved and not mutated", {
+  df <- letters_n(type = "data.frame")
+  df$rid <- seq_len(nrow(df)) + 1000L
+  df$incl <- "keep_me"
+  # deep copy to detect modify-by-reference on the input
+  df_before <- data.table::copy(df)
+  out_df <- identify_rows(df, starts_with("diagx"), "in", letters)
+  # user's columns survive in the output with original values
+  expect_true(all(c("rid", "incl") %in% names(out_df)))
+  expect_equal(out_df, subset(df_before, ans %in% c("all", "any")), ignore_attr = "row.names")
+  # the input data frame is untouched
+  expect_identical(df, df_before)
+})
