@@ -72,8 +72,11 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
   # make code pool and draw from it
   if (icd10) {
     code_list <- list(
+      # codes that match multiple categories under prefix matching are left out
+      # (e.g., "I110" is in both chf and hptn_c per Quan et al.) because the
+      # synthetic answer assumes one category per code
       c(
-        "I099", "I110", "I130", "I132", "I255", "I420", "I425", "I427", "I428",
+        "I099", "I255", "I420", "I425", "I427", "I428",
         "I429", "I43", "I50", "P290"
       ),
       c(
@@ -92,7 +95,7 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
       c("I10"),
       c("I11", "I12", "I13", "I15"),
       c(
-        "G041", "G114", "G801", "G802", "G81", "G82", "G830", "G831", "G832", "G833",
+        "G041", "G801", "G802", "G81", "G82", "G830", "G831", "G832", "G833",
         "G834", "G839"
       ),
       c(
@@ -100,7 +103,7 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
         "G319", "G32", "G35", "G36", "G37", "G40", "G41", "G931", "G934", "R470", "R56"
       ),
       c(
-        "I278", "I279", "J40", "J41", "J42", "J43", "J44", "J45", "J46", "J47", "J60", "J61",
+        "J40", "J41", "J42", "J43", "J44", "J45", "J46", "J47", "J60", "J61",
         "J62", "J63", "J64", "J65", "J66", "J67", "J684", "J701", "J703"
       ),
       c(
@@ -114,7 +117,7 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
         "E147", "E148"
       ), #
       c("E00", "E01", "E02", "E03", "E890"),
-      c("I120", "I131", "N18", "N19", "N250", "Z490", "Z491", "Z492", "Z940", "Z992"),
+      c("N18", "N19", "N250", "Z490", "Z491", "Z492", "Z940", "Z992"),
       c(
         "B18", "I85", "I864", "I982", "K70", "K711", "K713", "K714", "K715", "K717", "K72", "K73",
         "K74", "K760", "K762", "K763", "K764", "K765", "K766", "K767", "K768", "K769", "Z944"
@@ -140,10 +143,10 @@ test_comorbidity <- function(n_row = 10, n_col = 31, n_clnt = 3, icd10 = TRUE) {
       c("E222", "E86", "E87"), #
       c("D500"),
       c("D508", "D509", "D51", "D52", "D53"),
-      c("F10", "E52", "G621", "K292", "K700", "K703", "K709", "T51", "Z502", "Z714", "Z721"),
+      c("F10", "E52", "G621", "K292", "T51", "Z502", "Z714", "Z721"),
       c("F11", "F12", "F13", "F14", "F15", "F16", "F18", "F19", "Z715", "Z722"),
       c("F20", "F22", "F23", "F24", "F25", "F28", "F29", "F302", "F312"),
-      c("F204", "F313", "F314", "F32", "F33", "F341", "F412", "F432")
+      c("F313", "F314", "F32", "F33", "F341", "F412", "F432")
     )
   } else {
     code_list <- list(

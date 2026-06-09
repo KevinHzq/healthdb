@@ -5,7 +5,7 @@
 #' This function computes unweighted Elixhauser Comorbidity Index for both data.frame and remote table input. The ICD codes used to identify the 31 disease categories is from Quan et al. (2005).
 #'
 #' @inheritParams define_case
-#' @param icd_ver One of `c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")`. Specify the ICD code version used in `data`. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit codes (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}).
+#' @param icd_ver One of `c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")`. Specify the ICD code version used in `data`. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit codes (\url{http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS}). For "ICD-10", the codes in Quan et al. (2005) are listed at the category (3-character, e.g., I50) or subcategory (4-character, e.g., I099) level and cover all their subdivisions. Therefore, matching is done by prefix: codes in `data` are truncated to the first 3 and the first 4 characters and compared with the 3- and 4-character codes in the list, respectively. For example, "E1152" in `data` would be captured by "E115" (Diabetes Complicated) in the list. Codes in `data` must not contain dots (e.g., use "E1152" not "E11.52"); otherwise, codes may not be matched correctly. Note that some codes belong to multiple categories in Quan et al. (2005), e.g., I11.0 indicates both Congestive Heart Failure (I099, I110, ...) and Hypertension Complicated (I11.x); records with such codes are counted in all the categories they match.
 #' @param sum_by One of "row" or "clnt". The "row" option computes total score for each row (default), and the "clnt" option summarizes total score by `clnt_id`. Each disease categories will be counted only once in the calculation regardless of multiple records in a category.
 #' @param excl A character vector of disease categories labels that should be excluded in the total score calculation. This is useful when some of the categories are the exposure/outcome of interest, and the goal is to measure comorbidity excluding these disease. See detail for a list of the categories and labels.
 #'
@@ -120,68 +120,161 @@ compute_comorbidity <- function(data, vars, icd_ver = c("ICD-10", "ICD-9-CM-3dig
   if (icd_ver == "ICD-10") {
     data_long <- data_long %>%
       dplyr::mutate(
+        # ICD-10 codes in Quan et al. (2005) are listed at the category
+        # (3-character) or subcategory (4-character) level and cover all their
+        # subdivisions (the ".x" notation in the paper). Match by prefix:
+        # codes in data are truncated to the first 3 and first 4 characters
+        # and compared with the 3- and 4-character codes in the list,
+        # respectively, so longer codes (e.g., "E1152" in ICD-10-CA) are
+        # captured by the listed subcategory (e.g., "E115").
+        diag_3dig = stringr::str_sub(.data[["diag_cd"]], end = 3),
+        diag_4dig = stringr::str_sub(.data[["diag_cd"]], end = 4),
         # Congestive Heart Failure
-        chf = dplyr::case_when(.data[["diag_cd"]] %in% c("I099", "I110", "I130", "I132", "I255", "I420", "I425", "I426", "I427", "I428", "I429", "I43", "I50", "P290") ~ 1L, .default = 0),
+        chf = dplyr::case_when(
+          diag_3dig %in% c("I43", "I50") ~ 1L,
+          diag_4dig %in% c("I099", "I110", "I130", "I132", "I255", "I420", "I425", "I426", "I427", "I428", "I429", "P290") ~ 1L,
+          .default = 0
+        ),
         # Cardiac Arrhythmia
-        arrhy = dplyr::case_when(.data[["diag_cd"]] %in% c("I441", "I442", "I443", "I456", "I459", "I47", "I48", "I49", "R000", "R001", "R008", "T821", "Z450", "Z950") ~ 1L, .default = 0),
+        arrhy = dplyr::case_when(
+          diag_3dig %in% c("I47", "I48", "I49") ~ 1L,
+          diag_4dig %in% c("I441", "I442", "I443", "I456", "I459", "R000", "R001", "R008", "T821", "Z450", "Z950") ~ 1L,
+          .default = 0
+        ),
         # valvular Disease
-        vd = dplyr::case_when(.data[["diag_cd"]] %in% c("A520", "I05", "I06", "I07", "I08", "I091", "I098", "I34", "I35", "I36", "I37", "I38", "I39", "Q230", "Q231", "Q232", "Q233", "Z952", "Z953", "Z954") ~ 1L, .default = 0),
+        vd = dplyr::case_when(
+          diag_3dig %in% c("I05", "I06", "I07", "I08", "I34", "I35", "I36", "I37", "I38", "I39") ~ 1L,
+          diag_4dig %in% c("A520", "I091", "I098", "Q230", "Q231", "Q232", "Q233", "Z952", "Z953", "Z954") ~ 1L,
+          .default = 0
+        ),
         # Pulmonary Circulation Disorders
-        pcd = dplyr::case_when(.data[["diag_cd"]] %in% c("I26", "I27", "I280", "I288", "I289") ~ 1L, .default = 0),
+        pcd = dplyr::case_when(
+          diag_3dig %in% c("I26", "I27") ~ 1L,
+          diag_4dig %in% c("I280", "I288", "I289") ~ 1L,
+          .default = 0
+        ),
         # Peripheral Vascular Disorders
-        pvd = dplyr::case_when(.data[["diag_cd"]] %in% c("I70", "I71", "I731", "I738", "I739", "I771", "I790", "I792", "K551", "K558", "K559", "Z958", "Z959") ~ 1L, .default = 0),
+        pvd = dplyr::case_when(
+          diag_3dig %in% c("I70", "I71") ~ 1L,
+          diag_4dig %in% c("I731", "I738", "I739", "I771", "I790", "I792", "K551", "K558", "K559", "Z958", "Z959") ~ 1L,
+          .default = 0
+        ),
         # Hypertension Uncomplicated
-        hptn_nc = dplyr::case_when(.data[["diag_cd"]] %in% c("I10") ~ 1L, .default = 0),
+        hptn_nc = dplyr::case_when(diag_3dig %in% c("I10") ~ 1L, .default = 0),
         # Hypertension complicated
-        hptn_c = dplyr::case_when(.data[["diag_cd"]] %in% c("I11", "I12", "I13", "I15") ~ 1L, .default = 0),
+        hptn_c = dplyr::case_when(diag_3dig %in% c("I11", "I12", "I13", "I15") ~ 1L, .default = 0),
         # Paralysis
-        para = dplyr::case_when(.data[["diag_cd"]] %in% c("G041", "G114", "G801", "G802", "G81", "G82", "G830", "G831", "G832", "G833", "G834", "G839") ~ 1L, .default = 0),
+        para = dplyr::case_when(
+          diag_3dig %in% c("G81", "G82") ~ 1L,
+          diag_4dig %in% c("G041", "G114", "G801", "G802", "G830", "G831", "G832", "G833", "G834", "G839") ~ 1L,
+          .default = 0
+        ),
         # Other Neurological Disorders
-        othnd = dplyr::case_when(.data[["diag_cd"]] %in% c("G10", "G11", "G12", "G13", "G20", "G21", "G22", "G254", "G255", "G312", "G318", "G319", "G32", "G35", "G36", "G37", "G40", "G41", "G931", "G934", "R470", "R56") ~ 1L, .default = 0),
+        othnd = dplyr::case_when(
+          diag_3dig %in% c("G10", "G11", "G12", "G13", "G20", "G21", "G22", "G32", "G35", "G36", "G37", "G40", "G41", "R56") ~ 1L,
+          diag_4dig %in% c("G254", "G255", "G312", "G318", "G319", "G931", "G934", "R470") ~ 1L,
+          .default = 0
+        ),
         # Chronic Pulmonary Disease
-        copd = dplyr::case_when(.data[["diag_cd"]] %in% c("I278", "I279", "J40", "J41", "J42", "J43", "J44", "J45", "J46", "J47", "J60", "J61", "J62", "J63", "J64", "J65", "J66", "J67", "J684", "J701", "J703") ~ 1L, .default = 0),
+        copd = dplyr::case_when(
+          diag_3dig %in% c("J40", "J41", "J42", "J43", "J44", "J45", "J46", "J47", "J60", "J61", "J62", "J63", "J64", "J65", "J66", "J67") ~ 1L,
+          diag_4dig %in% c("I278", "I279", "J684", "J701", "J703") ~ 1L,
+          .default = 0
+        ),
         # Diabetes Uncomplicated
-        diab_nc = dplyr::case_when(.data[["diag_cd"]] %in% c("E100", "E101", "E109", "E110", "E111", "E119", "E120", "E121", "E129", "E130", "E131", "E139", "E140", "E141", "E149") ~ 1L, .default = 0),
+        diab_nc = dplyr::case_when(diag_4dig %in% c("E100", "E101", "E109", "E110", "E111", "E119", "E120", "E121", "E129", "E130", "E131", "E139", "E140", "E141", "E149") ~ 1L, .default = 0),
         # Diabetes Complicated
-        diab_c = dplyr::case_when(.data[["diag_cd"]] %in% c("E102", "E103", "E104", "E105", "E106", "E107", "E108", "E112", "E113", "E114", "E115", "E116", "E117", "E118", "E122", "E123", "E124", "E125", "E126", "E127", "E128", "E132", "E133", "E134", "E135", "E136", "E137", "E138", "E142", "E143", "E144", "E145", "E146", "E147", "E148") ~ 1L, .default = 0),
+        diab_c = dplyr::case_when(diag_4dig %in% c("E102", "E103", "E104", "E105", "E106", "E107", "E108", "E112", "E113", "E114", "E115", "E116", "E117", "E118", "E122", "E123", "E124", "E125", "E126", "E127", "E128", "E132", "E133", "E134", "E135", "E136", "E137", "E138", "E142", "E143", "E144", "E145", "E146", "E147", "E148") ~ 1L, .default = 0),
         # hypothyroidism
-        hptothy = dplyr::case_when(.data[["diag_cd"]] %in% c("E00", "E01", "E02", "E03", "E890") ~ 1L, .default = 0),
+        hptothy = dplyr::case_when(
+          diag_3dig %in% c("E00", "E01", "E02", "E03") ~ 1L,
+          diag_4dig %in% c("E890") ~ 1L,
+          .default = 0
+        ),
         # Renal Failure
-        rf = dplyr::case_when(.data[["diag_cd"]] %in% c("I120", "I131", "N18", "N19", "N250", "Z490", "Z491", "Z492", "Z940", "Z992") ~ 1L, .default = 0),
+        rf = dplyr::case_when(
+          diag_3dig %in% c("N18", "N19") ~ 1L,
+          diag_4dig %in% c("I120", "I131", "N250", "Z490", "Z491", "Z492", "Z940", "Z992") ~ 1L,
+          .default = 0
+        ),
         # Liver Disease
-        ld = dplyr::case_when(.data[["diag_cd"]] %in% c("B18", "I85", "I864", "I982", "K70", "K711", "K713", "K714", "K715", "K717", "K72", "K73", "K74", "K760", "K762", "K763", "K764", "K765", "K766", "K767", "K768", "K769", "Z944") ~ 1L, .default = 0),
+        ld = dplyr::case_when(
+          diag_3dig %in% c("B18", "I85", "K70", "K72", "K73", "K74") ~ 1L,
+          diag_4dig %in% c("I864", "I982", "K711", "K713", "K714", "K715", "K717", "K760", "K762", "K763", "K764", "K765", "K766", "K767", "K768", "K769", "Z944") ~ 1L,
+          .default = 0
+        ),
         # Peptic Ulcer Disease excluding bleeding
-        pud_nb = dplyr::case_when(.data[["diag_cd"]] %in% c("K257", "K259", "K267", "K269", "K277", "K279", "K287", "K289") ~ 1L, .default = 0),
+        pud_nb = dplyr::case_when(diag_4dig %in% c("K257", "K259", "K267", "K269", "K277", "K279", "K287", "K289") ~ 1L, .default = 0),
         # AIDS/HIV
-        hiv = dplyr::case_when(.data[["diag_cd"]] %in% c("B20", "B21", "B22", "B24") ~ 1L, .default = 0),
+        hiv = dplyr::case_when(diag_3dig %in% c("B20", "B21", "B22", "B24") ~ 1L, .default = 0),
         # lymphoma
-        lymp = dplyr::case_when(.data[["diag_cd"]] %in% c("C81", "C82", "C83", "C84", "C85", "C88", "C96", "C900", "C902") ~ 1L, .default = 0),
+        lymp = dplyr::case_when(
+          diag_3dig %in% c("C81", "C82", "C83", "C84", "C85", "C88", "C96") ~ 1L,
+          diag_4dig %in% c("C900", "C902") ~ 1L,
+          .default = 0
+        ),
         # Metastatic Cancer
-        mets = dplyr::case_when(.data[["diag_cd"]] %in% c("C77", "C78", "C79", "C80") ~ 1L, .default = 0),
+        mets = dplyr::case_when(diag_3dig %in% c("C77", "C78", "C79", "C80") ~ 1L, .default = 0),
         # Solid Tumor without Metastasis
-        tumor = dplyr::case_when(.data[["diag_cd"]] %in% c("C00", "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22", "C23", "C24", "C25", "C26", "C30", "C31", "C32", "C33", "C34", "C37", "C38", "C39", "C40", "C41", "C43", "C45", "C46", "C47", "C48", "C49", "C50", "C51", "C52", "C53", "C54", "C55", "C56", "C57", "C58", "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69", "C70", "C71", "C72", "C73", "C74", "C75", "C76", "C97") ~ 1L, .default = 0),
+        tumor = dplyr::case_when(diag_3dig %in% c("C00", "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22", "C23", "C24", "C25", "C26", "C30", "C31", "C32", "C33", "C34", "C37", "C38", "C39", "C40", "C41", "C43", "C45", "C46", "C47", "C48", "C49", "C50", "C51", "C52", "C53", "C54", "C55", "C56", "C57", "C58", "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69", "C70", "C71", "C72", "C73", "C74", "C75", "C76", "C97") ~ 1L, .default = 0),
         # Rheumatoid Arthritis/collagen
-        rheum_a = dplyr::case_when(.data[["diag_cd"]] %in% c("L940", "L941", "L943", "M05", "M06", "M08", "M120", "M123", "M30", "M310", "M311", "M312", "M313", "M32", "M33", "M34", "M35", "M45", "M461", "M468", "M469") ~ 1L, .default = 0),
+        rheum_a = dplyr::case_when(
+          diag_3dig %in% c("M05", "M06", "M08", "M30", "M32", "M33", "M34", "M35", "M45") ~ 1L,
+          diag_4dig %in% c("L940", "L941", "L943", "M120", "M123", "M310", "M311", "M312", "M313", "M461", "M468", "M469") ~ 1L,
+          .default = 0
+        ),
         # Coagulopathy
-        coag = dplyr::case_when(.data[["diag_cd"]] %in% c("D65", "D66", "D67", "D68", "D691", "D693", "D694", "D695", "D696") ~ 1L, .default = 0),
+        coag = dplyr::case_when(
+          diag_3dig %in% c("D65", "D66", "D67", "D68") ~ 1L,
+          diag_4dig %in% c("D691", "D693", "D694", "D695", "D696") ~ 1L,
+          .default = 0
+        ),
         # obesity
-        obesity = dplyr::case_when(.data[["diag_cd"]] %in% c("E66") ~ 1L, .default = 0),
+        obesity = dplyr::case_when(diag_3dig %in% c("E66") ~ 1L, .default = 0),
         # Weight Loss
-        wl = dplyr::case_when(.data[["diag_cd"]] %in% c("E40", "E41", "E42", "E43", "E44", "E45", "E46", "R634", "R64") ~ 1L, .default = 0),
+        wl = dplyr::case_when(
+          diag_3dig %in% c("E40", "E41", "E42", "E43", "E44", "E45", "E46", "R64") ~ 1L,
+          diag_4dig %in% c("R634") ~ 1L,
+          .default = 0
+        ),
         # Fluid and Electrolyte Disorders
-        fluid = dplyr::case_when(.data[["diag_cd"]] %in% c("E222", "E86", "E87") ~ 1L, .default = 0),
+        fluid = dplyr::case_when(
+          diag_3dig %in% c("E86", "E87") ~ 1L,
+          diag_4dig %in% c("E222") ~ 1L,
+          .default = 0
+        ),
         # Blood Loss Anemia
-        bla = dplyr::case_when(.data[["diag_cd"]] %in% c("D500") ~ 1L, .default = 0),
+        bla = dplyr::case_when(diag_4dig %in% c("D500") ~ 1L, .default = 0),
         # Deficiency Anemia
-        da = dplyr::case_when(.data[["diag_cd"]] %in% c("D508", "D509", "D51", "D52", "D53") ~ 1L, .default = 0),
+        da = dplyr::case_when(
+          diag_3dig %in% c("D51", "D52", "D53") ~ 1L,
+          diag_4dig %in% c("D508", "D509") ~ 1L,
+          .default = 0
+        ),
         # Alcohol Abuse
-        alcohol = dplyr::case_when(.data[["diag_cd"]] %in% c("F10", "E52", "G621", "I426", "K292", "K700", "K703", "K709", "T51", "Z502", "Z714", "Z721") ~ 1L, .default = 0),
+        alcohol = dplyr::case_when(
+          diag_3dig %in% c("E52", "F10", "T51") ~ 1L,
+          diag_4dig %in% c("G621", "I426", "K292", "K700", "K703", "K709", "Z502", "Z714", "Z721") ~ 1L,
+          .default = 0
+        ),
         # Drug Abuse
-        drug = dplyr::case_when(.data[["diag_cd"]] %in% c("F11", "F12", "F13", "F14", "F15", "F16", "F18", "F19", "Z715", "Z722") ~ 1L, .default = 0),
+        drug = dplyr::case_when(
+          diag_3dig %in% c("F11", "F12", "F13", "F14", "F15", "F16", "F18", "F19") ~ 1L,
+          diag_4dig %in% c("Z715", "Z722") ~ 1L,
+          .default = 0
+        ),
         # Psychoses
-        psycho = dplyr::case_when(.data[["diag_cd"]] %in% c("F20", "F22", "F23", "F24", "F25", "F28", "F29", "F302", "F312", "F315") ~ 1L, .default = 0),
+        psycho = dplyr::case_when(
+          diag_3dig %in% c("F20", "F22", "F23", "F24", "F25", "F28", "F29") ~ 1L,
+          diag_4dig %in% c("F302", "F312", "F315") ~ 1L,
+          .default = 0
+        ),
         # depression
-        dep = dplyr::case_when(.data[["diag_cd"]] %in% c("F204", "F313", "F314", "F315", "F32", "F33", "F341", "F412", "F432") ~ 1L, .default = 0)
+        dep = dplyr::case_when(
+          diag_3dig %in% c("F32", "F33") ~ 1L,
+          diag_4dig %in% c("F204", "F313", "F314", "F315", "F341", "F412", "F432") ~ 1L,
+          .default = 0
+        )
       )
   } else if (icd_ver == "ICD-9-CM-5digits") {
     data_long <- data_long %>%

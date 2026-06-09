@@ -42,6 +42,64 @@ test_that("answer is correct for icd9 db", {
   expect_equal(answer, result)
 })
 
+test_that("answer is correct for icd10 db", {
+  input <- test_comorbidity()
+  answer <- input[["answer"]]
+  df <- input[["data"]]
+  db <- memdb_tbl(df)
+  result <- compute_comorbidity(db,
+    vars = starts_with("diagx"),
+    icd_ver = "ICD-10", clnt_id = clnt_id,
+    uid = uid, sum_by = "row", excl = NULL
+  ) %>%
+    dplyr::collect()
+  result <- dplyr::arrange(result, uid) %>%
+    dplyr::select(chf:total_eci)
+  expect_equal(answer, result)
+})
+
+test_that("icd10 codes longer than the listed ones are matched by prefix", {
+  df <- data.frame(
+    uid = 1:4, clnt_id = 1:4,
+    # I5010 -> I50 (chf, 3-char category)
+    # E1152 -> E115 (diab_c, 4-char subcategory)
+    # F3290 -> F32 (dep, 3-char category)
+    # X999 matches nothing
+    diagx_1 = c("I5010", "E1152", "F3290", "X999"),
+    diagx_2 = NA_character_
+  )
+  for (dat in list(df, memdb_tbl(df))) {
+    result <- compute_comorbidity(dat,
+      vars = starts_with("diagx"),
+      icd_ver = "ICD-10", clnt_id = clnt_id,
+      uid = uid, sum_by = "row", excl = NULL
+    ) %>%
+      dplyr::collect() %>%
+      dplyr::arrange(uid)
+    expect_equal(result$chf, c(1, 0, 0, 0))
+    expect_equal(result$diab_c, c(0, 1, 0, 0))
+    expect_equal(result$dep, c(0, 0, 1, 0))
+    expect_equal(result$total_eci, c(1, 1, 1, 0))
+  }
+})
+
+test_that("icd10 codes in overlapping categories count in all of them", {
+  # per Quan et al., I11.0 is in both chf and hptn_c (I11.x)
+  df <- data.frame(
+    uid = 1L, clnt_id = 1L,
+    diagx_1 = "I110",
+    diagx_2 = NA_character_
+  )
+  result <- compute_comorbidity(df,
+    vars = starts_with("diagx"),
+    icd_ver = "ICD-10", clnt_id = clnt_id,
+    uid = uid, sum_by = "row", excl = NULL
+  )
+  expect_equal(result$chf, 1)
+  expect_equal(result$hptn_c, 1)
+  expect_equal(result$total_eci, 2)
+})
+
 test_that("answer of icd9 3digit is different from 5digits df", {
   input <- test_comorbidity(icd10 = FALSE)
   # answer <- input[["answer"]]
@@ -80,7 +138,8 @@ test_that("exclue works db", {
   db <- memdb_tbl(df)
 
   # get the sum of excl
-  excl_cols <- sample(colnames(answer), 3)
+  # total_eci is not a category and must not be drawn
+  excl_cols <- sample(setdiff(colnames(answer), "total_eci"), 3)
   answer <- answer %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
