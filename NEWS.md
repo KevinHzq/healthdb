@@ -1,5 +1,7 @@
 # healthdb (development version)
 
+-   identify_row() now errors informatively when `vals` is empty (e.g., `character(0)` or NULL) instead of failing with an obscure message or silently returning no rows.
+
 -   identify_row() is now also exported as identify_rows() (consistent with it returning multiple rows); both names work and are documented on the same page.
 
 -   identify_row() with `match = "like"` or `"start"` on remote tables now generates a single `WHERE ... LIKE ... OR ... LIKE ...` clause instead of one sub-query per pattern combined with `UNION`. The new query is simpler and typically faster. Note a subtle behavior change: `UNION` removed duplicate rows, while the new query (like all other match types) keeps them; results differ only if the source table contains fully duplicated rows.

@@ -52,6 +52,9 @@
 identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   rlang::check_required(vars)
   rlang::check_required(vals)
+  if (length(vals) == 0) {
+    rlang::abort("`vals` must not be empty.")
+  }
   UseMethod("identify_rows")
 }
 

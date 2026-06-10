@@ -90,3 +90,25 @@ test_that("edge case - vals in an external vector works", {
   out_df <- identify_rows(db, c(diagx, diagx_1, diagx_2), "in", val, query_only = FALSE)
   expect_equal(out_df, subset(df, ans != "noise"), ignore_attr = "row.names")
 })
+
+test_that("empty vals errors informatively", {
+  db <- letters_n(type = "database")
+  expect_error(identify_rows(db, diagx, "like", character(0)), "empty")
+  expect_error(identify_rows(db, diagx, "in", NULL), "empty")
+})
+
+test_that("duplicated source rows are kept by like match", {
+  # the like/start match used to deduplicate fully duplicated rows as a side
+  # effect of UNION; the OR'd WHERE keeps them like every other match type
+  db <- memdb_tbl(dplyr::tibble(clnt_id = c(1, 1, 2), diagx = c("aa", "aa", "zz")))
+  out <- identify_rows(db, diagx, "like", c("a%", "b%"), query_only = FALSE)
+  expect_equal(nrow(out), 2)
+})
+
+test_that("LIKE underscore wildcard matches any single character", {
+  # document SQL LIKE semantics: "_" is a single-character wildcard, so
+  # patterns containing literal underscores over-match
+  db <- memdb_tbl(dplyr::tibble(clnt_id = 1:3, diagx = c("F1", "F_", "FFX")))
+  out <- identify_rows(db, diagx, "like", "F_", query_only = FALSE)
+  expect_setequal(out$diagx, c("F1", "F_"))
+})
