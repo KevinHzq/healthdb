@@ -1,7 +1,7 @@
 #' @keywords internal
 "_PACKAGE"
 
-utils::globalVariables(c("patterns"))
+utils::globalVariables(c("patterns", "elix_codes"))
 
 ## usethis namespace: start
 #' @importFrom data.table %between%

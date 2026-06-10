@@ -44,9 +44,9 @@ List of disease categories - labels (in quote):
 \item Pulmonary Circulation Disorders - "pcd"
 \item Peripheral Vascular Disorders - "pvd"
 \item Hypertension Uncomplicated - "hptn_nc"
-\item Hypertension complicated - "hptn_C"
+\item Hypertension Complicated - "hptn_c"
 \item Paralysis - "para"
-\item Other Neurological Disorders - "Othnd"
+\item Other Neurological Disorders - "othnd"
 \item Chronic Pulmonary Disease - "copd"
 \item Diabetes Uncomplicated - "diab_nc"
 \item Diabetes Complicated - "diab_c"
@@ -70,6 +70,10 @@ List of disease categories - labels (in quote):
 \item Psychoses - "psycho"
 \item Depression - "dep"
 }
+
+The full ICD code lists defining these categories, including the matching
+rule for each code (prefix vs. exact), are available in the exported
+dataset \link{elix_codes}.
 }
 \examples{
 # make ICD-9 toy data
@@ -99,4 +103,7 @@ compute_comorbidity(df,
 }
 \references{
 Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.
+}
+\seealso{
+\link{elix_codes}
 }

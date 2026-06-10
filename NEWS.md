@@ -1,5 +1,7 @@
 # healthdb (development version)
 
+-   New exported dataset `elix_codes`: the ICD codes defining the 31 Elixhauser comorbidity categories used by compute_comorbidity(), with the category labels, full names, and matching rules (prefix/exact) for all three supported ICD versions. compute_comorbidity() is now driven by this dataset internally; its interface and results are unchanged (verified against the previous implementation over every code in the lists).
+
 -   The confirmation prompts in execute_def(), bind_source(), and report_n() now abort with an informative error in non-interactive sessions (e.g., Rscript, knitr) instead of silently proceeding (readline() returns "" when not interactive, which was treated as consent). Interactively, only an explicit "y"/"yes" answer proceeds now; any other answer cancels.
 
 -   restrict_date() (data.frame method) with mode = "filter" no longer warns ("no non-missing arguments to max") when no record is left from the previous steps.

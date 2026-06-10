@@ -179,3 +179,38 @@ test_that("answer is correct for icd9 db", {
     dplyr::ungroup()
   expect_equal(answer, result)
 })
+
+test_that("every code in elix_codes maps to its own category", {
+  for (ver in unique(elix_codes$icd_ver)) {
+    lu <- subset(elix_codes, icd_ver == ver)
+    df <- data.frame(
+      uid = seq_len(nrow(lu)), clnt_id = seq_len(nrow(lu)),
+      diagx_1 = lu$code, diagx_2 = NA_character_
+    )
+    result <- compute_comorbidity(df,
+      vars = starts_with("diagx"), icd_ver = ver,
+      clnt_id = clnt_id, uid = uid
+    ) %>% dplyr::arrange(uid)
+    for (cat in unique(lu$category)) {
+      expect_true(all(result[[cat]][lu$category == cat] == 1), label = paste(ver, cat))
+    }
+  }
+})
+
+test_that("prefix codes in elix_codes match their subdivisions", {
+  lu <- subset(elix_codes, !is.na(match_len))
+  for (ver in unique(lu$icd_ver)) {
+    lv <- subset(lu, icd_ver == ver)
+    df <- data.frame(
+      uid = seq_len(nrow(lv)), clnt_id = seq_len(nrow(lv)),
+      diagx_1 = paste0(lv$code, "1"), diagx_2 = NA_character_
+    )
+    result <- compute_comorbidity(df,
+      vars = starts_with("diagx"), icd_ver = ver,
+      clnt_id = clnt_id, uid = uid
+    ) %>% dplyr::arrange(uid)
+    for (cat in unique(lv$category)) {
+      expect_true(all(result[[cat]][lv$category == cat] == 1), label = paste(ver, cat, "prefix"))
+    }
+  }
+})
