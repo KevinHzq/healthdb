@@ -12,6 +12,33 @@ clean_db <- function(db) {
     dbplyr::window_order()
 }
 
+# confirm a potentially slow operation with the user;
+# abort in non-interactive sessions instead of silently proceeding
+# (readline() returns "" when not interactive, which is not "n")
+ask_proceed <- function(why, hint = NULL) {
+  if (!rlang::is_interactive()) {
+    stop(
+      "\n", why,
+      " This needs confirmation, but the session is not interactive.",
+      " Use force_proceed = TRUE (or options(healthdb.force_proceed = TRUE)) to proceed.",
+      if (!is.null(hint)) paste0("\n", hint),
+      call. = FALSE
+    )
+  }
+
+  proceed <- readline(prompt = paste(why, "Proceed? [y/n]"))
+
+  if (!tolower(trimws(proceed)) %in% c("y", "yes")) {
+    stop(
+      "\nCancelled by user.",
+      if (!is.null(hint)) paste0("\n", hint),
+      call. = FALSE
+    )
+  }
+
+  invisible()
+}
+
 # test db connection
 check_con <- function(data) {
   con <- dbplyr::remote_con(data)

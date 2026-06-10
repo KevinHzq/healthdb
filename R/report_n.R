@@ -6,7 +6,7 @@
 #'
 #' @param ... Data frames or remote tables (e.g., from 'dbplyr')
 #' @param on The column to report on. It must be present in all data sources.
-#' @param force_proceed A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.
 #'
 #' @return A sequence of the number of distinct `on` for each data frames
 #' @export
@@ -47,9 +47,10 @@ report_n <- function(..., on, force_proceed = getOption("healthdb.force_proceed"
   purrr::map_int(dat, function(x) {
     # ask for user input if data is remote
     if (!force_proceed & !is.data.frame(x)) {
-      proceed <- readline(prompt = "\nThe data is not a data.frame. The query has to be executed (may be slow) in order to be summarized. Proceed? [y/n]")
-
-      if (proceed == "n") stop("Try collect() the data first, or force_proceed = TRUE to slience the prompt.")
+      ask_proceed(
+        "The data is not a data.frame. The query has to be executed (may be slow) in order to be summarized.",
+        "Try collect() the data first, or force_proceed = TRUE to silence the prompt."
+      )
     }
 
     dplyr::group_by(x, .data[[on]]) %>% dplyr::n_groups()

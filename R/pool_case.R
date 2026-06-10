@@ -88,7 +88,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     fill_src <- def$src_labs[which(is.na(dot[["flag_restrict_n"]]))]
   }
 
-  # browser()
 
   if (has_date_flag | has_n_flag) {
     # there might be cases no need to fill
@@ -102,7 +101,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     bind_data <- bind_data %>%
       dplyr::mutate(flag_valid_record = 1L)
   }
-  # browser()
 
   switch(include_src,
     all = {
@@ -139,7 +137,6 @@ pool_case <- function(data, def, output_lvl = c("raw", "clnt"), include_src = c(
     }
   )
 
-  # browser()
 
   # job done if output raw
   # lines after this return is for sum by clients

@@ -88,7 +88,6 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     if (apart * (n - 1) >= within) stop("Condition is impossible as apart*(n - 1) cannot be greater than within")
     # overlap join dates and dates+within to get records falls in every within window starting at each date. This ensure the within condition, then calls all_apart to test the apart condition
     # tested against combn(sample, n, function(x) all(diff(sort(x)) >= m) & (diff(c(min(x), max(x))) <= within)) %>% any()
-    # browser()
     dtx <- data.table::data.table(d = x, y = x, key = c("d", "y"))
 
     switch(align,
@@ -101,7 +100,6 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     )
 
     overlap <- data.table::foverlaps(dtx, dty)[, y := NULL]
-    # browser()
     data.table::setorder(overlap, period_id, d)
 
     # filters with n for reducing compute

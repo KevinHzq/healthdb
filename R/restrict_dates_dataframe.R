@@ -42,7 +42,10 @@ restrict_dates.data.frame <- function(data, clnt_id, date_var, n, apart = NULL, 
   if (mode == "filter") {
     data <- data %>%
       dplyr::mutate(flag_restrict_date = tidyr::replace_na(flag_restrict_date, 0)) %>%
-      dplyr::filter(max(flag_restrict_date, na.rm = TRUE) > 0)
+      # any() instead of max() to avoid the -Inf warning when the input has
+      # no row left from previous steps (do not change the SQL method the same
+      # way as any() has no reliable SQL Server translation)
+      dplyr::filter(any(flag_restrict_date > 0))
   }
 
   data <- data %>%

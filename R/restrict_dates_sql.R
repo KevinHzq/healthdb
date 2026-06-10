@@ -37,15 +37,6 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   n <- as.integer(n)
 
   if (is.null(within)) {
-    # original code without apart for tbl_sql
-    # if (!force_collect) {
-    #   stop("`apart` is implemented for local data frame only. Use force_collect = TRUE argument to proceed with downloading the remote table (may be slow)")
-    # } else {
-    #   # see if_dates for detail
-    #   keep <- dplyr::collect(data) %>%
-    #     restrict_dates.data.frame(clnt_id = !!clnt_id, date_var = !!date_var, n = n, apart = apart, within = within, flag_at = flag_at, mode = mode, dup.rm = dup.rm, ...)
-    # }
-
     # apart only
     apart <- as.integer(apart)
     data <- data %>%
@@ -87,7 +78,6 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
         dplyr::group_by(.data[[clnt_id]]) %>%
         dbplyr::window_order(.data[[date_var]], .data[[uid]])
     }
-    # browser()
 
     switch(flag_at,
       left = {
@@ -103,12 +93,10 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
           )
       }
     )
-    # browser()
 
     if (is_mssql_mysql) {
       data <- data %>%
         dplyr::mutate(
-          # temp_nm_gap = dbplyr::sql(glue::glue_sql("ABS(DATEDIFF(day, {`date_var`}, {`temp_nm_diff`}))", .con = dbplyr::remote_con(data), temp_nm_diff = "temp_nm_diff"))
           temp_nm_gap = abs(difftime(.data[[date_var]], temp_nm_diff))
         )
     } else {
@@ -117,13 +105,11 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
           temp_nm_gap = abs(temp_nm_diff - .data[[date_var]])
         )
     }
-    # browser()
 
     if (dup.rm) {
       data <- data %>%
         dplyr::mutate(
-          # the translation for any() failed on SQL server again
-          # temp_nm_keep = any(temp_nm_gap <= within, na.rm = TRUE)
+          # case_when used because the translation for any() failed on SQL server
           flag_restrict_date = dplyr::case_when(
             temp_nm_dup == 1L ~ NA,
             temp_nm_gap <= within ~ 1L,
@@ -160,11 +146,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
       return(result)
     } else {
       data <- rlang::try_fetch(
-        dplyr::compute(data,
-          # maybe not worth it to create index
-          # indexes = list(clnt_id, date_var),
-          temporary = TRUE
-        ),
+        dplyr::compute(data, temporary = TRUE),
         error = function(cnd) {
           rlang::warn("The attempt to write a temp table for performance boost failed. Actual error message:\n", parent = cnd)
           return(data)
@@ -227,8 +209,7 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
 
 
   if (verbose) {
-    # disable report_n to save the extra execution
-    # initial_n <- report_n(data, on = {{ clnt_id }})
+    # report_n not used here to save the extra query execution
     rlang::inform(c("i" = glue::glue('Apply restriction that each client must have {n} records that were{ifelse(!is.null(apart), paste(" at least", apart, "days apart"), "")}{ifelse(!is.null(within), paste(" within", within, "days"), "")}. {ifelse(mode == "filter", "Clients/groups which did not met the condition were excluded.", "Records that met the condition were flagged.")}')))
   }
 

@@ -1,5 +1,11 @@
 # healthdb (development version)
 
+-   The confirmation prompts in execute_def(), bind_source(), and report_n() now abort with an informative error in non-interactive sessions (e.g., Rscript, knitr) instead of silently proceeding (readline() returns "" when not interactive, which was treated as consent). Interactively, only an explicit "y"/"yes" answer proceeds now; any other answer cancels.
+
+-   restrict_date() (data.frame method) with mode = "filter" no longer warns ("no non-missing arguments to max") when no record is left from the previous steps.
+
+-   Removed leftover commented-out code and browser() calls across the package; no functional change.
+
 -   Fixed a bug in define_case() and define_case_with_age(): with `keep = "last"`, the first occurrence of "min" anywhere in the internally generated code was string-replaced with "max", which corrupted column names containing "min" (e.g., a `clnt_id` named "admin_id" became "admax_id" and caused an error).
 
 -   Internal refactoring: restrict_date() (database method), define_case(), and define_case_with_age() no longer build queries by string-replacing names in deparsed code; column names are now injected as symbols with 'rlang'. The generated SQL is unchanged, but column names that contain substrings such as "clnt_id", "date_var", "_i", or "_x" no longer risk corrupting the query.

@@ -11,7 +11,7 @@ report_n(..., on, force_proceed = getOption("healthdb.force_proceed"))
 
 \item{on}{The column to report on. It must be present in all data sources.}
 
-\item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use \code{options(healthdb.force_proceed = TRUE)} to suppress the prompt once and for all.}
+\item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use \code{options(healthdb.force_proceed = TRUE)} to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.}
 }
 \value{
 A sequence of the number of distinct \code{on} for each data frames

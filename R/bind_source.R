@@ -6,7 +6,7 @@
 #'
 #' @param data A list of data.frame or remote tables, e.g., output from [execute_def()].
 #' @param ... Named arguments for each variable included in the output. The argument name should be the new name in the output, and the right hand side of the argument is a character vector of the original names. The name vector and the list elements in `data` will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., `var` only come from the second out of three sources, then `var = c(NA, 'nm_in_src2', NA)`.
-#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.
 #'
 #' @return A data.frame or remote table containing combined rows of the input list with variables specified by ...
 #' @export
@@ -56,13 +56,8 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
     var_tab <- var_tab[rep(1, n_data)]
   }
 
-  # if (nrow(var_tab) < n_data) {
-  #   rlang::abort("The number of variable names does not match the number of sources. Did you select variables with common names only? Please repeat names to let at least one new variable having a length equal to the number of sources. For example, for two sources, change from bind_source(data, clnt_id = 'clnt_id', uid = 'uid') to bind_source(data, clnt_id = 'clnt_id', uid = c('uid', 'uid'))\n")
-  # }
-
   var_arg <- lapply(1:nrow(var_tab), function(i) as.list(var_tab[i]))
   var_arg <- lapply(1:nrow(var_tab), function(i) var_arg[[i]][!is.na(var_arg[[i]])])
-  # browser()
   select_calls <- lapply(1:length(data), function(j) rlang::call2("select", .data = data_expr[[j]], !!!var_arg[[j]], .ns = "dplyr"))
 
   result <- purrr::map(select_calls, function(x) eval(x, envir = data_env))
@@ -74,9 +69,10 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
   any_remote <- any(!is_local)
 
   if (!force_proceed & any_remote & any_local) {
-    proceed <- readline(prompt = "Remote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
-
-    if (proceed == "n") stop("\n Cancel by user. Try supply data from the same source (i.e., either all local or all remote).\n")
+    ask_proceed(
+      "Remote tables have to be collected (may be slow) in order to be binded.",
+      "Try supply data from the same source (i.e., either all local or all remote)."
+    )
   }
 
   if (!any_local) {
@@ -97,7 +93,6 @@ bind_source <- function(data, ..., force_proceed = getOption("healthdb.force_pro
     result <- purrr::map_if(result, !is_local, dplyr::collect, .progress = TRUE)
   }
 
-  # dplyr::bind_rows(result, .id = "src_id")
   result <- rlang::try_fetch(purrr::list_rbind(result, names_to = "src_No") %>% dplyr::distinct(),
     error = function(cnd) {
       rlang::warn("Returned unbinded result. Binding failed probably due to incompatible types of the same variable from different sources. Actual error message:\n", parent = cnd)

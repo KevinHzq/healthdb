@@ -143,7 +143,6 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
 
   # body
   if (verbose) rlang::inform(c(">" = "--------------Inclusion step--------------\n"))
-  # browser()
   result <- eval(incl)
 
   if (!is.null(excl_vals)) {
@@ -204,16 +203,6 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
   }
 
   if (verbose) rlang::inform(c(">" = paste("--------------", "Output", keep, "records--------------\n")))
-  # switch to filter(date = min/max(date)) instead of problematic slice_min/max
-  # fixing sql translation failed when using .data with slice_min/max
-  # if (is.data.frame(result)) {
-  #   date_var <- rlang::expr(.data[[!!date_var]])
-  # } else {
-  #   date_var <- rlang::expr(dbplyr::sql(dbplyr::escape(dbplyr::ident(!!date_var), con = dbplyr::remote_con(result))))
-  #   # changed from above because translating slice_max failed
-  #   # reversed to above again as of dbplyr 2.4.0
-  #   # date_var <- rlang::expr(!!date_var)
-  # }
 
   # keep the first/last record per client
   # use filter(date == min/max(date)) instead of problematic slice_min/max

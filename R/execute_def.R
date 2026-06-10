@@ -7,7 +7,7 @@
 #' @param def A tibble created by [build_def()].
 #' @param with_data A named list which the elements are in the form of src_lab = data, where 'src_lab' corresponds to the src_labs argument from [build_def()] and 'data' is the data object that will be passed to calls stored in def. The names (and length) of `with_data` must match the unique values of src_labs in `def`.
 #' @param bind A logical for whether row-binding records from multiple sources into one table. Note that the binding may fail in ways that are difficult to anticipate in advance, such as data type conflict (e.g., Date vs. character) between variables in the same name from different sources. The default is FALSE. If TRUE, the behavior is to try and return the unbinded result when failed.
-#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = TRUE) to suppress the prompt once and for all.
+#' @param force_proceed A logical for whether to ask for user input in order to proceed when remote tables are needed to be collected for binding. The default is FALSE to let user be aware of that the downloading process may be slow. Use options(healthdb.force_proceed = TRUE) to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.
 #' @seealso [bind_sources()] for binding the output with convenient renaming features.
 #'
 #' @return A single (if bind = TRUE) or a list of data.frames or remote tables.
@@ -63,7 +63,6 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
     with_data_expr <- with_data_quo %>% rlang::call_args()
     n_data <- length(with_data_expr)
   }
-  # with_data_expr <- with_data_quo %>% rlang::call_args()
   with_data_env <- with_data_quo %>% rlang::quo_get_env()
 
   # input checks
@@ -92,9 +91,10 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
   any_remote <- any(!is_local)
 
   if (!force_proceed & bind & any_local & any_remote) {
-    proceed <- readline(prompt = "Remote tables have to be collected (may be slow) in order to be binded. Proceed? [y/n]")
-
-    if (proceed == "n") stop("\nTry bind = FALSE, or supply data from the same source (i.e., either all local or all remote).")
+    ask_proceed(
+      "Remote tables have to be collected (may be slow) in order to be binded.",
+      "Try bind = FALSE, or supply data from the same source (i.e., either all local or all remote)."
+    )
   }
 
   # first alter the call to include data, then eval
@@ -154,9 +154,6 @@ execute_def <- function(def, with_data, bind = FALSE, force_proceed = getOption(
       }
     )
   }
-  # result <- data.table::rbindlist(def[["result"]])
-  # result <- unique(result)
-  # data.table::setDF(result)
 
   return(result)
 }

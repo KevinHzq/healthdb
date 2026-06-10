@@ -19,7 +19,6 @@ restrict_n.data.frame <- function(data, clnt_id, n_per_clnt, count_by = NULL, mo
   } else {
     n_filter <- dt[, list(temp_keep_rid = .I[.N >= n_per_clnt]), by = clnt_id_nm]$temp_keep_rid
   }
-  # browser()
 
   dt[, flag_restrict_n := ifelse(.I %in% n_filter, 1, 0)]
 

@@ -127,7 +127,6 @@ fetch_var <- function(data, keys, linkage, ...) {
     mod_calls <- df[["calls"]]
   }
 
-  # browser()
 
   if (is_df) {
     vars_df <- purrr::map(mod_calls, function(x) eval(x, envir = data_env) %>% dplyr::select(-dplyr::any_of(keys)))

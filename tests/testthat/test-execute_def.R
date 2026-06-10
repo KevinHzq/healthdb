@@ -240,3 +240,21 @@ test_that("execute_def with different age_range per source works", {
   # dad should be filtered for 21+
   expect_true(all(result[[2]]$age >= 21))
 })
+
+test_that("binding mixed sources without force_proceed errors in non-interactive sessions", {
+  # regression: readline() returns "" when non-interactive, which silently
+  # proceeded with the slow collect instead of asking
+  df <- data.frame(clnt_id = 1:3, diagx = c("304", "305", "999"))
+  db <- memdb_tbl(df)
+  def <- build_def("test",
+    src_labs = c("src1", "src2"),
+    fn_args = list(vars = "diagx", match = "in", vals = "304", clnt_id = "clnt_id")
+  )
+  expect_error(
+    rlang::with_interactive(
+      execute_def(def, with_data = list(src1 = df, src2 = db), bind = TRUE, force_proceed = FALSE),
+      value = FALSE
+    ),
+    "not interactive"
+  )
+})

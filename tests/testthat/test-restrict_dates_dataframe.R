@@ -45,3 +45,14 @@ test_that("check missing dates works", {
   df$dates[sample(1:nrow(df), 5)] <- NA
   expect_warning(restrict_dates(df, clnt_id, dates, n, within = within, uid = uid, check_missing = TRUE), "Removed 5 records")
 })
+
+test_that("filter mode does not warn when no record is left from previous steps", {
+  # regression: max() over an empty input warned "no non-missing arguments"
+  df <- data.frame(
+    clnt_id = integer(), dates = as.Date(character()), uid = integer()
+  )
+  expect_no_warning(
+    out <- restrict_date(df, clnt_id, dates, n = 2, within = 365, mode = "filter", verbose = FALSE)
+  )
+  expect_equal(nrow(out), 0)
+})
