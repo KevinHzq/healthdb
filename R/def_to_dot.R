@@ -31,7 +31,7 @@ def_to_dot <- function(def, add_aux = TRUE) {
   #   dplyr::group_by(src_labs, fn_arg_names) %>%
   #   dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
   #   dplyr::filter(n > 1L)
-  # if (nrow(def_long_key) > 0) stop("Variable names for binding cannot be determined from definition due to multiple ID names (e.g., src1 has two different clnt_id under different def_lab) were assigned to the same source. If that was intended, give different src_lab for the same source, e.g., src1a = df1, src1b = df1, or do manual binding with bind_sources().")
+  # if (nrow(def_long_key) > 0) stop("Variable names for binding cannot be determined from definition due to multiple ID names (e.g., src1 has two different clnt_id under different def_lab) were assigned to the same source. If that was intended, give different src_lab for the same source, e.g., src1a = df1, src1b = df1, or do manual binding with bind_source().")
 
   def_wide <- def_long %>% tidyr::pivot_wider(names_from = fn_arg_names, values_from = fn_args, values_fn = list)
 

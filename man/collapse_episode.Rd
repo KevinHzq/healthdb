@@ -23,7 +23,7 @@ collapse_episode(
 
 \item{start_dt}{Column name of the starting date of records.}
 
-\item{end_dt}{Column name of the end date of records. The default is NULL assuming the record last one day and only the start date will be used to calculate the gaps between records.}
+\item{end_dt}{Column name of the end date of records. The default is NULL, assuming the record lasts one day and only the start date will be used to calculate the gaps between records.}
 
 \item{gap}{A number in days that will be used to separate episodes. For example, gap = 7 means collapsing records no more than 7 days apart. Note that the number of days apart will be calculated as numeric difference between two days, so that 2020-01-07 and 2020-01-01 is considered as 6 days apart.}
 
@@ -45,7 +45,7 @@ The original data.frame or remote table with new columns indicating episode grou
 }
 }
 \description{
-This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days gap apart. The length of the gap can be relaxed by another grouping variable.
+This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days apart. The length of the gap can be relaxed by another grouping variable.
 }
 \examples{
 # make toy data

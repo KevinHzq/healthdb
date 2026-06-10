@@ -24,11 +24,11 @@ compute_duration(
 
 \item{unit}{A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".}
 
-\item{trans}{A logical for whether transform both \code{from} and \code{to} with the \code{.transfn} function}
+\item{trans}{A logical for whether to transform both \code{from} and \code{to} with the \code{.transfn} function}
 
 \item{.transfn}{A function for transforming the inputs. Default is \code{\link[lubridate:ymd]{lubridate::ymd()}}.}
 
-\item{verbose}{A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether to print a summary of the output and warn about missing values. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments passing to \code{\link[base:cut]{base::cut()}}.}
 }

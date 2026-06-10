@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_n.R
 \name{report_n}
 \alias{report_n}
-\title{Report number of distinct value in a column across data frames}
+\title{Report the number of distinct values in a column across data frames}
 \usage{
 report_n(..., on, force_proceed = getOption("healthdb.force_proceed"))
 }
@@ -14,10 +14,10 @@ report_n(..., on, force_proceed = getOption("healthdb.force_proceed"))
 \item{force_proceed}{A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use \code{options(healthdb.force_proceed = TRUE)} to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.}
 }
 \value{
-A sequence of the number of distinct \code{on} for each data frames
+A sequence of the number of distinct \code{on} values, one for each input
 }
 \description{
-This function is intended to mimic \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion steps. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study. It is also useful for inline reporting of Ns in a Rmarkdown document.
+This function is intended to mimic \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} for multiple inputs. It is useful to report the number of clients throughout a series of inclusion or exclusion steps. A use case could be getting the Ns for the sample definition flowchart in an epidemiological study. It is also useful for inline reporting of Ns in an R Markdown document.
 }
 \examples{
 # some exclusions

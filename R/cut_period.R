@@ -6,7 +6,7 @@
 #' @param start Record start date column (unquoted)
 #' @param end Record end date column (unquoted)
 #' @param len An integer, the interval that would be used to divide the record duration
-#' @param unit One of "day" (default), "week", "month", "quarter, or "year" used in combination of `len` to specify the time length of the interval.
+#' @param unit One of "day" (default), "week", "month", "quarter", or "year" used in combination of `len` to specify the time length of the interval.
 #' @param .dt_trans Function to transform start/end, such as [lubridate::ymd()]. Default is NULL.
 #'
 #' @return Data frame that each row is now a segment of the period defined by `c(start, end)` in the original row. Original variables are retained and repeated for each segment plus new variables defining the segment interval.

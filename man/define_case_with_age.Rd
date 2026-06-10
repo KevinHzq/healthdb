@@ -39,7 +39,7 @@ define_case_with_age(
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
-\item{n_per_clnt}{A single number specifying the minimum number of group size.}
+\item{n_per_clnt}{A single number specifying the minimum group size.}
 
 \item{date_var}{Variable name (quoted/unquoted) for the dates to be interpreted.}
 
@@ -78,12 +78,12 @@ define_case_with_age(
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether to print an explanation of the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments, e.g., \code{mode}, passing to \code{\link[=restrict_date]{restrict_date()}}.}
 }
 \value{
-A subset of input data satisfied the specified case definition.
+A subset of the input data that satisfied the specified case definition.
 }
 \description{
 This function extends the standard case definition function \code{\link[=define_case]{define_case()}} by allowing age-based filtering. See \code{\link[=define_case]{define_case()}} for more general description of what this function does.

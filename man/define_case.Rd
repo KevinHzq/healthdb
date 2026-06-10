@@ -36,7 +36,7 @@ define_case(
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
-\item{n_per_clnt}{A single number specifying the minimum number of group size.}
+\item{n_per_clnt}{A single number specifying the minimum group size.}
 
 \item{date_var}{Variable name (quoted/unquoted) for the dates to be interpreted.}
 
@@ -69,15 +69,15 @@ define_case(
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether to print an explanation of the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{...}{Additional arguments, e.g., \code{flag_at}, passing to \code{\link[=restrict_date]{restrict_date()}}.}
 }
 \value{
-A subset of input data satisfied the specified case definition.
+A subset of the input data that satisfied the specified case definition.
 }
 \description{
-This function is a composite of \code{\link[=identify_row]{identify_row()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_date]{restrict_date()}}. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: \code{identify_row(vals) \%>\% exclude(identify_row(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_date()}. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if \code{date_var} is supplied, \code{n_per_clnt} will be counted by distinct dates instead of number of records.
+This function is a composite of \code{\link[=identify_row]{identify_row()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_date]{restrict_date()}}. It aims to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: \code{identify_row(vals) \%>\% exclude(identify_row(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_date()}. Only the necessary steps in the chain will be run if some arguments are missing, see the verbose output for what was done. Note that if \code{date_var} is supplied, \code{n_per_clnt} will be counted by distinct dates instead of number of records.
 }
 \examples{
 sample_size <- 30

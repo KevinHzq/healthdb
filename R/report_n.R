@@ -1,14 +1,14 @@
-#' Report number of distinct value in a column across data frames
+#' Report the number of distinct values in a column across data frames
 #'
 #' @md
 #' @description
-#' This function is intended to mimic [dplyr::n_distinct()] for multiple inputs. It is useful to report the number of clients through out a series of inclusion or exclusion steps. An use case could be getting the Ns for the sample definition flowchart in an epidemiological study. It is also useful for inline reporting of Ns in a Rmarkdown document.
+#' This function is intended to mimic [dplyr::n_distinct()] for multiple inputs. It is useful to report the number of clients throughout a series of inclusion or exclusion steps. A use case could be getting the Ns for the sample definition flowchart in an epidemiological study. It is also useful for inline reporting of Ns in an R Markdown document.
 #'
 #' @param ... Data frames or remote tables (e.g., from 'dbplyr')
 #' @param on The column to report on. It must be present in all data sources.
 #' @param force_proceed A logical for whether to ask for user input in order to proceed when the data is not local data.frames, and a query needs to be executed before reporting. The default is fetching from options (FALSE). Use `options(healthdb.force_proceed = TRUE)` to suppress the prompt once and for all. In non-interactive sessions (e.g., scripts run via Rscript, knitr), the confirmation prompt cannot be displayed, and the function stops with an error unless force_proceed = TRUE.
 #'
-#' @return A sequence of the number of distinct `on` for each data frames
+#' @return A sequence of the number of distinct `on` values, one for each input
 #' @export
 #'
 #' @examples

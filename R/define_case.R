@@ -2,7 +2,7 @@
 #'
 #' @md
 #' @description
-#' This function is a composite of [identify_row()], [exclude()], [restrict_n()], and [restrict_date()]. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: `identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_date()`. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if `date_var` is supplied, `n_per_clnt` will be counted by distinct dates instead of number of records.
+#' This function is a composite of [identify_row()], [exclude()], [restrict_n()], and [restrict_date()]. It aims to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: `identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_date()`. Only the necessary steps in the chain will be run if some arguments are missing, see the verbose output for what was done. Note that if `date_var` is supplied, `n_per_clnt` will be counted by distinct dates instead of number of records.
 #'
 #' @inheritParams identify_row
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_row()] for detail.
@@ -21,10 +21,10 @@
 #' * or "filter" - remove clients that did not meet the condition from the data.
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether to print an explanation of the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `flag_at`, passing to [restrict_date()].
 #'
-#' @return A subset of input data satisfied the specified case definition.
+#' @return A subset of the input data that satisfied the specified case definition.
 #' @export
 #'
 #' @examples

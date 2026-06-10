@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrict_n.R
 \name{restrict_n}
 \alias{restrict_n}
-\title{Remove or flag groups with n less than some number}
+\title{Remove or flag groups smaller than a minimum size}
 \usage{
 restrict_n(
   data,
@@ -18,7 +18,7 @@ restrict_n(
 
 \item{clnt_id}{Grouping variable (quoted/unquoted).}
 
-\item{n_per_clnt}{A single number specifying the minimum number of group size.}
+\item{n_per_clnt}{A single number specifying the minimum group size.}
 
 \item{count_by}{Another variable dictating the counting unit of \code{n_per_clnt.} The default is NULL meaning the inclusion criteria is the number of row, i.e., \code{dplyr::n() >= n_per_clnt}. If it is not NULL, the criteria becomes equivalent to \code{dplyr::n_distinct(count_by) >= n_per_clnt}.}
 
@@ -27,10 +27,10 @@ restrict_n(
 \item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 }
 \value{
-A subset of input data satisfied the group size requirement, or raw input data with an new flag column.
+A subset of the input data that satisfied the group size requirement, or the input data with a new flag column.
 }
 \description{
-Remove or flags groups or clients that have less than some number of rows or some number of distinct values in a variable. For example, it can be used to remove clients that had less than n visits to some service on different dates from some administrative records. It offers filtering with \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} functionality for database input.
+Remove or flag groups or clients that have fewer than some number of rows or fewer than some number of distinct values in a variable. For example, it can be used to remove clients that had fewer than n visits to some service on different dates from some administrative records. It offers filtering with \code{\link[dplyr:n_distinct]{dplyr::n_distinct()}} functionality for database input.
 }
 \examples{
 # flag cyl groups with less than 8 cars

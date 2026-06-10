@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 -   This package is designed for identifying disease cases from admin data for epidemiological studies. The implementation focused on code readability and re-usability. Three types of functions are included:
 
--   *Interactive functions* (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively support by SQL. They also work for local data.frame, and some use 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful even outside health research.
+-   *Interactive functions* (e.g., `identify_row()`, `exclude()`, `fetch_var()`) based on filter and joins from dplyr with tweaks that fix SQL translation or add features that are not natively supported by SQL. They also work for local data.frames, and some use the 'data.table' package (`vignette("datatable-intro", package = "data.table")`) to speed up processing time for large data. These functions are not as flexible as `dplyr::filter()`, but they are general enough to be useful even outside health research.
 
 -   *Call-building functions* (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
 

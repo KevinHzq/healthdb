@@ -1,5 +1,7 @@
 # healthdb (development version)
 
+-   The package options (healthdb.verbose, healthdb.force_proceed, and the new healthdb.check_con) are now documented in one place on the package help page; see ?healthdb. Also fixed a broken cross-reference and polished wording throughout the documentation.
+
 -   Documented case sensitivity of matching: identify_row() "like"/"start" matching is case-sensitive for data.frames but follows the database for remote tables (e.g., case-insensitive ASCII LIKE on SQLite, case-sensitive on PostgreSQL, collation-dependent on SQL Server); compute_comorbidity() expects upper-case codes.
 
 -   identify_row() now errors informatively when `vals` is empty (e.g., `character(0)` or NULL) instead of failing with an obscure message or silently returning no rows.

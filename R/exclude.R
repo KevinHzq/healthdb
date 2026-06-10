@@ -6,9 +6,9 @@
 #'
 #' @param data Data.frames or remote tables (e.g., from [dbplyr::tbl_sql()]). A subset will be removed from this data.
 #' @param excl Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from `data` if there is a match. This will be passed to [dplyr::anti_join()] as the second argument.
-#' @param by Column names that should be matched by [dplyr::anti_join()], or a expressions with [dplyr::join_by()]. See [dplyr::anti_join()]'s `by` argument for detail. Default NULL is the same as `setdiff(data, excl)`.
+#' @param by Column names that should be matched by [dplyr::anti_join()], or an expression made with [dplyr::join_by()]. See [dplyr::anti_join()]'s `by` argument for detail. Default NULL is the same as `setdiff(data, excl)`.
 #' @param condition An expression that will be passed to [dplyr::filter()]. The rows that satisfy `condition` are those to be removed from `data`.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether to print an explanation of the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param report_on A quoted/unquoted column name for counting how many of its distinct values were removed from `data`, e.g., counting how many client IDs were removed. Default is NULL.
 #' @param ... Additional arguments passing to [dplyr::filter()]/[dplyr::anti_join()] for finer control of matching, e.g., na action, by-group filtering, etc.
 #'

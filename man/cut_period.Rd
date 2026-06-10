@@ -22,7 +22,7 @@ cut_period(
 
 \item{len}{An integer, the interval that would be used to divide the record duration}
 
-\item{unit}{One of "day" (default), "week", "month", "quarter, or "year" used in combination of \code{len} to specify the time length of the interval.}
+\item{unit}{One of "day" (default), "week", "month", "quarter", or "year" used in combination of \code{len} to specify the time length of the interval.}
 
 \item{.dt_trans}{Function to transform start/end, such as \code{\link[lubridate:ymd]{lubridate::ymd()}}. Default is NULL.}
 }

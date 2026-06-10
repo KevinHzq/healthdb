@@ -1,18 +1,18 @@
-#' Remove or flag groups with n less than some number
+#' Remove or flag groups smaller than a minimum size
 #'
 #' @md
 #' @description
-#' Remove or flags groups or clients that have less than some number of rows or some number of distinct values in a variable. For example, it can be used to remove clients that had less than n visits to some service on different dates from some administrative records. It offers filtering with [dplyr::n_distinct()] functionality for database input.
+#' Remove or flag groups or clients that have fewer than some number of rows or fewer than some number of distinct values in a variable. For example, it can be used to remove clients that had fewer than n visits to some service on different dates from some administrative records. It offers filtering with [dplyr::n_distinct()] functionality for database input.
 #'
 #' @param data Data.frames or remote tables (e.g., from [dbplyr::tbl_sql()])
 #' @param clnt_id Grouping variable (quoted/unquoted).
-#' @param n_per_clnt A single number specifying the minimum number of group size.
+#' @param n_per_clnt A single number specifying the minimum group size.
 #' @param count_by Another variable dictating the counting unit of `n_per_clnt.` The default is NULL meaning the inclusion criteria is the number of row, i.e., `dplyr::n() >= n_per_clnt`. If it is not NULL, the criteria becomes equivalent to `dplyr::n_distinct(count_by) >= n_per_clnt`.
 #' @param mode Either "flag" - add a new column 'flag_restrict_n' indicating if the client met the condition (all rows from a qualified client would have flag = 1), or "filter" - remove clients that did not meet the condition from the data. Default is "flag".
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #' @seealso [dplyr::n()], [dplyr::n_distinct()]
 #'
-#' @return A subset of input data satisfied the group size requirement, or raw input data with an new flag column.
+#' @return A subset of the input data that satisfied the group size requirement, or the input data with a new flag column.
 #' @export
 #'
 #' @examples

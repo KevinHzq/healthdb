@@ -19,11 +19,11 @@ exclude(
 
 \item{excl}{Data frames or remote tables (e.g., from 'dbplyr'). Rows/values present in it will be removed from \code{data} if there is a match. This will be passed to \code{\link[dplyr:anti_join]{dplyr::anti_join()}} as the second argument.}
 
-\item{by}{Column names that should be matched by \code{\link[dplyr:anti_join]{dplyr::anti_join()}}, or a expressions with \code{\link[dplyr:join_by]{dplyr::join_by()}}. See \code{\link[dplyr:anti_join]{dplyr::anti_join()}}'s \code{by} argument for detail. Default NULL is the same as \code{setdiff(data, excl)}.}
+\item{by}{Column names that should be matched by \code{\link[dplyr:anti_join]{dplyr::anti_join()}}, or an expression made with \code{\link[dplyr:join_by]{dplyr::join_by()}}. See \code{\link[dplyr:anti_join]{dplyr::anti_join()}}'s \code{by} argument for detail. Default NULL is the same as \code{setdiff(data, excl)}.}
 
 \item{condition}{An expression that will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}. The rows that satisfy \code{condition} are those to be removed from \code{data}.}
 
-\item{verbose}{A logical for whether printing explanation for the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
+\item{verbose}{A logical for whether to print an explanation of the operation. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all.}
 
 \item{report_on}{A quoted/unquoted column name for counting how many of its distinct values were removed from \code{data}, e.g., counting how many client IDs were removed. Default is NULL.}
 

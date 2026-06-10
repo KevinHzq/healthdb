@@ -1,4 +1,4 @@
-#' Remove or flag groups failed to meet conditions based on dates
+#' Remove or flag groups that failed to meet conditions based on dates
 #'
 #' @md
 #' @description
@@ -16,14 +16,14 @@
 #' * "flag" - add a new column 'flag_restrict_date' indicating if the condition was met (flag = 1 if the time period starting or ending at the current record satisfied the apart-within condition),
 #' * or "filter" - remove clients without any qualified record from the data. Default is "flag".
 #' @param flag_at Character, define if the flag should be placed at the start ("left") or end ("right") of a time period that contains n qualified records. Defaults to "left". Note that this would impact the first and last qualified/diagnosed dates of a client, e.g., using "right" will have the first flag not at the earliest but the date which the client became qualified. For example, if the condition was 2 records within a year, for `c("2023-01-01", "2023-04-01", "2024-05-01")`, flag will be `c(0, 1, 0)` for "right" while `c(1,0,0)` for "left".
-#' @param dup.rm Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when `within` is supplied without `apart`; duplicated dates have no impact when `apart` is present as the n dates must be distinct if they were apart. Default is TRUE.
+#' @param dup.rm Logical for whether multiple records on the same date should be counted as one in the calculation. Only applicable when `within` is supplied without `apart`; duplicated dates have no impact when `apart` is present as the n dates must be distinct if they were apart. Default is TRUE.
 #' @param force_collect A logical for whether force downloading remote table if `apart` is not NULL. For remote table only, because `apart` is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.
 #' @param verbose A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #' @param check_missing A logical for whether to check and remove missing entries in `date_var` before applying the conditions. Default is FALSE for faster run time.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
 #' @seealso [if_date()]
 #'
-#' @return A subset of input data satisfied the dates requirement, or raw input data with an new flag column.
+#' @return A subset of the input data that satisfied the date requirements, or the input data with a new flag column.
 #' @export
 #'
 #' @examples

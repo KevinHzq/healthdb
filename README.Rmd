@@ -21,11 +21,11 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of 'healthdb' is to provide a set of tools for identifying diseases or events from healthcare database and preparing data for epidemiological studies. It features abilities that are not natively support by database, such as matching strings by 'stringr' style regular expression and using 'LIKE' operator with multiple patterns in a vector. Three types of functions are included: interactive functions -- for customizing complex definitions; call building functions -- for batch execution of simple definition; miscellaneous functions -- for data wrangling, computing age and comorbidity index, etc.
+The goal of 'healthdb' is to provide a set of tools for identifying diseases or events from healthcare databases and preparing data for epidemiological studies. It features abilities that are not natively supported by databases, such as matching strings by 'stringr' style regular expressions and using the 'LIKE' operator with multiple patterns in a vector. Three types of functions are included: interactive functions -- for customizing complex definitions; call building functions -- for batch execution of simple definitions; miscellaneous functions -- for data wrangling, computing age and comorbidity index, etc.
 
-**The package is tested only on SQL Server and SQLite** as we do not have access to other SQL dialects. Please report bugs if you encounter issues with other dialects.
+**The package is automatically tested against SQLite, PostgreSQL, and SQL Server with every update.** Please report bugs if you encounter issues with other SQL dialects.
 
-Administrative health data are often stored on SQL database with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from database into R (i.e., local memory) without some filtering process.
+Administrative health data are often stored in SQL databases with strict security measures which may disable permission to write temporary tables. Writing queries without being able to cache intermediate results is challenging, especially when the data is too large to be downloaded from the database into R (i.e., local memory) without some filtering process.
 
 This package leverages 'dbplyr', particularly its ability to chain subqueries, in order to implement a common disease definition as a one-shot big query. Outputs are fully compatible with 'dplyr' functions.
 

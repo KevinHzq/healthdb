@@ -55,7 +55,7 @@ Note on case sensitivity of "like"/"start" matching: the data.frame method (\cod
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
 
-\item{verbose}{A logical for whether printing explanation and result overview for the query. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
+\item{verbose}{A logical for whether to print an explanation of the query and an overview of the result. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
 \item{query_only}{A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.}
 
@@ -65,7 +65,7 @@ Note on case sensitivity of "like"/"start" matching: the data.frame method (\cod
 A data.frame or tbl_sql object depending on the input.
 }
 \description{
-Filter rows which values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:if_any]{dplyr::if_any()}} or \code{\link[dplyr:if_all]{dplyr::if_all()}}, but it used the 'data.table' package \code{vignette("datatable-intro", package = "data.table")} for data.frame method, and has regular regular expression support for remote database tables. The motivation is to take away some pain when working with databases which often do not support regular expression and 'LIKE' operator with multiple string patterns.
+Filter rows whose values satisfy the specified conditions. The functionality is identical to \code{\link[dplyr:filter]{dplyr::filter()}} combined with \code{\link[dplyr:if_any]{dplyr::if_any()}} or \code{\link[dplyr:if_all]{dplyr::if_all()}}, but it uses the 'data.table' package (\code{vignette("datatable-intro", package = "data.table")}) for the data.frame method, and it supports regular expressions for remote database tables. The motivation is to take away some pain when working with databases, which often do not support regular expressions or the 'LIKE' operator with multiple string patterns.
 }
 \examples{
 # applying to data.frame; both sepal length and width in range 3-5

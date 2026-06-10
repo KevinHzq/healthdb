@@ -64,5 +64,5 @@ sud_def <- build_def("SUD", # usually a disease name
 sud_def \%>\% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = TRUE)
 }
 \seealso{
-[bind_sources()] for binding the output with convenient renaming features.
+[bind_source()] for binding the output with convenient renaming features.
 }

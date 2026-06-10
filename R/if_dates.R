@@ -8,9 +8,9 @@
 #' @param n An integer for the size of a draw
 #' @param apart An integer specifying the minimum gap (in days) between adjacent dates in a draw.
 #' @param within An integer specifying the maximum time span (in days) of a draw.
-#' @param detail Logical for whether return result per element of x.The default is FALSE, which returns one logical summarized by any(). Detail is not available if `apart` was supplied without `within` because sets that satisfied the condition could overlap, and records within a set may be far apart; thus, no unambiguous way to label by element.
+#' @param detail Logical for whether return result per element of x. The default is FALSE, which returns one logical summarized by any(). Detail is not available if `apart` was supplied without `within` because sets that satisfied the condition could overlap, and records within a set may be far apart; thus, no unambiguous way to label by element.
 #' @param align Character, define if the time span for each record should start ("left") or end ("right") at its current date. Defaults to "left". See 'flag_at' argument in [restrict_date()] for detail.
-#' @param dup.rm Logical for whether multiple records on the same date should be count as one in calculation. Only applicable when `within` is supplied without `apart`; duplicated dates have no impact when `apart` is present as the n dates must be distinct if they were apart. Default is TRUE.
+#' @param dup.rm Logical for whether multiple records on the same date should be counted as one in the calculation. Only applicable when `within` is supplied without `apart`; duplicated dates have no impact when `apart` is present as the n dates must be distinct if they were apart. Default is TRUE.
 #' @param ... Additional argument passing to [data.table::as.IDate()] for date conversion.
 #' @seealso [restrict_date()]
 #'

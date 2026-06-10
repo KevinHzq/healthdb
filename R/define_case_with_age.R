@@ -28,10 +28,10 @@
 #' @param age Optional. The name of the column containing age values. Used directly for age filtering when `age_range` is specified.
 #' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range in years. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided.
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
-#' @param verbose A logical for whether printing explanation for the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether to print an explanation of the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `mode`, passing to [restrict_date()].
 #'
-#' @return A subset of input data satisfied the specified case definition.
+#' @return A subset of the input data that satisfied the specified case definition.
 #' @export
 #'
 #' @examples

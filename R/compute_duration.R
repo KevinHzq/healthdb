@@ -8,9 +8,9 @@
 #' @param to A character or Date vector for end dates.
 #' @param lower_brks A numeric vector for lower breaks passing to the base [base::cut()] function to convert the numeric result to a factor. The level labels will be auto generated. For example, the level labels are `c("<19", "19-24", "25-34", "35-44", "45-54", "55+")` for `lower_brks = c(0, 19, 25, 35, 45, 55)`. Default is NULL (no conversion).
 #' @param unit A character string specifying the unit of the output. One of "year" (default), "day", "week", or "month".
-#' @param trans A logical for whether transform both `from` and `to` with the `.transfn` function
+#' @param trans A logical for whether to transform both `from` and `to` with the `.transfn` function
 #' @param .transfn A function for transforming the inputs. Default is [lubridate::ymd()].
-#' @param verbose A logical for whether print summary of the out and warning for missing values. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
+#' @param verbose A logical for whether to print a summary of the output and warn about missing values. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments passing to [base::cut()].
 #'
 #' @return A numeric or factor vector of the duration.
