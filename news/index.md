@@ -19,6 +19,10 @@
   `options(healthdb.check_con = FALSE)`, which saves one round trip to
   the server per step in a long pipeline.
 
+- Fixed report_n() (and the `report_on` argument of exclude()) erroring
+  with “Can’t coerce from a object to an integer” on database backends
+  whose counts come back as 64-bit integers (e.g., PostgreSQL).
+
 - The test suite can now run against PostgreSQL
   (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection
   variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an
