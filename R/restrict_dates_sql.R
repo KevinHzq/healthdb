@@ -331,9 +331,10 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
         data <- data %>%
           dplyr::mutate(
             # case_when makes the indicator integer (PostgreSQL cannot SUM
-            # booleans) while keeping the comparison in a condition context
-            # (if_else would nest IIFs on SQL Server)
-            in_win_1 = dplyr::case_when(dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)) ~ 1L, .default = 0L),
+            # booleans); explicit comparisons, not between(), as SQL Server
+            # translates between() to a bit-valued IIF, which cannot be used
+            # as a CASE WHEN condition
+            in_win_1 = dplyr::case_when(.data[[date_var]] >= clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart) & .data[[date_var]] <= clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart) ~ 1L, .default = 0L),
             sum_win_1 = dplyr::case_when(sum(in_win_1, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
@@ -341,7 +342,7 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
       } else {
         data <- data %>%
           dplyr::mutate(
-            !!win_i := dplyr::case_when(dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)) ~ 1L, .default = 0L),
+            !!win_i := dplyr::case_when(!!date_sym >= clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart) & !!date_sym <= clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart) ~ 1L, .default = 0L),
             !!sum_i := dplyr::case_when(sum(!!win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
