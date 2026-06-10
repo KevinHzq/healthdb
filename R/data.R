@@ -17,7 +17,13 @@
 #'  \item{category}{Short label of the comorbidity category, e.g., "chf". These labels are the column names in [compute_comorbidity()] output and the valid values of its `excl` argument.}
 #'  \item{description}{Full name of the comorbidity category, e.g., "Congestive Heart Failure".}
 #'  \item{code}{The ICD code, e.g., "I50". Codes contain no dots.}
-#'  \item{match_len}{How the code is compared with the diagnosis values in data: an integer L means prefix match, i.e., a diagnosis value matches if its first L characters equal the code (codes listed at the category/subcategory level cover all their subdivisions); NA means exact match of the full code.}
+#'  \item{match_len}{The number of leading characters of a diagnosis value that is compared with the code (prefix match), equal to the number of characters in the code. Codes in the sources are listed at the category/subcategory level and cover all their subdivisions (the ".x" notation in Quan et al.), hence the prefix match, e.g., ICD-10 "I50" covers "I500", and ICD-9 "428" covers "4280" and "42800". This reproduces the behavior of the reference SAS implementation, which compares every code with the SAS `IN:` (starts-with) operator.}
+#' }
+#'
+#' @source The code lists were verified code-for-code against the SAS macros published by the Manitoba Centre for Health Policy (based on Quan's "Enhanced Elixhauser Diagnosis-Type SAS code"):
+#' \itemize{
+#'  \item ICD-9-CM: \url{http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD9CM.sas.txt}
+#'  \item ICD-10: \url{http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD10.sas.txt}
 #' }
 #'
 #' @references Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.

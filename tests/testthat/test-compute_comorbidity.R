@@ -214,3 +214,26 @@ test_that("prefix codes in elix_codes match their subdivisions", {
     }
   }
 })
+
+test_that("icd9 codes longer than the listed ones are matched by prefix", {
+  df <- data.frame(
+    uid = 1:4, clnt_id = 1:4,
+    # 4280 -> 428 (chf, 3-digit category)
+    # 42541 -> 4254 (chf, 4-digit subcategory)
+    # 39891x -> 39891 (chf, 5-digit code)
+    # 9990 matches nothing
+    diagx_1 = c("4280", "42541", "398911", "9990"),
+    diagx_2 = NA_character_
+  )
+  for (dat in list(df, memdb_tbl(df))) {
+    result <- compute_comorbidity(dat,
+      vars = starts_with("diagx"),
+      icd_ver = "ICD-9-CM-5digits", clnt_id = clnt_id,
+      uid = uid, sum_by = "row", excl = NULL
+    ) %>%
+      dplyr::collect() %>%
+      dplyr::arrange(uid)
+    expect_equal(result$chf, c(1, 1, 1, 0))
+    expect_equal(result$total_eci, c(1, 1, 1, 0))
+  }
+})

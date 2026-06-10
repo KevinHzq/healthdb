@@ -7,10 +7,20 @@
 #   searches BOTH 3-digit and 5-digit codes.
 #
 # `match_len` encodes how a code is compared with the diagnosis values:
-# - an integer L: prefix match, i.e., the first L characters of the diagnosis
-#   value must equal the code (codes at the category/subcategory level cover
-#   all their subdivisions);
-# - NA: exact match of the full code.
+# an integer L means prefix match, i.e., the first L characters of the
+# diagnosis value must equal the code. Codes in the sources are listed at the
+# category/subcategory level and cover all their subdivisions (the ".x"
+# notation in Quan et al.), hence the prefix match at each code's own length,
+# e.g., ICD-9 "428" covers "4280" and "42800". Segments entered with
+# match_len = NA below (the Quan et al. ICD-9 lists with mixed code lengths)
+# are assigned match_len = nchar(code) at build time.
+#
+# This reproduces the reference SAS implementation, which compares every code
+# with the SAS `IN:` (starts-with) operator. The "ICD-10" and
+# "ICD-9-CM-5digits" lists were verified code-for-code against the MCHP SAS
+# macros (based on Quan's "Enhanced Elixhauser Diagnosis-Type SAS code"):
+# - http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD9CM.sas.txt
+# - http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD10.sas.txt
 #
 # Run this script to regenerate data/elix_codes.rda:
 #   source("data-raw/elix_codes.R")
@@ -347,5 +357,9 @@ elix_codes <- rbind(
   build_rows(icd9_3dig, "ICD-9-CM-3digits")
 )
 rownames(elix_codes) <- NULL
+
+# codes cover all their subdivisions: match by prefix at each code's length
+na_len <- is.na(elix_codes$match_len)
+elix_codes$match_len[na_len] <- nchar(elix_codes$code[na_len])
 
 usethis::use_data(elix_codes, overwrite = TRUE)
