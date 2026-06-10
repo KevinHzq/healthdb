@@ -8,6 +8,8 @@
 
 -   Fixed report_n() (and the `report_on` argument of exclude()) erroring with "Can't coerce from a <integer64> object to an integer" on database backends whose counts come back as 64-bit integers (e.g., PostgreSQL).
 
+-   Fixed restrict_date() with `apart` on PostgreSQL: the generated SQL summed and coalesced boolean columns, which PostgreSQL rejects ("function sum(boolean) does not exist"); the indicators are now explicit integers. Also fixed the `check_missing = TRUE` count, which could report a garbled number of removed records (e.g., "2.47e-323") or miss the warning entirely on some backends.
+
 -   The test suite can now run against PostgreSQL (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an ODBC connection string in `HEALTHDB_TEST_ODBC`), and does so on GitHub Actions via service containers, in addition to the default local SQLite.
 
 -   **Behavior change**: compute_comorbidity() now also matches ICD-9 codes by prefix (consistent with the ICD-10 change below): codes in `data` are compared with each listed code at the code's own length, as the codes in Quan et al. (2005) cover all their subdivisions, e.g., "428" (Congestive Heart Failure, 428.x) now captures "4280" and "42800", which were previously missed by exact matching. This affects both "ICD-9-CM-5digits" and the full-code part of "ICD-9-CM-3digits". ICD-9 scores may be higher than in previous versions. The prefix matching reproduces the reference SAS implementation, which compares every code with the SAS `IN:` (starts-with) operator; the package code lists were verified code-for-code against the MCHP SAS macros (see ?elix_codes for links).

@@ -20,13 +20,17 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     uid <- rlang::as_name(rlang::enquo(uid))
   }
 
-  # check missing date_var
+  # check missing date_var; sum an explicit 1L/0L indicator instead of
+  # count(is.na(.)) as grouping by a boolean and the row order of the counts
+  # are not portable across dialects; as.numeric strips the integer64 class
+  # some backends return
   if (check_missing) {
-    check_null <- data %>%
-      dplyr::count(no_date = is.na(.data[[date_var]])) %>%
-      dplyr::collect()
-    if (nrow(check_null) > 1) {
-      warning("Removed ", check_null[2, 2], " records with missing date_var")
+    n_missing <- data %>%
+      dplyr::summarise(n_missing = sum(dplyr::if_else(is.na(.data[[date_var]]), 1L, 0L), na.rm = TRUE)) %>%
+      dplyr::pull("n_missing") %>%
+      as.numeric()
+    if (isTRUE(n_missing > 0)) {
+      warning("Removed ", n_missing, " records with missing date_var")
       data <- data %>%
         dplyr::filter(!is.na(.data[[date_var]]))
     }
@@ -291,8 +295,13 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
 
     if ((n - i * 2) == 0) {
       if (n == 2) {
+        # case_when, not the bare comparison, as boolean columns cannot be
+        # COALESCE'd with 0L or MAX'ed on PostgreSQL
         data <- data %>%
-          dplyr::mutate(temp_nm_flag_apart = abs(difftime(max(.data[[date_var]], na.rm = TRUE), min(.data[[date_var]], na.rm = TRUE), units = "days")) >= apart)
+          dplyr::mutate(temp_nm_flag_apart = dplyr::case_when(
+            abs(difftime(max(.data[[date_var]], na.rm = TRUE), min(.data[[date_var]], na.rm = TRUE), units = "days")) >= apart ~ 1L,
+            .default = 0L
+          ))
         break
       }
       # product of all previous sum_win_* indicators
@@ -310,7 +319,8 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
       if (i == 1) {
         data <- data %>%
           dplyr::mutate(
-            in_win_1 = dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)),
+            # if_else makes the indicator integer; PostgreSQL cannot SUM booleans
+            in_win_1 = dplyr::if_else(dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)), 1L, 0L),
             sum_win_1 = dplyr::case_when(sum(in_win_1, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
@@ -318,7 +328,7 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
       } else {
         data <- data %>%
           dplyr::mutate(
-            !!win_i := dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)),
+            !!win_i := dplyr::if_else(dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)), 1L, 0L),
             !!sum_i := dplyr::case_when(sum(!!win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
