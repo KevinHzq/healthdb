@@ -14,6 +14,8 @@
 #'  - "start": same as regex or LIKE with modified vals, e.g., "^val1|^val2" or "va1%|val2%"
 #'  - "between": dplyr::between(var, val1, val2)
 #'  - "glue_sql": For remote table only, this gives full control of the WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
+#'
+#'  Note on case sensitivity of "like"/"start" matching: the data.frame method ([stringr::str_like()]) is case-sensitive, while for remote tables it follows the database. For example, 'LIKE' is case-sensitive on PostgreSQL, case-insensitive for ASCII characters on SQLite, and determined by the collation (commonly case-insensitive) on SQL Server. For portable results, match the case of the values in your data, or normalize the case of both sides, e.g., `identify_rows(dplyr::mutate(data, var = toupper(var)), var, "like", toupper(vals))`.
 #' @param vals Depending on `match`, it takes different input:
 #'  - "in": a vector of values (numeric/character/Date)
 #'  - "start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end
