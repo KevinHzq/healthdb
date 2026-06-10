@@ -23,6 +23,13 @@
   with “Can’t coerce from a object to an integer” on database backends
   whose counts come back as 64-bit integers (e.g., PostgreSQL).
 
+- Fixed restrict_date() with `apart` on PostgreSQL: the generated SQL
+  summed and coalesced boolean columns, which PostgreSQL rejects
+  (“function sum(boolean) does not exist”); the indicators are now
+  explicit integers. Also fixed the `check_missing = TRUE` count, which
+  could report a garbled number of removed records (e.g., “2.47e-323”)
+  or miss the warning entirely on some backends.
+
 - The test suite can now run against PostgreSQL
   (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection
   variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an
