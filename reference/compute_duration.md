@@ -48,7 +48,7 @@ compute_duration(
 
 - trans:
 
-  A logical for whether transform both `from` and `to` with the
+  A logical for whether to transform both `from` and `to` with the
   `.transfn` function
 
 - .transfn:
@@ -58,8 +58,8 @@ compute_duration(
 
 - verbose:
 
-  A logical for whether print summary of the out and warning for missing
-  values. Default is fetching from options. Use
+  A logical for whether to print a summary of the output and warn about
+  missing values. Default is fetching from options. Use
   `options(healthdb.verbose = FALSE)` to suppress once and for all.
 
 - ...:

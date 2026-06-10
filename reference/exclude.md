@@ -44,7 +44,7 @@ exclude(
 
   Column names that should be matched by
   [`dplyr::anti_join()`](https://dplyr.tidyverse.org/reference/filter-joins.html),
-  or a expressions with
+  or an expression made with
   [`dplyr::join_by()`](https://dplyr.tidyverse.org/reference/join_by.html).
   See
   [`dplyr::anti_join()`](https://dplyr.tidyverse.org/reference/filter-joins.html)'s
@@ -59,9 +59,9 @@ exclude(
 
 - verbose:
 
-  A logical for whether printing explanation for the operation. Default
-  is fetching from options. Use `options(healthdb.verbose = FALSE)` to
-  suppress once and for all.
+  A logical for whether to print an explanation of the operation.
+  Default is fetching from options. Use
+  `options(healthdb.verbose = FALSE)` to suppress once and for all.
 
 - report_on:
 

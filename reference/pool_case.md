@@ -1,7 +1,7 @@
 # Pool qualified clients from results of multiple definitions
 
-This function filters and pools, i.e., row bind, qualified
-clients/groups from different source with an option to summarize by
+This function filters and pools, i.e., row-binds, qualified
+clients/groups from different sources with an option to summarize by
 client. Unlike
 [`bind_source()`](https://kevinhzq.github.io/healthdb/reference/bind_source.md),
 no need to supply variable names; the function will guess what should be
@@ -9,7 +9,7 @@ included and their names from the supplied definition from
 [`build_def()`](https://kevinhzq.github.io/healthdb/reference/build_def.md).
 Whether a client is qualified relies on the flag variables set by
 [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md).
-Therefore, this function is intended to be use only with the built-in
+Therefore, this function is intended to be used only with the built-in
 [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
 as `def_fn` in
 [`build_def()`](https://kevinhzq.github.io/healthdb/reference/build_def.md).

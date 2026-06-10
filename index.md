@@ -1,24 +1,24 @@
 # healthdb
 
 The goal of ‘healthdb’ is to provide a set of tools for identifying
-diseases or events from healthcare database and preparing data for
+diseases or events from healthcare databases and preparing data for
 epidemiological studies. It features abilities that are not natively
-support by database, such as matching strings by ‘stringr’ style regular
-expression and using ‘LIKE’ operator with multiple patterns in a vector.
-Three types of functions are included: interactive functions – for
-customizing complex definitions; call building functions – for batch
-execution of simple definition; miscellaneous functions – for data
-wrangling, computing age and comorbidity index, etc.
+supported by databases, such as matching strings by ‘stringr’ style
+regular expressions and using the ‘LIKE’ operator with multiple patterns
+in a vector. Three types of functions are included: interactive
+functions – for customizing complex definitions; call building functions
+– for batch execution of simple definitions; miscellaneous functions –
+for data wrangling, computing age and comorbidity index, etc.
 
-**The package is tested only on SQL Server and SQLite** as we do not
-have access to other SQL dialects. Please report bugs if you encounter
-issues with other dialects.
+**The package is automatically tested against SQLite, PostgreSQL, and
+SQL Server with every update.** Please report bugs if you encounter
+issues with other SQL dialects.
 
-Administrative health data are often stored on SQL database with strict
+Administrative health data are often stored in SQL databases with strict
 security measures which may disable permission to write temporary
 tables. Writing queries without being able to cache intermediate results
 is challenging, especially when the data is too large to be downloaded
-from database into R (i.e., local memory) without some filtering
+from the database into R (i.e., local memory) without some filtering
 process.
 
 This package leverages ‘dbplyr’, particularly its ability to chain
@@ -78,15 +78,15 @@ claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", str_g
 # note that in-memory SQLite database stores dates as numbers
 claim_db %>% head()
 #> # Source:   SQL [?? x 6]
-#> # Database: sqlite 3.51.0 [:memory:]
+#> # Database: sqlite 3.53.1 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
-#> 1    59       1 16650 999   <NA>    <NA>   
-#> 2    14       1 17100 3046  3058    <NA>   
-#> 3    65       1 17381 999   <NA>    <NA>   
-#> 4    19       1 17948 2916  2915    999    
-#> 5    71       1 18479 999   999     999    
-#> 6    66       2 16553 999   <NA>    999
+#> 1     3       1 16780 2914  2926    <NA>   
+#> 2    10       1 17594 305   3050    999    
+#> 3    93       1 17688 999   <NA>    999    
+#> 4    43       1 18287 3043  3031    3033   
+#> 5    37       1 18419 2921  2919    <NA>   
+#> 6    50       2 16806 3041  3039    2910
 ```
 
 Hospitalization
@@ -98,12 +98,12 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 # this is a local data.frame/tibble
 hosp_df %>% head()
 #>   uid clnt_id      dates diagx diagx_1 diagx_2
-#> 1  96       1 2016-01-04   999     999     999
-#> 2 100       1 2020-09-15   999    <NA>    <NA>
-#> 3  79       1 2020-12-26   999     999    <NA>
-#> 4  15       2 2019-08-24  F185    F170    <NA>
-#> 5  48       2 2020-02-12  F102    F138    F180
-#> 6  10       3 2016-02-06  F163    F174     999
+#> 1  52       1 2018-08-31   999     999     999
+#> 2  11       1 2019-02-05  F154    F163     999
+#> 3   6       1 2020-02-29  F179    F174    <NA>
+#> 4  96       2 2017-03-17   999     999     999
+#> 5  37       2 2019-11-15  F153    F142     999
+#> 6  25       2 2020-10-20  F197    F153    <NA>
 ```
 
 Here’s how you could use `healthdb` to implement the SUD definition
@@ -141,15 +141,15 @@ above:
     #> dates. Clients/groups which did not met the condition were excluded.
     result2 %>% head()
     #> # Source:   SQL [?? x 7]
-    #> # Database: sqlite 3.51.0 [:memory:]
+    #> # Database: sqlite 3.53.1 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
-    #> 1    14       1 17100 3046  3058    <NA>                  1
-    #> 2    19       1 17948 2916  2915    999                   1
-    #> 3    36       3 17235 3047  3037    999                   1
-    #> 4    37       3 17984 3055  292     <NA>                  1
-    #> 5    16       3 18169 3051  999     <NA>                  1
-    #> 6    49       5 17935 3051  2922    3052                  1
+    #> 1     3       1 16780 2914  2926    <NA>                  1
+    #> 2    10       1 17594 305   3050    999                   1
+    #> 3    43       1 18287 3043  3031    3033                  1
+    #> 4    37       1 18419 2921  2919    <NA>                  1
+    #> 5    50       2 16806 3041  3039    2910                  1
+    #> 6    46       2 17003 2911  2914    3046                  1
     ```
 
 3.  Restrict the temporal pattern of diagnoses
@@ -169,15 +169,15 @@ above:
     #> days. Records that met the condition were flagged.
     result3 %>% head()
     #> # Source:   SQL [?? x 8]
-    #> # Database: sqlite 3.51.0 [:memory:]
+    #> # Database: sqlite 3.53.1 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
-    #> 1    14       1 17100 3046  3058    <NA>                  1                  0
-    #> 2    19       1 17948 2916  2915    999                   1                  0
-    #> 3    36       3 17235 3047  3037    999                   1                  0
-    #> 4    37       3 17984 3055  292     <NA>                  1                  1
-    #> 5    16       3 18169 3051  999     <NA>                  1                  0
-    #> 6    49       5 17935 3051  2922    3052                  1                  1
+    #> 1     3       1 16780 2914  2926    <NA>                  1                  0
+    #> 2    10       1 17594 305   3050    999                   1                  0
+    #> 3    43       1 18287 3043  3031    3033                  1                  1
+    #> 4    37       1 18419 2921  2919    <NA>                  1                  0
+    #> 5    50       2 16806 3041  3039    2910                  1                  1
+    #> 6    46       2 17003 2911  2914    3046                  1                  1
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.

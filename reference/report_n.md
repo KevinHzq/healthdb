@@ -1,12 +1,12 @@
-# Report number of distinct value in a column across data frames
+# Report the number of distinct values in a column across data frames
 
 This function is intended to mimic
 [`dplyr::n_distinct()`](https://dplyr.tidyverse.org/reference/n_distinct.html)
 for multiple inputs. It is useful to report the number of clients
-through out a series of inclusion or exclusion steps. An use case could
-be getting the Ns for the sample definition flowchart in an
-epidemiological study. It is also useful for inline reporting of Ns in a
-Rmarkdown document.
+throughout a series of inclusion or exclusion steps. A use case could be
+getting the Ns for the sample definition flowchart in an epidemiological
+study. It is also useful for inline reporting of Ns in an R Markdown
+document.
 
 ## Usage
 
@@ -36,7 +36,7 @@ report_n(..., on, force_proceed = getOption("healthdb.force_proceed"))
 
 ## Value
 
-A sequence of the number of distinct `on` for each data frames
+A sequence of the number of distinct `on` values, one for each input
 
 ## Examples
 

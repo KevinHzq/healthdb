@@ -23,9 +23,9 @@ bind_source(data, ..., force_proceed = getOption("healthdb.force_proceed"))
   the argument is a character vector of the original names. The name
   vector and the list elements in `data` will be matched by position. if
   an output variable only came from some of the sources, fill the name
-  vector to a length equal to the number of sources with NA, e.g., `var`
-  only come from the second out of three sources, then
-  `var = c(NA, 'nm_in_src2', NA)`.
+  vector to a length equal to the number of sources with NA. For
+  example, if `var` only comes from the second out of three sources,
+  then `var = c(NA, 'nm_in_src2', NA)`.
 
 - force_proceed:
 

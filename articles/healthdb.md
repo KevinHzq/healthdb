@@ -13,8 +13,9 @@
   [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
   [`fetch_var()`](https://kevinhzq.github.io/healthdb/reference/fetch_var.md))
   based on filter and joins from dplyr with tweaks that fix SQL
-  translation or add features that are not natively support by SQL. They
-  also work for local data.frame, and some use ‘data.table’ package
+  translation or add features that are not natively supported by SQL.
+  They also work for local data.frames, and some use the ‘data.table’
+  package
   ([`vignette("datatable-intro", package = "data.table")`](https://cran.rstudio.com/web/packages/data.table/vignettes/datatable-intro.html))
   to speed up processing time for large data. These functions are not as
   flexible as

@@ -1,13 +1,13 @@
 # Get variables from multiple tables with common ID columns
 
-This function fetches variables from different tables that linked by
+This function fetches variables from different tables that are linked by
 common IDs. It calls
 [`dplyr::left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
 multiple times with various source tables (y argument of the join) to
 gather variables. It is not meant to replace left_join() but simplify
-syntax for the situation that you started off a table of study sample
-and wanted to gather covariates from different sources linked by common
-client IDs, which is often the case when working with healthcare
+syntax for the situation that you started off with a table of your study
+sample and wanted to gather covariates from different sources linked by
+common client IDs, which is often the case when working with healthcare
 databases. **Caution**: this function is intended for one-to-one joins
 only because it could be problematic when we do not know which source
 caused a one-to-many join and changed the number of rows. For data.frame

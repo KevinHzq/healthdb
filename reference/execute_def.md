@@ -55,7 +55,7 @@ A single (if bind = TRUE) or a list of data.frames or remote tables.
 
 ## See also
 
-\[bind_sources()\] for binding the output with convenient renaming
+\[bind_source()\] for binding the output with convenient renaming
 features.
 
 ## Examples

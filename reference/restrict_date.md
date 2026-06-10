@@ -1,4 +1,4 @@
-# Remove or flag groups failed to meet conditions based on dates
+# Remove or flag groups that failed to meet conditions based on dates
 
 For each client or group, interpret if they have n records that are at
 least certain days apart AND within a specified time span. When
@@ -85,11 +85,11 @@ restrict_date(
 
 - dup.rm:
 
-  Logical for whether multiple records on the same date should be count
-  as one in calculation. Only applicable when `within` is supplied
-  without `apart`; duplicated dates have no impact when `apart` is
-  present as the n dates must be distinct if they were apart. Default is
-  TRUE.
+  Logical for whether multiple records on the same date should be
+  counted as one in the calculation. Only applicable when `within` is
+  supplied without `apart`; duplicated dates have no impact when `apart`
+  is present as the n dates must be distinct if they were apart. Default
+  is TRUE.
 
 - force_collect:
 
@@ -121,8 +121,8 @@ restrict_date(
 
 ## Value
 
-A subset of input data satisfied the dates requirement, or raw input
-data with an new flag column.
+A subset of the input data that satisfied the date requirements, or the
+input data with a new flag column.
 
 ## See also
 

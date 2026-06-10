@@ -2,7 +2,7 @@
 
 This function is useful for collapsing, e.g., medication dispensation or
 hospitalization, records into episodes if the records' dates are no more
-than n days gap apart. The length of the gap can be relaxed by another
+than n days apart. The length of the gap can be relaxed by another
 grouping variable.
 
 ## Usage
@@ -37,8 +37,8 @@ collapse_episode(
 
 - end_dt:
 
-  Column name of the end date of records. The default is NULL assuming
-  the record last one day and only the start date will be used to
+  Column name of the end date of records. The default is NULL, assuming
+  the record lasts one day and only the start date will be used to
   calculate the gaps between records.
 
 - gap:

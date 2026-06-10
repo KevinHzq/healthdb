@@ -79,7 +79,7 @@ define_case_with_age(
 
 - n_per_clnt:
 
-  A single number specifying the minimum number of group size.
+  A single number specifying the minimum group size.
 
 - date_var:
 
@@ -172,9 +172,9 @@ define_case_with_age(
 
 - verbose:
 
-  A logical for whether printing explanation for the operation. Default
-  is fetching from options. Use `options(healthdb.verbose = FALSE)` to
-  suppress once and for all.
+  A logical for whether to print an explanation of the operation.
+  Default is fetching from options. Use
+  `options(healthdb.verbose = FALSE)` to suppress once and for all.
 
 - ...:
 
@@ -183,7 +183,7 @@ define_case_with_age(
 
 ## Value
 
-A subset of input data satisfied the specified case definition.
+A subset of the input data that satisfied the specified case definition.
 
 ## Examples
 

@@ -45,6 +45,21 @@ A system for identifying diseases or events from healthcare databases and prepar
 
 
     <div class="section level2">
+    <h2 id="package-options">Package options<a class="anchor" aria-label="anchor" href="#package-options"></a></h2>
+
+
+<p>The behavior of some functions can be adjusted with [options()]:</p><dl><dt>healthdb.verbose</dt>
+<dd><p>Whether functions explain what they are doing and give an overview of the results. The default is TRUE. Use `options(healthdb.verbose = FALSE)` to turn the messages off.</p></dd>
+
+ <dt>healthdb.force_proceed</dt>
+<dd><p>Some operations have to download data from the database first, which may be slow. By default (FALSE), functions ask for your confirmation before downloading. Use `options(healthdb.force_proceed = TRUE)` to skip the prompts.</p></dd>
+
+ <dt>healthdb.check_con</dt>
+<dd><p>Whether functions test that the database connection is alive (by sending a trivial `SELECT 1` query) before building queries on it. The default is TRUE. Use `options(healthdb.check_con = FALSE)` to skip the test; this saves one trip to the database per step, which can add up in long pipelines, but a dropped connection would then surface as a less informative error.</p></dd>
+
+
+</dl></div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://github.com/KevinHzq/healthdb" class="external-link">https://github.com/KevinHzq/healthdb</a></p></li>
 <li><p><a href="https://kevinhzq.github.io/healthdb/">https://kevinhzq.github.io/healthdb/</a></p></li>

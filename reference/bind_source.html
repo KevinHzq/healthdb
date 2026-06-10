@@ -51,7 +51,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Named arguments for each variable included in the output. The argument name should be the new name in the output, and the right hand side of the argument is a character vector of the original names. The name vector and the list elements in <code>data</code> will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA, e.g., <code>var</code> only come from the second out of three sources, then <code>var = c(NA, 'nm_in_src2', NA)</code>.</p></dd>
+<dd><p>Named arguments for each variable included in the output. The argument name should be the new name in the output, and the right hand side of the argument is a character vector of the original names. The name vector and the list elements in <code>data</code> will be matched by position. if an output variable only came from some of the sources, fill the name vector to a length equal to the number of sources with NA. For example, if <code>var</code> only comes from the second out of three sources, then <code>var = c(NA, 'nm_in_src2', NA)</code>.</p></dd>
 
 
 <dt id="arg-force-proceed">force_proceed<a class="anchor" aria-label="anchor" href="#arg-force-proceed"></a></dt>

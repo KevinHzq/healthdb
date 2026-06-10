@@ -29,10 +29,10 @@ build_def(def_lab, src_labs, def_fn = define_case, fn_args)
 
   A list of functions (default:
   [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md))
-  that will filter the source data sets and keep clients met the case
-  definition. The length of the list should be either 1 or equal to the
-  length of `src_labs`. If length = 1, the same function will be applied
-  to all sources; otherwise, `def_fn` should match `src_lab` by
+  that will filter the source data sets and keep clients that met the
+  case definition. The length of the list should be either 1 or equal to
+  the length of `src_labs`. If length = 1, the same function will be
+  applied to all sources; otherwise, `def_fn` should match `src_lab` by
   position. User can supply custom functions but must put input data as
   the first argument and name it `data`. Note: Mixing define functions
   (e.g.,
@@ -85,7 +85,7 @@ sud_def
 #> 1 SUD     src1     define_case <named list [6]> <language>  
 #> 2 SUD     src2     mean        <named list [6]> <language>  
 
-# the fn_call column stores the code that can be ran with execute_def
+# the fn_call column stores the code that can be run with execute_def
 sud_def # fn_call
 #> # A tibble: 2 × 5
 #>   def_lab src_labs def_fn      fn_args          fn_call     

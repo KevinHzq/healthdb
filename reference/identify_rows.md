@@ -1,18 +1,18 @@
 # Identify rows with a match
 
-Filter rows which values satisfy the specified conditions. The
+Filter rows whose values satisfy the specified conditions. The
 functionality is identical to
 [`dplyr::filter()`](https://dplyr.tidyverse.org/reference/filter.html)
 combined with
 [`dplyr::if_any()`](https://dplyr.tidyverse.org/reference/across.html)
 or
 [`dplyr::if_all()`](https://dplyr.tidyverse.org/reference/across.html),
-but it used the 'data.table' package
-[`vignette("datatable-intro", package = "data.table")`](https://cran.rstudio.com/web/packages/data.table/vignettes/datatable-intro.html)
-for data.frame method, and has regular regular expression support for
+but it uses the 'data.table' package
+([`vignette("datatable-intro", package = "data.table")`](https://cran.rstudio.com/web/packages/data.table/vignettes/datatable-intro.html))
+for the data.frame method, and it supports regular expressions for
 remote database tables. The motivation is to take away some pain when
-working with databases which often do not support regular expression and
-'LIKE' operator with multiple string patterns.
+working with databases, which often do not support regular expressions
+or the 'LIKE' operator with multiple string patterns.
 
 ## Usage
 
@@ -114,8 +114,8 @@ identify_row(
 
 - verbose:
 
-  A logical for whether printing explanation and result overview for the
-  query. Default is fetching from options. Use
+  A logical for whether to print an explanation of the query and an
+  overview of the result. Default is fetching from options. Use
   `options(healthdb.verbose = FALSE)` to suppress once and for all.
   Result overview is not for remote tables as the query is not executed
   immediately, thus no result is available for summary without adding an

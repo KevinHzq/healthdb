@@ -41,8 +41,8 @@
 - [`pool_case()`](https://kevinhzq.github.io/healthdb/reference/pool_case.md)
   : Pool qualified clients from results of multiple definitions
 - [`report_n()`](https://kevinhzq.github.io/healthdb/reference/report_n.md)
-  : Report number of distinct value in a column across data frames
+  : Report the number of distinct values in a column across data frames
 - [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)
-  : Remove or flag groups failed to meet conditions based on dates
+  : Remove or flag groups that failed to meet conditions based on dates
 - [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md)
-  : Remove or flag groups with n less than some number
+  : Remove or flag groups smaller than a minimum size

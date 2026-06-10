@@ -41,7 +41,7 @@ cut_period(
 
 - unit:
 
-  One of "day" (default), "week", "month", "quarter, or "year" used in
+  One of "day" (default), "week", "month", "quarter", or "year" used in
   combination of `len` to specify the time length of the interval.
 
 - .dt_trans:

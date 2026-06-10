@@ -1,10 +1,10 @@
-# Remove or flag groups with n less than some number
+# Remove or flag groups smaller than a minimum size
 
-Remove or flags groups or clients that have less than some number of
-rows or some number of distinct values in a variable. For example, it
-can be used to remove clients that had less than n visits to some
-service on different dates from some administrative records. It offers
-filtering with
+Remove or flag groups or clients that have fewer than some number of
+rows or fewer than some number of distinct values in a variable. For
+example, it can be used to remove clients that had fewer than n visits
+to some service on different dates from some administrative records. It
+offers filtering with
 [`dplyr::n_distinct()`](https://dplyr.tidyverse.org/reference/n_distinct.html)
 functionality for database input.
 
@@ -34,7 +34,7 @@ restrict_n(
 
 - n_per_clnt:
 
-  A single number specifying the minimum number of group size.
+  A single number specifying the minimum group size.
 
 - count_by:
 
@@ -61,8 +61,8 @@ restrict_n(
 
 ## Value
 
-A subset of input data satisfied the group size requirement, or raw
-input data with an new flag column.
+A subset of the input data that satisfied the group size requirement, or
+the input data with a new flag column.
 
 ## See also
 

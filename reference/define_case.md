@@ -6,14 +6,14 @@ This function is a composite of
 [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md),
 and
 [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
-It is aimed to implement common case definitions in epidemiological
-studies using administrative database as a one-shot big query. The
-intended use case is for definitions in the form of, e.g., two or more
-physician visits with some diagnostic code at least 30 days apart within
-two years. The component functions mentioned above are chained in the
+It aims to implement common case definitions in epidemiological studies
+using administrative database as a one-shot big query. The intended use
+case is for definitions in the form of, e.g., two or more physician
+visits with some diagnostic code at least 30 days apart within two
+years. The component functions mentioned above are chained in the
 following order if all arguments were supplied:
 `identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_date()`.
-Only necessary steps in the chain will be ran if some arguments are
+Only the necessary steps in the chain will be run if some arguments are
 missing, see the verbose output for what was done. Note that if
 `date_var` is supplied, `n_per_clnt` will be counted by distinct dates
 instead of number of records.
@@ -75,7 +75,7 @@ define_case(
 
 - n_per_clnt:
 
-  A single number specifying the minimum number of group size.
+  A single number specifying the minimum group size.
 
 - date_var:
 
@@ -150,9 +150,9 @@ define_case(
 
 - verbose:
 
-  A logical for whether printing explanation for the operation. Default
-  is fetching from options. Use `options(healthdb.verbose = FALSE)` to
-  suppress once and for all.
+  A logical for whether to print an explanation of the operation.
+  Default is fetching from options. Use
+  `options(healthdb.verbose = FALSE)` to suppress once and for all.
 
 - ...:
 
@@ -161,7 +161,7 @@ define_case(
 
 ## Value
 
-A subset of input data satisfied the specified case definition.
+A subset of the input data that satisfied the specified case definition.
 
 ## Examples
 
