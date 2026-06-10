@@ -34,7 +34,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="healthdb-development-version">healthdb (development version)<a class="anchor" aria-label="anchor" href="#healthdb-development-version"></a></h2>
-<ul><li><p>identify_row() is now also exported as identify_rows() (consistent with it returning multiple rows); both names work and are documented on the same page.</p></li>
+<ul><li><p>identify_row() now errors informatively when <code>vals</code> is empty (e.g., <code>character(0)</code> or NULL) instead of failing with an obscure message or silently returning no rows.</p></li>
+<li><p>identify_row() is now also exported as identify_rows() (consistent with it returning multiple rows); both names work and are documented on the same page.</p></li>
 <li><p>identify_row() with <code>match = "like"</code> or <code>"start"</code> on remote tables now generates a single <code>WHERE ... LIKE ... OR ... LIKE ...</code> clause instead of one sub-query per pattern combined with <code>UNION</code>. The new query is simpler and typically faster. Note a subtle behavior change: <code>UNION</code> removed duplicate rows, while the new query (like all other match types) keeps them; results differ only if the source table contains fully duplicated rows.</p></li>
 <li><p>The database connection check (a <code>SELECT 1</code> round trip) that runs at the start of every database-method function can now be turned off with <code>options(healthdb.check_con = FALSE)</code>, which saves one round trip to the server per step in a long pipeline.</p></li>
 <li><p>Fixed report_n() (and the <code>report_on</code> argument of exclude()) erroring with “Can’t coerce from a <integer64> object to an integer” on database backends whose counts come back as 64-bit integers (e.g., PostgreSQL).</integer64></p></li>

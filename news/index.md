@@ -2,6 +2,10 @@
 
 ## healthdb (development version)
 
+- identify_row() now errors informatively when `vals` is empty (e.g.,
+  `character(0)` or NULL) instead of failing with an obscure message or
+  silently returning no rows.
+
 - identify_row() is now also exported as identify_rows() (consistent
   with it returning multiple rows); both names work and are documented
   on the same page.
