@@ -41,6 +41,27 @@ compute_comorbidity(
   and 5-digit codes in search. See their web page for cautions and
   limitations of the 3 digit version if your data only has 3-digit codes
   (<http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&conceptID=1436#CAUTIONS>).
+  For all versions, the codes in the lists are at the
+  category/subcategory level and cover all their subdivisions (the ".x"
+  notation in Quan et al. (2005)). Therefore, matching is done by
+  prefix: a diagnosis value in `data` matches a listed code if its
+  leading characters equal the code. For example, "E1152" in `data`
+  would be captured by ICD-10 "E115" (Diabetes Complicated), and "4280"
+  by ICD-9 "428" (Congestive Heart Failure). This reproduces the
+  reference SAS implementation, which compares every code with the SAS
+  `IN:` (starts-with) operator (see
+  <http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD9CM.sas.txt>
+  and
+  <http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD10.sas.txt>).
+  See the exported dataset
+  [elix_codes](https://kevinhzq.github.io/healthdb/reference/elix_codes.md)
+  for the code lists and matching lengths. Codes in `data` must not
+  contain dots (e.g., use "E1152" not "E11.52", and "4280" not "428.0");
+  otherwise, codes may not be matched correctly. Note that some codes
+  belong to multiple categories in Quan et al. (2005), e.g., I11.0
+  indicates both Congestive Heart Failure (I099, I110, ...) and
+  Hypertension Complicated (I11.x); records with such codes are counted
+  in all the categories they match.
 
 - clnt_id:
 
@@ -87,11 +108,11 @@ List of disease categories - labels (in quote):
 
 6.  Hypertension Uncomplicated - "hptn_nc"
 
-7.  Hypertension complicated - "hptn_C"
+7.  Hypertension Complicated - "hptn_c"
 
 8.  Paralysis - "para"
 
-9.  Other Neurological Disorders - "Othnd"
+9.  Other Neurological Disorders - "othnd"
 
 10. Chronic Pulmonary Disease - "copd"
 
@@ -137,12 +158,21 @@ List of disease categories - labels (in quote):
 
 31. Depression - "dep"
 
+The full ICD code lists defining these categories, including the
+matching rule for each code (prefix vs. exact), are available in the
+exported dataset
+[elix_codes](https://kevinhzq.github.io/healthdb/reference/elix_codes.md).
+
 ## References
 
 Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders
 LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining
 comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care
 2005;43(11):1130-1139.
+
+## See also
+
+[elix_codes](https://kevinhzq.github.io/healthdb/reference/elix_codes.md)
 
 ## Examples
 

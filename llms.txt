@@ -183,7 +183,7 @@ above:
 4.  Repeat these steps for hospitalization and row bind the results.
 
 The output of these functions, including
-[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md),
+[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md),
 [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
 [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md),
 [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)
@@ -218,13 +218,16 @@ definitions** (the ‘Call-building functions’ section).
 - [`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md)
   : Identify diseases/events from administrative records with age
   restriction
+- [`elix_codes`](https://kevinhzq.github.io/healthdb/reference/elix_codes.md)
+  : ICD codes defining the Elixhauser comorbidity categories
 - [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md)
   : Remove rows based on conditions or another data set
 - [`execute_def()`](https://kevinhzq.github.io/healthdb/reference/execute_def.md)
   : Execute parameterized case definitions
 - [`fetch_var()`](https://kevinhzq.github.io/healthdb/reference/fetch_var.md)
   : Get variables from multiple tables with common ID columns
-- [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md)
+- [`identify_rows()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md)
+  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md)
   : Identify rows with a match
 - [`if_date()`](https://kevinhzq.github.io/healthdb/reference/if_date.md)
   : Interpret if any n elements drawn from a date vector could be some

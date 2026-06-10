@@ -2,6 +2,98 @@
 
 ## healthdb (development version)
 
+- identify_row() is now also exported as identify_rows() (consistent
+  with it returning multiple rows); both names work and are documented
+  on the same page.
+
+- identify_row() with `match = "like"` or `"start"` on remote tables now
+  generates a single `WHERE ... LIKE ... OR ... LIKE ...` clause instead
+  of one sub-query per pattern combined with `UNION`. The new query is
+  simpler and typically faster. Note a subtle behavior change: `UNION`
+  removed duplicate rows, while the new query (like all other match
+  types) keeps them; results differ only if the source table contains
+  fully duplicated rows.
+
+- The database connection check (a `SELECT 1` round trip) that runs at
+  the start of every database-method function can now be turned off with
+  `options(healthdb.check_con = FALSE)`, which saves one round trip to
+  the server per step in a long pipeline.
+
+- The test suite can now run against PostgreSQL
+  (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection
+  variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an
+  ODBC connection string in `HEALTHDB_TEST_ODBC`), and does so on GitHub
+  Actions via service containers, in addition to the default local
+  SQLite.
+
+- **Behavior change**: compute_comorbidity() now also matches ICD-9
+  codes by prefix (consistent with the ICD-10 change below): codes in
+  `data` are compared with each listed code at the code’s own length, as
+  the codes in Quan et al. (2005) cover all their subdivisions, e.g.,
+  “428” (Congestive Heart Failure, 428.x) now captures “4280” and
+  “42800”, which were previously missed by exact matching. This affects
+  both “ICD-9-CM-5digits” and the full-code part of “ICD-9-CM-3digits”.
+  ICD-9 scores may be higher than in previous versions. The prefix
+  matching reproduces the reference SAS implementation, which compares
+  every code with the SAS `IN:` (starts-with) operator; the package code
+  lists were verified code-for-code against the MCHP SAS macros (see
+  ?elix_codes for links).
+
+- New exported dataset `elix_codes`: the ICD codes defining the 31
+  Elixhauser comorbidity categories used by compute_comorbidity(), with
+  the category labels, full names, and matching rules (prefix/exact) for
+  all three supported ICD versions. compute_comorbidity() is now driven
+  by this dataset internally; its interface and results are unchanged
+  (verified against the previous implementation over every code in the
+  lists).
+
+- The confirmation prompts in execute_def(), bind_source(), and
+  report_n() now abort with an informative error in non-interactive
+  sessions (e.g., Rscript, knitr) instead of silently proceeding
+  (readline() returns “” when not interactive, which was treated as
+  consent). Interactively, only an explicit “y”/“yes” answer proceeds
+  now; any other answer cancels.
+
+- restrict_date() (data.frame method) with mode = “filter” no longer
+  warns (“no non-missing arguments to max”) when no record is left from
+  the previous steps.
+
+- Removed leftover commented-out code and browser() calls across the
+  package; no functional change.
+
+- Fixed a bug in define_case() and define_case_with_age(): with
+  `keep = "last"`, the first occurrence of “min” anywhere in the
+  internally generated code was string-replaced with “max”, which
+  corrupted column names containing “min” (e.g., a `clnt_id` named
+  “admin_id” became “admax_id” and caused an error).
+
+- Internal refactoring: restrict_date() (database method),
+  define_case(), and define_case_with_age() no longer build queries by
+  string-replacing names in deparsed code; column names are now injected
+  as symbols with ‘rlang’. The generated SQL is unchanged, but column
+  names that contain substrings such as “clnt_id”, “date_var”, “\_i”, or
+  “\_x” no longer risk corrupting the query.
+
+- **Behavior change**: compute_comorbidity() now matches ICD-10 codes by
+  prefix instead of exactly. Codes in `data` are truncated to their
+  first 3 and 4 characters and compared with the 3-character (e.g., I50)
+  and 4-character (e.g., E115) codes in Quan et al. (2005),
+  respectively, which cover all their subdivisions. Previously, exact
+  matching missed subdivisions of the listed codes, e.g., “I500” was not
+  counted as Congestive Heart Failure (“I50” on the list), and “E1152”
+  (ICD-10-CA) was not counted as Diabetes Complicated (“E115” on the
+  list). ICD-10 scores may therefore be higher than in previous
+  versions. Records with codes that belong to multiple categories in
+  Quan et al. (e.g., I11.0 in both Congestive Heart Failure and
+  Hypertension Complicated) are now counted in all matching categories.
+
+- Fixed a bug in the data.frame method of identify_row(): when the input
+  contained columns named `rid` or `incl`, the function renamed those
+  columns in the user’s original data frame by reference (e.g., `rid`
+  became `rid.og`) and silently overwrote then dropped them from the
+  output. Internal working columns are now given names guaranteed not to
+  clash with the input, and the input is never modified.
+
 ## healthdb 0.5.1
 
 CRAN release: 2026-05-26

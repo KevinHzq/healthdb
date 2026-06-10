@@ -30,7 +30,9 @@ report_n(..., on, force_proceed = getOption("healthdb.force_proceed"))
   the data is not local data.frames, and a query needs to be executed
   before reporting. The default is fetching from options (FALSE). Use
   `options(healthdb.force_proceed = TRUE)` to suppress the prompt once
-  and for all.
+  and for all. In non-interactive sessions (e.g., scripts run via
+  Rscript, knitr), the confirmation prompt cannot be displayed, and the
+  function stops with an error unless force_proceed = TRUE.
 
 ## Value
 

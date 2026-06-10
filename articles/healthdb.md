@@ -9,7 +9,7 @@
   readability and re-usability. Three types of functions are included:
 
 - *Interactive functions* (e.g.,
-  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md),
+  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md),
   [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
   [`fetch_var()`](https://kevinhzq.github.io/healthdb/reference/fetch_var.md))
   based on filter and joins from dplyr with tweaks that fix SQL
@@ -171,7 +171,7 @@ claim_db %>%
 Here’s how you could use `healthdb` to achieve these steps:
 
 1.  Identify rows contains the target codes. Use
-    [`?identify_row`](https://kevinhzq.github.io/healthdb/reference/identify_row.md)
+    [`?identify_row`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md)
     to see a list of supported matching types.
 
     ``` r

@@ -34,7 +34,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p>This function is a composite of <code><a href="identify_row.html">identify_row()</a></code>, <code><a href="exclude.html">exclude()</a></code>, <code><a href="restrict_n.html">restrict_n()</a></code>, and <code><a href="restrict_date.html">restrict_date()</a></code>. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: <code>identify_row(vals) %&gt;% exclude(identify_row(excl_vals), by = clnt_id) %&gt;% restrict_n() %&gt;% restrict_date()</code>. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if <code>date_var</code> is supplied, <code>n_per_clnt</code> will be counted by distinct dates instead of number of records.</p>
+    <p>This function is a composite of <code><a href="identify_rows.html">identify_row()</a></code>, <code><a href="exclude.html">exclude()</a></code>, <code><a href="restrict_n.html">restrict_n()</a></code>, and <code><a href="restrict_date.html">restrict_date()</a></code>. It is aimed to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: <code>identify_row(vals) %&gt;% exclude(identify_row(excl_vals), by = clnt_id) %&gt;% restrict_n() %&gt;% restrict_date()</code>. Only necessary steps in the chain will be ran if some arguments are missing, see the verbose output for what was done. Note that if <code>date_var</code> is supplied, <code>n_per_clnt</code> will be counted by distinct dates instead of number of records.</p>
     </div>
 
     <div class="section level2">
@@ -74,11 +74,11 @@
 
 
 <dt id="arg-match">match<a class="anchor" aria-label="anchor" href="#arg-match"></a></dt>
-<dd><p>One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See <code><a href="identify_row.html">identify_row()</a></code> for detail.</p></dd>
+<dd><p>One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See <code><a href="identify_rows.html">identify_row()</a></code> for detail.</p></dd>
 
 
 <dt id="arg-vals">vals<a class="anchor" aria-label="anchor" href="#arg-vals"></a></dt>
-<dd><p>Depending on <code>match</code>, it takes different input. See <code><a href="identify_row.html">identify_row()</a></code>.</p></dd>
+<dd><p>Depending on <code>match</code>, it takes different input. See <code><a href="identify_rows.html">identify_row()</a></code>.</p></dd>
 
 
 <dt id="arg-clnt-id">clnt_id<a class="anchor" aria-label="anchor" href="#arg-clnt-id"></a></dt>
@@ -110,7 +110,7 @@
 
 
 <dt id="arg-excl-args">excl_args<a class="anchor" aria-label="anchor" href="#arg-excl-args"></a></dt>
-<dd><p>A named list of arguments passing to the second <code><a href="identify_row.html">identify_row()</a></code> call for <code>excl_vals</code>. If not supplied, <code>var</code>, <code>match</code> and <code>if_all</code> of the first call will be re-used.</p></dd>
+<dd><p>A named list of arguments passing to the second <code><a href="identify_rows.html">identify_row()</a></code> call for <code>excl_vals</code>. If not supplied, <code>var</code>, <code>match</code> and <code>if_all</code> of the first call will be re-used.</p></dd>
 
 
 <dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>

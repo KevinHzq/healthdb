@@ -33,7 +33,9 @@ bind_source(data, ..., force_proceed = getOption("healthdb.force_proceed"))
   remote tables are needed to be collected for binding. The default is
   FALSE to let user be aware of that the downloading process may be
   slow. Use `options(healthdb.force_proceed = TRUE)` to suppress the
-  prompt once and for all.
+  prompt once and for all. In non-interactive sessions (e.g., scripts
+  run via Rscript, knitr), the confirmation prompt cannot be displayed,
+  and the function stops with an error unless force_proceed = TRUE.
 
 ## Value
 

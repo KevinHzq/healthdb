@@ -63,7 +63,7 @@
 
 
 <dt id="arg-icd-ver">icd_ver<a class="anchor" aria-label="anchor" href="#arg-icd-ver"></a></dt>
-<dd><p>One of <code>c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")</code>. Specify the ICD code version used in <code>data</code>. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit codes (<a href="http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS</a>).</p></dd>
+<dd><p>One of <code>c("ICD-10", "ICD-9-CM-3digits", "ICD-9-CM-5digits")</code>. Specify the ICD code version used in <code>data</code>. The ICD-10 and ICD-9-CM 5 digits version are from Quan et al. (2005). The ICD-9-CM 3 digits version is adopted from Manitoba Centre for Health Policy. It uses BOTH 3-digit and 5-digit codes in search. See their web page for cautions and limitations of the 3 digit version if your data only has 3-digit codes (<a href="http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/viewConcept.php?printer=Y&amp;conceptID=1436#CAUTIONS</a>). For all versions, the codes in the lists are at the category/subcategory level and cover all their subdivisions (the ".x" notation in Quan et al. (2005)). Therefore, matching is done by prefix: a diagnosis value in <code>data</code> matches a listed code if its leading characters equal the code. For example, "E1152" in <code>data</code> would be captured by ICD-10 "E115" (Diabetes Complicated), and "4280" by ICD-9 "428" (Congestive Heart Failure). This reproduces the reference SAS implementation, which compares every code with the SAS <code>IN:</code> (starts-with) operator (see <a href="http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD9CM.sas.txt" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD9CM.sas.txt</a> and <a href="http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD10.sas.txt" class="external-link">http://mchp-appserv.cpe.umanitoba.ca/Upload/SAS/_ElixhauserICD10.sas.txt</a>). See the exported dataset <a href="elix_codes.html">elix_codes</a> for the code lists and matching lengths. Codes in <code>data</code> must not contain dots (e.g., use "E1152" not "E11.52", and "4280" not "428.0"); otherwise, codes may not be matched correctly. Note that some codes belong to multiple categories in Quan et al. (2005), e.g., I11.0 indicates both Congestive Heart Failure (I099, I110, ...) and Hypertension Complicated (I11.x); records with such codes are counted in all the categories they match.</p></dd>
 
 
 <dt id="arg-clnt-id">clnt_id<a class="anchor" aria-label="anchor" href="#arg-clnt-id"></a></dt>
@@ -94,9 +94,9 @@
 <li><p>Pulmonary Circulation Disorders - "pcd"</p></li>
 <li><p>Peripheral Vascular Disorders - "pvd"</p></li>
 <li><p>Hypertension Uncomplicated - "hptn_nc"</p></li>
-<li><p>Hypertension complicated - "hptn_C"</p></li>
+<li><p>Hypertension Complicated - "hptn_c"</p></li>
 <li><p>Paralysis - "para"</p></li>
-<li><p>Other Neurological Disorders - "Othnd"</p></li>
+<li><p>Other Neurological Disorders - "othnd"</p></li>
 <li><p>Chronic Pulmonary Disease - "copd"</p></li>
 <li><p>Diabetes Uncomplicated - "diab_nc"</p></li>
 <li><p>Diabetes Complicated - "diab_c"</p></li>
@@ -119,10 +119,17 @@
 <li><p>Drug Abuse - "drug"</p></li>
 <li><p>Psychoses - "psycho"</p></li>
 <li><p>Depression - "dep"</p></li>
-</ol></div>
+</ol><p>The full ICD code lists defining these categories, including the matching
+rule for each code (prefix vs. exact), are available in the exported
+dataset <a href="elix_codes.html">elix_codes</a>.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Quan H, Sundararajan V, Halfon P, Fong A, Burnand B, Luthi JC, Saunders LD, Beck CA, Feasby TE, Ghali WA. Coding algorithms for defining comorbidities in ICD-9-CM and ICD-10 administrative data. Med Care 2005;43(11):1130-1139.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><a href="elix_codes.html">elix_codes</a></p></div>
     </div>
 
     <div class="section level2">

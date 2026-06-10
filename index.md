@@ -183,7 +183,7 @@ above:
 4.  Repeat these steps for hospitalization and row bind the results.
 
 The output of these functions, including
-[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md),
+[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md),
 [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
 [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md),
 [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)

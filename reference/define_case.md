@@ -1,7 +1,7 @@
 # Identify diseases/events from administrative records
 
 This function is a composite of
-[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md),
+[`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md),
 [`exclude()`](https://kevinhzq.github.io/healthdb/reference/exclude.md),
 [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md),
 and
@@ -61,13 +61,13 @@ define_case(
 
   One of "in", "start", "regex", "like", "between", and "glue_sql". It
   determines how values would be matched. See
-  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md)
+  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md)
   for detail.
 
 - vals:
 
   Depending on `match`, it takes different input. See
-  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md).
+  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md).
 
 - clnt_id:
 
@@ -104,7 +104,7 @@ define_case(
 - excl_args:
 
   A named list of arguments passing to the second
-  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_row.md)
+  [`identify_row()`](https://kevinhzq.github.io/healthdb/reference/identify_rows.md)
   call for `excl_vals`. If not supplied, `var`, `match` and `if_all` of
   the first call will be re-used.
 
