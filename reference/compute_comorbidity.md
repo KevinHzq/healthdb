@@ -57,8 +57,12 @@ compute_comorbidity(
   [elix_codes](https://kevinhzq.github.io/healthdb/reference/elix_codes.md)
   for the code lists and matching lengths. Codes in `data` must not
   contain dots (e.g., use "E1152" not "E11.52", and "4280" not "428.0");
-  otherwise, codes may not be matched correctly. Note that some codes
-  belong to multiple categories in Quan et al. (2005), e.g., I11.0
+  otherwise, codes may not be matched correctly. Codes should also be
+  upper case (e.g., "E1152" not "e1152"): the comparison is
+  case-sensitive for data.frame input and on most database backends
+  (including SQLite and PostgreSQL), but follows the database collation
+  on SQL Server, which is commonly case-insensitive. Note that some
+  codes belong to multiple categories in Quan et al. (2005), e.g., I11.0
   indicates both Congestive Heart Failure (I099, I110, ...) and
   Hypertension Complicated (I11.x); records with such codes are counted
   in all the categories they match.
