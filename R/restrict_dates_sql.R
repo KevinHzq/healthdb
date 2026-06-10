@@ -236,8 +236,14 @@ all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {
 
     if ((n - i * 2) == 0) {
       if (n == 2) {
+        # case_when, not the bare comparison, as boolean columns cannot be
+        # COALESCE'd with 0L or MAX'ed on PostgreSQL, which also takes this
+        # branch (its connection class does not match use.datediff())
         data <- data %>%
-          dplyr::mutate(temp_nm_flag_apart = max(.data[[date_var]], na.rm = TRUE) - min(.data[[date_var]], na.rm = TRUE) >= apart)
+          dplyr::mutate(temp_nm_flag_apart = dplyr::case_when(
+            max(.data[[date_var]], na.rm = TRUE) - min(.data[[date_var]], na.rm = TRUE) >= apart ~ 1L,
+            .default = 0L
+          ))
         break
       }
       # product of all previous sum_win_* indicators
@@ -248,21 +254,26 @@ all_apart_sqlite <- function(data, date_var, n, apart, clnt_id, uid) {
       data <- data %>%
         dplyr::mutate(
           final_win_gap = max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) - min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE),
-          temp_nm_flag_apart = final_win_gap * !!sum_prod >= apart
+          temp_nm_flag_apart = dplyr::case_when(
+            final_win_gap * !!sum_prod >= apart ~ 1L,
+            .default = 0L
+          )
         )
       break
     } else {
       if (i == 1) {
         data <- data %>%
           dplyr::mutate(
-            in_win_1 = dplyr::between(.data[[date_var]], min(.data[[date_var]], na.rm = TRUE) + apart, max(.data[[date_var]], na.rm = TRUE) - apart),
-            sum_win_1 = sum(in_win_1, na.rm = TRUE) >= n - i * 2L
+            # case_when makes the indicators integer; PostgreSQL cannot SUM,
+            # COALESCE with 0L, or multiply booleans
+            in_win_1 = dplyr::case_when(dplyr::between(.data[[date_var]], min(.data[[date_var]], na.rm = TRUE) + apart, max(.data[[date_var]], na.rm = TRUE) - apart) ~ 1L, .default = 0L),
+            sum_win_1 = dplyr::case_when(sum(in_win_1, na.rm = TRUE) >= n - i * 2L ~ 1L, .default = 0L)
           )
       } else {
         data <- data %>%
           dplyr::mutate(
-            !!win_i := dplyr::between(!!date_sym, min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) + apart, max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) - apart),
-            !!sum_i := sum(!!win_i, na.rm = TRUE) >= n - i * 2L
+            !!win_i := dplyr::case_when(dplyr::between(!!date_sym, min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) + apart, max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE) - apart) ~ 1L, .default = 0L),
+            !!sum_i := dplyr::case_when(sum(!!win_i, na.rm = TRUE) >= n - i * 2L ~ 1L, .default = 0L)
           )
       }
     }
@@ -319,8 +330,10 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
       if (i == 1) {
         data <- data %>%
           dplyr::mutate(
-            # if_else makes the indicator integer; PostgreSQL cannot SUM booleans
-            in_win_1 = dplyr::if_else(dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)), 1L, 0L),
+            # case_when makes the indicator integer (PostgreSQL cannot SUM
+            # booleans) while keeping the comparison in a condition context
+            # (if_else would nest IIFs on SQL Server)
+            in_win_1 = dplyr::case_when(dplyr::between(.data[[date_var]], clock::add_days(min(.data[[date_var]], na.rm = TRUE), apart), clock::add_days(max(.data[[date_var]], na.rm = TRUE), -apart)) ~ 1L, .default = 0L),
             sum_win_1 = dplyr::case_when(sum(in_win_1, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
@@ -328,7 +341,7 @@ all_apart_mssql <- function(data, date_var, n, apart, clnt_id, uid) {
       } else {
         data <- data %>%
           dplyr::mutate(
-            !!win_i := dplyr::if_else(dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)), 1L, 0L),
+            !!win_i := dplyr::case_when(dplyr::between(!!date_sym, clock::add_days(min((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), apart), clock::add_days(max((!!date_sym)[!!win_prev == 1L], na.rm = TRUE), -apart)) ~ 1L, .default = 0L),
             !!sum_i := dplyr::case_when(sum(!!win_i, na.rm = TRUE) >= local(as.integer(n - i * 2)) ~ 1L,
               .default = 0L
             )
