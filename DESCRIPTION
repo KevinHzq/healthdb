@@ -29,9 +29,12 @@ Imports:
     tidyr
 URL: https://github.com/KevinHzq/healthdb, https://kevinhzq.github.io/healthdb/
 BugReports: https://github.com/KevinHzq/healthdb/issues
-Suggests: 
+Suggests:
+    DBI,
     knitr,
+    odbc,
     rmarkdown,
+    RPostgres,
     testthat (>= 3.0.0),
     withr,
     RSQLite

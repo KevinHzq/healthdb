@@ -57,10 +57,10 @@ test_that("multiple sources works", {
     clnt_id = 1:nrow(df1), sex = sample(c("F", "M"), nrow(df1), replace = TRUE),
     ans = sample(c("all", "any", "noise"), nrow(df1), replace = TRUE)
   )
-  db3 <- dbplyr::memdb_frame(
+  db3 <- memdb_tbl(dplyr::tibble(
     clnt_id = 1:nrow(df1), age = sample(0:100, nrow(df1), replace = TRUE),
     ans = sample(c("all", "any", "noise"), nrow(df1), replace = TRUE)
-  )
+  ))
   out_df <- fetch_var(df1,
     keys = c(clnt_id, ans),
     linkage = list(
@@ -123,10 +123,10 @@ test_that("database x works", {
   db1 <- letters_n(type = "database")
   df1 <- dplyr::collect(db1)
   df2 <- data.frame(clnt_id = 1:nrow(df1), sex = sample(c("F", "M"), nrow(df1), replace = TRUE))
-  db3 <- dbplyr::memdb_frame(
+  db3 <- memdb_tbl(dplyr::tibble(
     clnt_id = 1:nrow(df1), age = sample(0:100, nrow(df1), replace = TRUE),
     ans = sample(c("all", "any", "noise"), nrow(df1), replace = TRUE)
-  )
+  ))
   out_df <- fetch_var(db1,
     keys = c(clnt_id, ans),
     linkage = list(

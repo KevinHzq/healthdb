@@ -1,6 +1,12 @@
-# convert df to memdb table
+# convert df to a temporary table in the testing backend: a connection supplied
+# via options(healthdb.test_con = con), e.g., PostgreSQL in CI, or the default
+# local SQLite memdb
 memdb_tbl <- function(df) {
   tab_nm <- rawToChar(as.raw(sample(c(65:90, 97:122, 48:57), 20, replace = T)))
+  con <- getOption("healthdb.test_con")
+  if (!is.null(con)) {
+    return(dplyr::copy_to(con, df, tab_nm, temporary = TRUE, overwrite = TRUE))
+  }
   dplyr::copy_to(dbplyr::src_memdb(), df, tab_nm, temporary = TRUE, overwrite = TRUE)
   dplyr::tbl(dbplyr::src_memdb(), tab_nm)
 }
@@ -39,8 +45,13 @@ ask_proceed <- function(why, hint = NULL) {
   invisible()
 }
 
-# test db connection
+# test db connection; can be skipped with options(healthdb.check_con = FALSE)
+# to avoid one round trip to the server per verb in a long pipeline
 check_con <- function(data) {
+  if (!isTRUE(getOption("healthdb.check_con", TRUE))) {
+    return(invisible())
+  }
+
   con <- dbplyr::remote_con(data)
   tryCatch(dbplyr::db_collect(con, sql = "SELECT 1"),
     error = function(err) {

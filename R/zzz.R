@@ -3,7 +3,8 @@
   op <- options()
   op.healthdb <- list(
     healthdb.verbose = TRUE,
-    healthdb.force_proceed = FALSE
+    healthdb.force_proceed = FALSE,
+    healthdb.check_con = TRUE
   )
   toset <- !(names(op.healthdb) %in% names(op))
   if (any(toset)) options(op.healthdb[toset])
@@ -16,7 +17,8 @@
   op <- options()
   op.healthdb <- list(
     healthdb.verbose = NULL,
-    healthdb.force_proceed = NULL
+    healthdb.force_proceed = NULL,
+    healthdb.check_con = NULL
   )
   toremove <- names(op.healthdb) %in% names(op)
   if (any(toremove)) options(op.healthdb[toremove])

@@ -1,5 +1,13 @@
 # healthdb (development version)
 
+-   identify_row() is now also exported as identify_rows() (consistent with it returning multiple rows); both names work and are documented on the same page.
+
+-   identify_row() with `match = "like"` or `"start"` on remote tables now generates a single `WHERE ... LIKE ... OR ... LIKE ...` clause instead of one sub-query per pattern combined with `UNION`. The new query is simpler and typically faster. Note a subtle behavior change: `UNION` removed duplicate rows, while the new query (like all other match types) keeps them; results differ only if the source table contains fully duplicated rows.
+
+-   The database connection check (a `SELECT 1` round trip) that runs at the start of every database-method function can now be turned off with `options(healthdb.check_con = FALSE)`, which saves one round trip to the server per step in a long pipeline.
+
+-   The test suite can now run against PostgreSQL (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an ODBC connection string in `HEALTHDB_TEST_ODBC`), and does so on GitHub Actions via service containers, in addition to the default local SQLite.
+
 -   **Behavior change**: compute_comorbidity() now also matches ICD-9 codes by prefix (consistent with the ICD-10 change below): codes in `data` are compared with each listed code at the code's own length, as the codes in Quan et al. (2005) cover all their subdivisions, e.g., "428" (Congestive Heart Failure, 428.x) now captures "4280" and "42800", which were previously missed by exact matching. This affects both "ICD-9-CM-5digits" and the full-code part of "ICD-9-CM-3digits". ICD-9 scores may be higher than in previous versions. The prefix matching reproduces the reference SAS implementation, which compares every code with the SAS `IN:` (starts-with) operator; the package code lists were verified code-for-code against the MCHP SAS macros (see ?elix_codes for links).
 
 -   New exported dataset `elix_codes`: the ICD codes defining the 31 Elixhauser comorbidity categories used by compute_comorbidity(), with the category labels, full names, and matching rules (prefix/exact) for all three supported ICD versions. compute_comorbidity() is now driven by this dataset internally; its interface and results are unchanged (verified against the previous implementation over every code in the lists).

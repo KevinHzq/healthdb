@@ -67,8 +67,8 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
     # left start empty so getting action from like
     "start" = ,
     "like" = {
-      like_list <- lapply(vals, function(x) data %>% dplyr::filter((!!across)(dplyr::all_of(vars), ~ stringr::str_like(., !!x))))
-      Reduce(dplyr::union, like_list)
+      like_conds <- lapply(vals, function(x) rlang::expr((!!across)(dplyr::all_of(vars), ~ stringr::str_like(., !!x))))
+      data %>% dplyr::filter(!!Reduce(function(lhs, rhs) rlang::expr(!!lhs | !!rhs), like_conds))
     },
     "regex" = ,
     "in" = {
