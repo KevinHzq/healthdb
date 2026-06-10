@@ -33,9 +33,13 @@ test_that("mixed binding works", {
       clnt_id = clnt_id
     )
   )
-  # this give a warning for incompatible types
-  expect_warning(execute_def(def, with_data = list(msp = msp_db, dad = dad_df), bind = TRUE), "incompatible")
-  dad_df <- dad_df %>% dplyr::mutate(dates = as.numeric(dates))
+  # SQLite collects dates as numeric, so binding with the Date column in
+  # dad_df warns about incompatible types; backends with a real date type
+  # bind cleanly
+  if (is.numeric(dplyr::pull(utils::head(msp_db, 1), dates))) {
+    expect_warning(execute_def(def, with_data = list(msp = msp_db, dad = dad_df), bind = TRUE), "incompatible")
+    dad_df <- dad_df %>% dplyr::mutate(dates = as.numeric(dates))
+  }
   out_df <- execute_def(def, with_data = list(msp = msp_db, dad = dad_df), bind = TRUE)
   expect_s3_class(out_df, "data.frame")
 })

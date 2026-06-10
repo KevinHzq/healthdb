@@ -53,6 +53,10 @@ report_n <- function(..., on, force_proceed = getOption("healthdb.force_proceed"
       )
     }
 
-    dplyr::group_by(x, .data[[on]]) %>% dplyr::n_groups()
+    # as.integer strips the integer64 class that some backends (e.g.,
+    # PostgreSQL via bigint) return, which map_int cannot coerce
+    dplyr::group_by(x, .data[[on]]) %>%
+      dplyr::n_groups() %>%
+      as.integer()
   })
 }

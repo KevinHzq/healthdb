@@ -69,6 +69,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      TESTTHAT_MAX_FAILS: 100
       HEALTHDB_TEST_BACKEND: postgres
       PGHOST: localhost
       PGPORT: 5432
@@ -113,6 +114,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      TESTTHAT_MAX_FAILS: 100
       HEALTHDB_TEST_BACKEND: sqlserver
       HEALTHDB_TEST_ODBC: "Driver={ODBC Driver 18 for SQL Server};Server=localhost,1433;UID=sa;PWD=YourStrong@Passw0rd;TrustServerCertificate=yes"
 

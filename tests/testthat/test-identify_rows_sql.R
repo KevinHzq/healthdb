@@ -45,8 +45,10 @@ test_that("match by regex works", {
 test_that("match by between works", {
   ans <- 5
   date_seq <- seq(as.Date("2021-01-01"), as.Date("2021-01-31"), by = 1)
-  seq_range <- range(date_seq) %>% as.numeric()
+  seq_range <- range(date_seq)
   db <- btw_n(date_range = date_seq, n_ans = ans, type = "database")
+  # match the bounds to the column type: numeric on SQLite, Date elsewhere
+  if (is.numeric(dplyr::pull(utils::head(db, 1), dates))) seq_range <- as.numeric(seq_range)
   df <- dplyr::collect(db)
   out_df <- identify_rows(db, dates, "between", seq_range, query_only = FALSE)
   expect_equal(out_df %>% nrow(), ans)

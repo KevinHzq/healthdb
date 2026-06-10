@@ -95,9 +95,14 @@ test_that("formular generation and translation works", {
   names(nml) <- glue::glue("is_{src_nm}")
   out_df <- msp_db %>%
     dplyr::mutate(dplyr::across(ans, list(!!!nml), .names = "{.fn}")) %>%
-    dplyr::collect()
-  ans <- msp_db %>% dplyr::pull(ans)
-  expect_equal(out_df$is_any, as.numeric(ans == "any"))
+    dplyr::collect() %>%
+    dplyr::arrange(uid)
+  ans <- msp_db %>%
+    dplyr::arrange(uid) %>%
+    dplyr::pull(ans)
+  # as.numeric on both sides as the indicator type varies by backend
+  # (e.g., logical from SQL Server BIT, numeric from SQLite)
+  expect_equal(as.numeric(out_df$is_any), as.numeric(ans == "any"))
 })
 
 test_that("pool multiple def works", {

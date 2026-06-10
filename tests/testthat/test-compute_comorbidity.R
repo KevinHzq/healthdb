@@ -169,7 +169,8 @@ test_that("answer is correct for icd9 db", {
     icd_ver = "ICD-9-CM-5digits", clnt_id = clnt_id,
     uid = uid, sum_by = "clnt", excl = NULL
   ) %>%
-    dplyr::collect()
+    dplyr::collect() %>%
+    dplyr::arrange(clnt_id)
   answer$clnt_id <- df$clnt_id
   answer <- answer %>%
     dplyr::group_by(clnt_id) %>%
