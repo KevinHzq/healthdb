@@ -81,12 +81,12 @@ claim_db %>% head()
 #> # Database: sqlite 3.53.1 [:memory:]
 #>     uid clnt_id dates diagx diagx_1 diagx_2
 #>   <int>   <int> <dbl> <chr> <chr>   <chr>  
-#> 1     3       1 16780 2914  2926    <NA>   
-#> 2    10       1 17594 305   3050    999    
-#> 3    93       1 17688 999   <NA>    999    
-#> 4    43       1 18287 3043  3031    3033   
-#> 5    37       1 18419 2921  2919    <NA>   
-#> 6    50       2 16806 3041  3039    2910
+#> 1     5       1 17424 2923  3054    999    
+#> 2    97       2 17213 999   999     <NA>   
+#> 3    58       2 17217 999   999     <NA>   
+#> 4    10       3 17155 2929  3044    999    
+#> 5    39       3 17252 2914  3044    <NA>   
+#> 6    81       3 18398 999   <NA>    999
 ```
 
 Hospitalization
@@ -98,12 +98,12 @@ hosp_df <- make_test_dat(vals_kept = c(str_glue("F{10:19}"), str_glue("F{100:199
 # this is a local data.frame/tibble
 hosp_df %>% head()
 #>   uid clnt_id      dates diagx diagx_1 diagx_2
-#> 1  52       1 2018-08-31   999     999     999
-#> 2  11       1 2019-02-05  F154    F163     999
-#> 3   6       1 2020-02-29  F179    F174    <NA>
-#> 4  96       2 2017-03-17   999     999     999
-#> 5  37       2 2019-11-15  F153    F142     999
-#> 6  25       2 2020-10-20  F197    F153    <NA>
+#> 1  81       1 2015-05-28   999    <NA>     999
+#> 2  31       1 2016-03-01  F121     F16    <NA>
+#> 3  66       1 2017-01-16   999     999    <NA>
+#> 4  36       1 2018-12-03  F177    F109     999
+#> 5  56       1 2020-05-14   999    <NA>     999
+#> 6  30       2 2018-06-23   F15    F151    <NA>
 ```
 
 Here’s how you could use `healthdb` to implement the SUD definition
@@ -144,12 +144,12 @@ above:
     #> # Database: sqlite 3.53.1 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>
-    #> 1     3       1 16780 2914  2926    <NA>                  1
-    #> 2    10       1 17594 305   3050    999                   1
-    #> 3    43       1 18287 3043  3031    3033                  1
-    #> 4    37       1 18419 2921  2919    <NA>                  1
-    #> 5    50       2 16806 3041  3039    2910                  1
-    #> 6    46       2 17003 2911  2914    3046                  1
+    #> 1    10       3 17155 2929  3044    999                   1
+    #> 2    39       3 17252 2914  3044    <NA>                  1
+    #> 3     2       7 16589 2918  2910    999                   1
+    #> 4    32       7 16804 2911  3031    999                   1
+    #> 5    42       7 17563 3043  291     3055                  1
+    #> 6    26       7 18518 3035  304     <NA>                  1
     ```
 
 3.  Restrict the temporal pattern of diagnoses
@@ -172,12 +172,12 @@ above:
     #> # Database: sqlite 3.53.1 [:memory:]
     #>     uid clnt_id dates diagx diagx_1 diagx_2 flag_restrict_n flag_restrict_date
     #>   <int>   <int> <dbl> <chr> <chr>   <chr>             <int>              <int>
-    #> 1     3       1 16780 2914  2926    <NA>                  1                  0
-    #> 2    10       1 17594 305   3050    999                   1                  0
-    #> 3    43       1 18287 3043  3031    3033                  1                  1
-    #> 4    37       1 18419 2921  2919    <NA>                  1                  0
-    #> 5    50       2 16806 3041  3039    2910                  1                  1
-    #> 6    46       2 17003 2911  2914    3046                  1                  1
+    #> 1    10       3 17155 2929  3044    999                   1                  1
+    #> 2    39       3 17252 2914  3044    <NA>                  1                  0
+    #> 3     2       7 16589 2918  2910    999                   1                  1
+    #> 4    32       7 16804 2911  3031    999                   1                  0
+    #> 5    42       7 17563 3043  291     3055                  1                  0
+    #> 6    26       7 18518 3035  304     <NA>                  1                  0
     ```
 
 4.  Repeat these steps for hospitalization and row bind the results.
@@ -194,4 +194,8 @@ could look repetitive if multiple data sources were involved. See the
 introduction vignette
 ([`vignette("healthdb")`](https://kevinhzq.github.io/healthdb/articles/healthdb.md))
 **for a much more concise way to work with multiple sources and
-definitions** (the ‘Call-building functions’ section).
+definitions** (the ‘Call-building functions’ section). For the helper
+functions that complete the workflow – reporting sample sizes, computing
+age, decoding codes, scoring comorbidity, and building episodes of care
+– see the data wrangling vignette
+([`vignette("wrangling")`](https://kevinhzq.github.io/healthdb/articles/wrangling.md)).

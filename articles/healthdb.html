@@ -31,6 +31,12 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/healthdb.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -86,10 +92,12 @@ definitions (which is chain of the interactive functions, e.g.,
 <code>execute_def</code> runs built definitions with different input
 data.</p></li>
 <li><p><em>Miscellaneous functions</em> such as computing age
-<code><a href="../reference/compute_duration.html">compute_duration()</a></code>, collapsing records within a time range
-into one episode <code><a href="../reference/collapse_episode.html">collapse_episode()</a></code>, and more (on-going
-effort). Most of these functions have built-in checks signalling when
-things might go wrong, e.g., missing values in calculated ages.</p></li>
+(<code><a href="../reference/compute_duration.html">compute_duration()</a></code>), collapsing records within a time
+range into one episode (<code><a href="../reference/collapse_episode.html">collapse_episode()</a></code>), and more
+(on-going effort). Most of these functions have built-in checks
+signalling when things might go wrong, e.g., missing values in
+calculated ages. These helpers are introduced in the data wrangling
+vignette (<code><a href="../articles/wrangling.html">vignette("wrangling")</a></code>).</p></li>
 </ul>
 <div class="section level3">
 <h3 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
@@ -534,6 +542,15 @@ output may not be flexible enough to meet your needs.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 19 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: raw_in_claim &lt;dbl&gt;, raw_in_hosp &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   valid_in_claim &lt;int&gt;, valid_in_hosp &lt;int&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
+<p>Identifying the cases is usually just the beginning. The data
+wrangling vignette (<code><a href="../articles/wrangling.html">vignette("wrangling")</a></code>) introduces the
+helpers for what comes next: reporting sample sizes for your flowchart,
+computing age, decoding codes, scoring comorbidity, and reshaping
+records into episodes and periods.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

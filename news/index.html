@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/healthdb.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -34,7 +38,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="healthdb-development-version">healthdb (development version)<a class="anchor" aria-label="anchor" href="#healthdb-development-version"></a></h2>
-<ul><li><p>The package options (healthdb.verbose, healthdb.force_proceed, and the new healthdb.check_con) are now documented in one place on the package help page; see ?healthdb. Also fixed a broken cross-reference and polished wording throughout the documentation.</p></li>
+<ul><li><p>New vignette “Data wrangling helpers” (<code><a href="../articles/wrangling.html">vignette("wrangling")</a></code>) introducing report_n(), compute_duration(), lookup(), compute_comorbidity(), collapse_episode(), cut_period(), and if_date(), with guidance on keeping the work on the database for as long as possible.</p></li>
+<li><p>The package options (healthdb.verbose, healthdb.force_proceed, and the new healthdb.check_con) are now documented in one place on the package help page; see ?healthdb. Also fixed a broken cross-reference and polished wording throughout the documentation.</p></li>
 <li><p>Documented case sensitivity of matching: identify_row() “like”/“start” matching is case-sensitive for data.frames but follows the database for remote tables (e.g., case-insensitive ASCII LIKE on SQLite, case-sensitive on PostgreSQL, collation-dependent on SQL Server); compute_comorbidity() expects upper-case codes.</p></li>
 <li><p>identify_row() now errors informatively when <code>vals</code> is empty (e.g., <code>character(0)</code> or NULL) instead of failing with an obscure message or silently returning no rows.</p></li>
 <li><p>identify_row() is now also exported as identify_rows() (consistent with it returning multiple rows); both names work and are documented on the same page.</p></li>

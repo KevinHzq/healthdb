@@ -2,6 +2,13 @@
 
 ## healthdb (development version)
 
+- New vignette “Data wrangling helpers”
+  ([`vignette("wrangling")`](https://kevinhzq.github.io/healthdb/articles/wrangling.md))
+  introducing report_n(), compute_duration(), lookup(),
+  compute_comorbidity(), collapse_episode(), cut_period(), and
+  if_date(), with guidance on keeping the work on the database for as
+  long as possible.
+
 - The package options (healthdb.verbose, healthdb.force_proceed, and the
   new healthdb.check_con) are now documented in one place on the package
   help page; see ?healthdb. Also fixed a broken cross-reference and

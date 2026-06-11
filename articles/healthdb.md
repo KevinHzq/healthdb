@@ -33,12 +33,14 @@
   with different input data.
 
 - *Miscellaneous functions* such as computing age
-  [`compute_duration()`](https://kevinhzq.github.io/healthdb/reference/compute_duration.md),
+  ([`compute_duration()`](https://kevinhzq.github.io/healthdb/reference/compute_duration.md)),
   collapsing records within a time range into one episode
-  [`collapse_episode()`](https://kevinhzq.github.io/healthdb/reference/collapse_episode.md),
+  ([`collapse_episode()`](https://kevinhzq.github.io/healthdb/reference/collapse_episode.md)),
   and more (on-going effort). Most of these functions have built-in
   checks signalling when things might go wrong, e.g., missing values in
-  calculated ages.
+  calculated ages. These helpers are introduced in the data wrangling
+  vignette
+  ([`vignette("wrangling")`](https://kevinhzq.github.io/healthdb/articles/wrangling.md)).
 
 ### Motivation
 
@@ -544,3 +546,12 @@ pool_case(result_list,
 #> # ℹ 4 more variables: raw_in_claim <dbl>, raw_in_hosp <dbl>,
 #> #   valid_in_claim <int>, valid_in_hosp <int>
 ```
+
+## Next steps
+
+Identifying the cases is usually just the beginning. The data wrangling
+vignette
+([`vignette("wrangling")`](https://kevinhzq.github.io/healthdb/articles/wrangling.md))
+introduces the helpers for what comes next: reporting sample sizes for
+your flowchart, computing age, decoding codes, scoring comorbidity, and
+reshaping records into episodes and periods.
