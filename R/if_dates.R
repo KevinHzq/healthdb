@@ -2,7 +2,7 @@
 #'
 #' @md
 #' @description
-#' Given a vector of dates x, interpret if there could be at least one set of n elements taken from x satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations in x. This function does not work with remote table input.
+#' Given a vector of dates x, interpret if there could be at least one set of n elements taken from x satisfy that adjacent elements in the set are at least certain days apart AND the dates in the set are within the specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations in x. See `vignette("if_date_logic")` for an explanation of the algorithm. This function does not work with remote table input.
 #'
 #' @param x A character or Date vector
 #' @param n An integer for the size of a draw
@@ -85,7 +85,10 @@ if_date <- function(x, n, apart = NULL, within = NULL, detail = FALSE, align = c
     }
   } else {
     stopifnot(is.wholenumber(c(apart, within)))
-    if (apart * (n - 1) >= within) stop("Condition is impossible as apart*(n - 1) cannot be greater than within")
+    # n dates with adjacent gaps >= apart span at least apart*(n - 1) days;
+    # equality is satisfiable (all gaps exactly apart), so only strictly
+    # greater is impossible
+    if (apart * (n - 1) > within) stop("Condition is impossible as the n dates would span at least apart*(n - 1) days, which is greater than within")
     # overlap join dates and dates+within to get records falls in every within window starting at each date. This ensure the within condition, then calls all_apart to test the apart condition
     # tested against combn(sample, n, function(x) all(diff(sort(x)) >= m) & (diff(c(min(x), max(x))) <= within)) %>% any()
     dtx <- data.table::data.table(d = x, y = x, key = c("d", "y"))

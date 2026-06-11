@@ -46,7 +46,7 @@ restrict_date(
 
 \item{dup.rm}{Logical for whether multiple records on the same date should be counted as one in the calculation. Only applicable when \code{within} is supplied without \code{apart}; duplicated dates have no impact when \code{apart} is present as the n dates must be distinct if they were apart. Default is TRUE.}
 
-\item{force_collect}{A logical for whether force downloading remote table if \code{apart} is not NULL. For remote table only, because \code{apart} is implemented for local data frame only. Downloading data could be slow, so the user has to opt in; default FALSE will stop with error.}
+\item{force_collect}{A logical for whether to download the data and use the local method when both \code{apart} and \code{within} are supplied. For remote tables only. The default (FALSE) runs everything on the database, which involves writing a temporary table and an overlap (non-equi) join; if the database does not permit these, set TRUE to download the data and compute locally instead (may be slow). The argument has no effect when only one of \code{apart}/\code{within} is supplied, as those cases always run on the database.}
 
 \item{verbose}{A logical for whether to explain the query and report how many groups were removed. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Reporting is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
@@ -58,7 +58,7 @@ restrict_date(
 A subset of the input data that satisfied the date requirements, or the input data with a new flag column.
 }
 \description{
-For each client or group, interpret if they have n records that are at least certain days apart AND within a specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations of dates per client.
+For each client or group, interpret if they have n records that are at least certain days apart AND within a specified time span. When identifying events/diseases from administrative data, definitions often require, e.g., n diagnoses that are at least some days apart within some years. This function is intended for such use and optimized to avoid looping through all n-size combinations of dates per client. See \code{vignette("if_date_logic")} for an explanation of the algorithm and how it is translated into SQL.
 }
 \examples{
 sample_size <- 30

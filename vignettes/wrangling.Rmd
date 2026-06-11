@@ -218,7 +218,7 @@ visits %>%
   summarise(meets_def = if_date(visit_dt, n = 2, within = 365))
 ```
 
-Duplicated dates are counted once by default (`dup.rm = TRUE`), which is why client 3 does not qualify. The `apart` argument adds a minimum-gap condition, e.g., `if_date(x, n = 2, apart = 30, within = 365)` for two dates at least 30 days apart within a year — a very common shape for case definitions. Note that `if_date()` works on local data only; for database tables, use `restrict_date()`.
+Duplicated dates are counted once by default (`dup.rm = TRUE`), which is why client 3 does not qualify. The `apart` argument adds a minimum-gap condition, e.g., `if_date(x, n = 2, apart = 30, within = 365)` for two dates at least 30 days apart within a year — a very common shape for case definitions. Note that `if_date()` works on local data only; for database tables, use `restrict_date()`. If you are curious how the date search works — and how its loop gets translated into SQL — see `vignette("if_date_logic")`.
 
 ## Where these fit in a typical workflow
 

@@ -146,7 +146,7 @@ result3 <- result2 %>% restrict_n(
 
 4.  Restrict the temporal pattern of diagnoses
 
-    `restrict_date()` supports more complicated patterns like having n diagnoses at least i days apart within j years. Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id (uid) has to be supplied to get consistent result.
+    `restrict_date()` supports more complicated patterns like having n diagnoses at least i days apart within j years (see `vignette("if_date_logic")` for how this works under the hood). Note that when SQL interpret order of dates, the result could be not deterministic if there were duplicate dates within client. Therefore, a unique row id (uid) has to be supplied to get consistent result.
 
     ```{r}
 result4 <- result3 %>% restrict_date(

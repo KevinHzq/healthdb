@@ -1,5 +1,7 @@
 # healthdb (development version)
 
+-   New vignette "The logic behind if_date() and restrict_date()" (`vignette("if_date_logic")`) explaining the within rolling window, the shrinking-window search for the apart condition, how the search loop is unrolled into SQL window functions with metaprogramming, and how these relate to known techniques.
+
 -   New vignette "Data wrangling helpers" (`vignette("wrangling")`) introducing report_n(), compute_duration(), lookup(), compute_comorbidity(), collapse_episode(), cut_period(), and if_date(), with guidance on keeping the work on the database for as long as possible.
 
 -   The package options (healthdb.verbose, healthdb.force_proceed, and the new healthdb.check_con) are now documented in one place on the package help page; see ?healthdb. Also fixed a broken cross-reference and polished wording throughout the documentation.
@@ -13,6 +15,10 @@
 -   identify_row() with `match = "like"` or `"start"` on remote tables now generates a single `WHERE ... LIKE ... OR ... LIKE ...` clause instead of one sub-query per pattern combined with `UNION`. The new query is simpler and typically faster. Note a subtle behavior change: `UNION` removed duplicate rows, while the new query (like all other match types) keeps them; results differ only if the source table contains fully duplicated rows.
 
 -   The database connection check (a `SELECT 1` round trip) that runs at the start of every database-method function can now be turned off with `options(healthdb.check_con = FALSE)`, which saves one round trip to the server per step in a long pipeline.
+
+-   Fixed if_date() and restrict_date() rejecting the boundary case where `apart * (n - 1)` equals `within` as impossible. It is satisfiable: n dates with all gaps exactly `apart` span exactly `apart * (n - 1)` days, e.g., two dates exactly 30 days apart do satisfy apart = 30 with within = 30. Only `apart * (n - 1)` strictly greater than `within` is impossible now, and the database method raises the same error as the local method instead of silently returning no match.
+
+-   Corrected the documentation of restrict_date()'s `force_collect` argument, which still described a pre-release version: the `apart` condition runs on the database (it does not require a local data frame), and `force_collect = TRUE` is only an opt-in fallback for the apart-plus-within case when the database does not permit temporary tables or the overlap join.
 
 -   Fixed report_n() (and the `report_on` argument of exclude()) erroring with "Can't coerce from a <integer64> object to an integer" on database backends whose counts come back as 64-bit integers (e.g., PostgreSQL).
 

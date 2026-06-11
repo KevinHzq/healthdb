@@ -159,3 +159,15 @@ test_that("edge case - NA dates without check_missing do not error or false-flag
   out_within <- restrict_dates(db, clnt_id, dates, n = 2, within = 30, uid = uid, mode = "filter") %>% dplyr::collect()
   expect_setequal(out_within$clnt_id, 1)
 })
+
+test_that("edge case - apart*(n-1) == within boundary works on database", {
+  db <- memdb_tbl(dplyr::tibble(
+    clnt_id = 1,
+    dates = as.Date("2020-01-01") + c(0, 30),
+    uid = 1:2
+  ))
+  out <- restrict_dates(db, clnt_id, dates, n = 2, apart = 30, within = 30, uid = uid, mode = "filter") %>% dplyr::collect()
+  expect_setequal(out$clnt_id, 1)
+  # impossible condition errors consistently with the local method
+  expect_error(restrict_dates(db, clnt_id, dates, n = 2, apart = 31, within = 30, uid = uid), "impossible")
+})

@@ -91,3 +91,14 @@ test_that("sort back works", {
   out <- if_dates(x, n = 2, within = w, detail = TRUE, align = "right")
   expect_equal(out, ans)
 })
+
+test_that("boundary case apart*(n-1) == within is satisfiable, only > is impossible", {
+  # two dates exactly 30 days apart span exactly 30 days
+  x <- as.Date("2020-01-01") + c(0, 30)
+  expect_true(if_date(x, n = 2, apart = 30, within = 30))
+  # three dates spaced exactly 15 days apart span exactly 30 days
+  x3 <- as.Date("2020-01-01") + c(0, 15, 30)
+  expect_true(if_date(x3, n = 3, apart = 15, within = 30))
+  # strictly impossible condition still errors
+  expect_error(if_date(x, n = 2, apart = 31, within = 30), "impossible")
+})

@@ -144,6 +144,9 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
     # do overlap join then all_apart
     apart <- as.integer(apart)
 
+    # same impossibility guard as if_date() so both methods error consistently
+    if (apart * (n - 1) > within) stop("Condition is impossible as the n dates would span at least apart*(n - 1) days, which is greater than within")
+
     if (force_collect) {
       result <- dplyr::collect(data) %>%
         restrict_dates.data.frame(clnt_id = !!clnt_id, date_var = !!date_var, n = n, apart = apart, within = within, flag_at = flag_at, mode = mode, dup.rm = dup.rm, ...)
