@@ -67,6 +67,12 @@
   with “Can’t coerce from a object to an integer” on database backends
   whose counts come back as 64-bit integers (e.g., PostgreSQL).
 
+- Fixed restrict_date() with both `apart` and `within` failing on
+  PostgreSQL when `within` is passed as a plain number (e.g.,
+  `within = 365`, which is a double in R): the generated SQL added a
+  numeric to a date (“date + 365.0”), which PostgreSQL rejects. `within`
+  is now coerced to integer in this branch like in the others.
+
 - Fixed restrict_date() with `apart` on PostgreSQL: the generated SQL
   summed and coalesced boolean columns, which PostgreSQL rejects
   (“function sum(boolean) does not exist”); the indicators are now
