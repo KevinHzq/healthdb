@@ -382,6 +382,9 @@ case definitions. Note that
 [`if_date()`](https://kevinhzq.github.io/healthdb/reference/if_date.md)
 works on local data only; for database tables, use
 [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
+If you are curious how the date search works — and how its loop gets
+translated into SQL — see
+[`vignette("if_date_logic")`](https://kevinhzq.github.io/healthdb/articles/if_date_logic.md).
 
 ## Where these fit in a typical workflow
 

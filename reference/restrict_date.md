@@ -5,7 +5,9 @@ least certain days apart AND within a specified time span. When
 identifying events/diseases from administrative data, definitions often
 require, e.g., n diagnoses that are at least some days apart within some
 years. This function is intended for such use and optimized to avoid
-looping through all n-size combinations of dates per client.
+looping through all n-size combinations of dates per client. See
+[`vignette("if_date_logic")`](https://kevinhzq.github.io/healthdb/articles/if_date_logic.md)
+for an explanation of the algorithm and how it is translated into SQL.
 
 ## Usage
 
@@ -93,10 +95,14 @@ restrict_date(
 
 - force_collect:
 
-  A logical for whether force downloading remote table if `apart` is not
-  NULL. For remote table only, because `apart` is implemented for local
-  data frame only. Downloading data could be slow, so the user has to
-  opt in; default FALSE will stop with error.
+  A logical for whether to download the data and use the local method
+  when both `apart` and `within` are supplied. For remote tables only.
+  The default (FALSE) runs everything on the database, which involves
+  writing a temporary table and an overlap (non-equi) join; if the
+  database does not permit these, set TRUE to download the data and
+  compute locally instead (may be slow). The argument has no effect when
+  only one of `apart`/`within` is supplied, as those cases always run on
+  the database.
 
 - verbose:
 

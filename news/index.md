@@ -2,6 +2,13 @@
 
 ## healthdb (development version)
 
+- New vignette “The logic behind if_date() and restrict_date()”
+  ([`vignette("if_date_logic")`](https://kevinhzq.github.io/healthdb/articles/if_date_logic.md))
+  explaining the within rolling window, the shrinking-window search for
+  the apart condition, how the search loop is unrolled into SQL window
+  functions with metaprogramming, and how these relate to known
+  techniques.
+
 - New vignette “Data wrangling helpers”
   ([`vignette("wrangling")`](https://kevinhzq.github.io/healthdb/articles/wrangling.md))
   introducing report_n(), compute_duration(), lookup(),
@@ -40,6 +47,21 @@
   the start of every database-method function can now be turned off with
   `options(healthdb.check_con = FALSE)`, which saves one round trip to
   the server per step in a long pipeline.
+
+- Fixed if_date() and restrict_date() rejecting the boundary case where
+  `apart * (n - 1)` equals `within` as impossible. It is satisfiable: n
+  dates with all gaps exactly `apart` span exactly `apart * (n - 1)`
+  days, e.g., two dates exactly 30 days apart do satisfy apart = 30 with
+  within = 30. Only `apart * (n - 1)` strictly greater than `within` is
+  impossible now, and the database method raises the same error as the
+  local method instead of silently returning no match.
+
+- Corrected the documentation of restrict_date()’s `force_collect`
+  argument, which still described a pre-release version: the `apart`
+  condition runs on the database (it does not require a local data
+  frame), and `force_collect = TRUE` is only an opt-in fallback for the
+  apart-plus-within case when the database does not permit temporary
+  tables or the overlap join.
 
 - Fixed report_n() (and the `report_on` argument of exclude()) erroring
   with “Can’t coerce from a object to an integer” on database backends

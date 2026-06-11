@@ -34,7 +34,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
+<li><a class="dropdown-item" href="../articles/if_date_logic.html">The logic behind if_date() and restrict_date()</a></li>
+    <li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -406,7 +407,9 @@ The <code>apart</code> argument adds a minimum-gap condition, e.g.,
 <code>if_date(x, n = 2, apart = 30, within = 365)</code> for two dates
 at least 30 days apart within a year — a very common shape for case
 definitions. Note that <code><a href="../reference/if_date.html">if_date()</a></code> works on local data only;
-for database tables, use <code><a href="../reference/restrict_date.html">restrict_date()</a></code>.</p>
+for database tables, use <code><a href="../reference/restrict_date.html">restrict_date()</a></code>. If you are
+curious how the date search works — and how its loop gets translated
+into SQL — see <code><a href="../articles/if_date_logic.html">vignette("if_date_logic")</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="where-these-fit-in-a-typical-workflow">Where these fit in a typical workflow<a class="anchor" aria-label="anchor" href="#where-these-fit-in-a-typical-workflow"></a>

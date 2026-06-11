@@ -241,10 +241,12 @@ Here’s how you could use `healthdb` to achieve these steps:
 
     [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)
     supports more complicated patterns like having n diagnoses at least
-    i days apart within j years. Note that when SQL interpret order of
-    dates, the result could be not deterministic if there were duplicate
-    dates within client. Therefore, a unique row id (uid) has to be
-    supplied to get consistent result.
+    i days apart within j years (see
+    [`vignette("if_date_logic")`](https://kevinhzq.github.io/healthdb/articles/if_date_logic.md)
+    for how this works under the hood). Note that when SQL interpret
+    order of dates, the result could be not deterministic if there were
+    duplicate dates within client. Therefore, a unique row id (uid) has
+    to be supplied to get consistent result.
 
     ``` r
 

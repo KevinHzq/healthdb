@@ -7,7 +7,10 @@ specified time span. When identifying events/diseases from
 administrative data, definitions often require, e.g., n diagnoses that
 are at least some days apart within some years. This function is
 intended for such use and optimized to avoid looping through all n-size
-combinations in x. This function does not work with remote table input.
+combinations in x. See
+[`vignette("if_date_logic")`](https://kevinhzq.github.io/healthdb/articles/if_date_logic.md)
+for an explanation of the algorithm. This function does not work with
+remote table input.
 
 ## Usage
 

@@ -1,0 +1,380 @@
+# The logic behind if_date() and restrict_date()
+
+Case definitions often have a temporal condition, e.g.,
+
+> two or more physician visits **at least 30 days apart within two
+> years**.
+
+[`if_date()`](https://kevinhzq.github.io/healthdb/reference/if_date.md)
+(for a vector of dates) and
+[`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)
+(for data frames and database tables) decide whether a client’s dates
+can satisfy such a condition. This vignette explains how they work under
+the hood: why the `within` part is easy, why the `apart` part needs a
+search algorithm, and how that algorithm gets translated into SQL — a
+language with no loops — using metaprogramming and ‘dbplyr’.
+
+``` r
+
+library(dplyr)
+library(healthdb)
+```
+
+## Why not brute force?
+
+The question to answer is: among a client’s dates, **is there any set of
+`n` dates** whose adjacent gaps are all at least `apart` days *and*
+whose overall span is at most `within` days?
+
+The direct approach is to try every possible set of `n` dates:
+
+``` r
+
+brute_force <- function(x, n, apart = 0, within = Inf) {
+  any(utils::combn(
+    unique(x), n,
+    function(s) all(diff(sort(s)) >= apart) & (max(s) - min(s) <= within)
+  ))
+}
+```
+
+This is correct, and it is exactly what the package’s tests compare
+against. But the number of sets explodes: a client with 20 dates has
+`choose(20, 3)` = 1140 sets of three, and `choose(20, 5)` = 15,504 sets
+of five. Across millions of clients this is painful in R — and
+impossible on a database, because SQL has no way to enumerate
+combinations at all. Both conditions need a smarter route.
+
+## The easy half: `within`
+
+If the only condition is “any `n` dates within `within` days”, sorting
+solves it. After sorting, **the `n` dates with the smallest span are
+always `n` consecutive dates** — skipping over a date in between can
+never shrink a span. So instead of all combinations, we only check each
+run of `n` consecutive sorted dates: is the gap between a date and the
+(`n` − 1)-th date after it at most `within`?
+
+``` r
+
+x <- as.Date("2020-01-01") + c(0, 200, 380, 390)
+
+# any 3 of these within one year? check consecutive triples:
+# (0, 200, 380) spans 380; (200, 380, 390) spans 190 -- yes
+if_date(x, n = 3, within = 365)
+#> [1] TRUE
+```
+
+This is a rolling window over sorted dates — one pass, no combinations.
+On a database, the same idea is one window function: compare each date
+with `lead(date, n - 1)` (or
+[`lag()`](https://dplyr.tidyverse.org/reference/lead-lag.html),
+depending on `flag_at`) within the client.
+
+## The hard half: `apart`
+
+Now the condition “any `n` dates pairwise at least `apart` days apart”.
+Sorting alone does not help here: the qualifying dates need not be
+consecutive — in fact they are usually spread out, and there are
+combinatorially many ways to pick a spread-out set. We need a search,
+but one that avoids enumerating sets.
+
+### Anchor at the extremes
+
+The key observation: **if any qualifying set exists, then a qualifying
+set that uses the client’s earliest and latest dates also exists.**
+
+Why? Take any qualifying set and swap its earliest member for the
+client’s overall earliest date. That swap moves the first pick further
+away from (or keeps the same distance to) the second pick, so the first
+gap can only grow — the set still qualifies. The same argument applies
+at the other end with the latest date.
+
+This means we never have to wonder which dates to start and end with:
+anchor at the two extremes, and the problem shrinks to finding the
+**middle** `n − 2` dates. And the middle dates can’t be just anywhere —
+each must be at least `apart` days after the overall minimum and at
+least `apart` days before the overall maximum. In other words, they must
+fall inside the window
+
+> \[ min + apart, max − apart \].
+
+Inside that window, the same logic repeats: anchor at the window’s own
+earliest and latest dates, shrink the window by `apart` on both sides,
+and look for `n − 4` dates in the new, smaller window. Every pass peels
+two dates off `n`, so the search finishes in `n %/% 2` passes —
+regardless of how many dates the client has:
+
+- For **odd** `n`, the last pass needs to find just **one** date in the
+  innermost window.
+- For **even** `n`, the last two picks are the innermost window’s own
+  earliest and latest dates, so the final check is whether **their** gap
+  is at least `apart`.
+- At every pass, if the window holds fewer than the required `n − 2i`
+  dates, the answer is no — the search stops early.
+
+### A worked example
+
+Take a client whose dates are days 0, 5, 9, 16, 23, and 30 (relative to
+their first visit), and ask for `n = 4` dates at least 7 days apart:
+
+``` r
+
+x <- as.Date("2020-01-01") + c(0, 5, 9, 16, 23, 30)
+```
+
+- **Pass 1**: anchor at day 0 and day 30. The middle two dates must lie
+  in \[0 + 7, 30 − 7\] = \[7, 23\]. Days 9, 16, and 23 do — at least 2,
+  so continue.
+- **Pass 2**: `n` is now down to 0, so apply the even-`n` ending: the
+  earliest and latest dates inside the window are days 9 and 23, and 23
+  − 9 = 14 ≥ 7. **Qualifies** — the witness set is {0, 9, 23, 30} with
+  gaps 9, 14, 7.
+
+``` r
+
+if_date(x, n = 4, apart = 7)
+#> [1] TRUE
+```
+
+Now shift two dates so the middle collapses — days 0, 5, 9, 12, 30:
+
+- **Pass 1**: window \[7, 23\] contains days 9 and 12 — still 2 dates,
+  continue.
+- **Pass 2**: their gap is 12 − 9 = 3 \< 7. **Fails.** No other choice
+  could have done better: anything outside \[7, 23\] is too close to an
+  anchor.
+
+``` r
+
+y <- as.Date("2020-01-01") + c(0, 5, 9, 12, 30)
+if_date(y, n = 4, apart = 7)
+#> [1] FALSE
+```
+
+### Both conditions at once
+
+When `apart` and `within` are both supplied, the two tricks combine. Any
+qualifying set spans at most `within` days, so it must live entirely
+inside the `within`-day window that starts at its own earliest date —
+and that earliest date is one of the client’s dates. So:
+
+1.  for each date, gather all the client’s dates falling within `within`
+    days of it (an *overlap join* —
+    [`data.table::foverlaps()`](https://rdrr.io/pkg/data.table/man/foverlaps.html)
+    locally, a non-equi
+    [`left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
+    on the database);
+2.  run the `apart` search from the previous section inside each of
+    these windows;
+3.  the client qualifies if any window does.
+
+This is also where the `flag_at`/`align` argument gets its meaning: it
+decides whether the window anchored at a date extends forward (“left”,
+the date is the start of the period) or backward (“right”, the date is
+the end), which in turn decides which record carries the flag.
+
+## Teaching SQL to loop
+
+The `apart` search is naturally a loop: *for pass i, compute window i
+from the dates that survived window i − 1*. R can write that loop in a
+few lines, and `data.table` runs it for the local method. But
+[`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md)
+also has to run on database tables, and SQL has no `for` loop.
+
+The way out: **the loop does not have to run in SQL — it only has to run
+while *writing* the SQL.** Each pass of the search is expressible as
+ordinary ‘dplyr’ verbs on grouped data: window `i` is a
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) that
+uses [`min()`](https://rdrr.io/r/base/Extremes.html),
+[`max()`](https://rdrr.io/r/base/Extremes.html), and
+[`sum()`](https://rdrr.io/r/base/sum.html) over the client group. So the
+package loops in R *at query-building time*, manufacturing one pair of
+columns per pass with ‘rlang’ metaprogramming:
+
+``` r
+
+## simplified from healthdb's internals
+for (i in 1:(n %/% 2)) {
+  win_i <- rlang::sym(paste0("in_win_", i)) # column name for this pass
+  win_prev <- rlang::sym(paste0("in_win_", i - 1))
+  sum_i <- rlang::sym(paste0("sum_win_", i))
+
+  data <- data %>%
+    mutate(
+      # is the date inside this pass's window (computed from the
+      # dates that were inside the previous pass's window)?
+      !!win_i := case_when(
+        between(
+          date,
+          min(date[!!win_prev == 1L]) + apart,
+          max(date[!!win_prev == 1L]) - apart
+        ) ~ 1L,
+        .default = 0L
+      ),
+      # are there enough dates left in the window?
+      !!sum_i := case_when(sum(!!win_i) >= n - i * 2L ~ 1L, .default = 0L)
+    )
+}
+```
+
+[`rlang::sym()`](https://rlang.r-lib.org/reference/sym.html) turns a
+generated name like `"in_win_2"` into a column reference, and `!!`
+injects it into the
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html). The
+loop runs `n %/% 2` times in R, leaving behind a chain of
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) calls —
+a fully *unrolled* version of the loop. ‘dbplyr’ then translates each
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) into a
+layer of SQL: the aggregate functions become window functions
+(`MIN(...) OVER (PARTITION BY clnt_id)` and friends), and each pass
+becomes a nested subquery.
+
+You can see the generated SQL for yourself:
+
+``` r
+
+db <- dbplyr::memdb_frame(
+  clnt_id = 1,
+  uid = 1:6,
+  dates = as.Date("2020-01-01") + c(0, 5, 9, 16, 23, 30)
+)
+
+restrict_date(db, clnt_id, dates, n = 4, apart = 7, uid = uid) %>%
+  show_query()
+#> ℹ Apply restriction that each client must have 4 records that were at
+#> least 7 days apart. Records that met the condition were flagged.
+#> <SQL>
+#> SELECT
+#>   `clnt_id`,
+#>   `uid`,
+#>   `dates`,
+#>   COALESCE(`temp_nm_flag_apart`, 0) AS `flag_restrict_date`
+#> FROM (
+#>   SELECT
+#>     `q01`.*,
+#>     CASE WHEN ((`final_win_gap` * `sum_win_1`) >= 7) THEN 1 ELSE 0 END AS `temp_nm_flag_apart`
+#>   FROM (
+#>     SELECT
+#>       `q01`.*,
+#>       MAX(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1` - MIN(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1` AS `final_win_gap`
+#>     FROM (
+#>       SELECT
+#>         `q01`.*,
+#>         CASE
+#> WHEN (SUM(`in_win_1`) OVER (PARTITION BY `clnt_id`) >= (4 - 1 * 2)) THEN 1
+#> ELSE 0
+#> END AS `sum_win_1`
+#>       FROM (
+#>         SELECT
+#>           `dbplyr_SwlKLUUEdL`.*,
+#>           CASE
+#> WHEN (`dates` BETWEEN MIN(`dates`) OVER `win1` + 7 AND MAX(`dates`) OVER `win1` - 7) THEN 1
+#> ELSE 0
+#> END AS `in_win_1`
+#>         FROM `dbplyr_SwlKLUUEdL`
+#>         WINDOW `win1` AS (PARTITION BY `clnt_id`)
+#>       ) AS `q01`
+#>     ) AS `q01`
+#>     WINDOW `win1` AS (PARTITION BY `clnt_id`)
+#>   ) AS `q01`
+#> ) AS `q01`
+```
+
+Reading from the innermost subquery outward, you can follow the passes
+of the search: `in_win_1` (the first window), `sum_win_1` (enough dates
+left?), then the final gap check — exactly the worked example above,
+written by a loop SQL never sees. Asking for a larger `n` simply
+generates more layers; no R code changes.
+
+This pattern — looping in R to generate set-based SQL — is worth knowing
+beyond this package. Any per-group algorithm with a bounded number of
+passes, where each pass is expressible as
+[`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)/[`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
+over the group, can be unrolled the same way and pushed to the database
+instead of downloading the data.
+
+## Trust, but verify
+
+Because the brute force version is unquestionably correct, it makes a
+good referee. The package’s tests compare both implementations against
+it; here is the flavor:
+
+``` r
+
+set.seed(44)
+
+referee <- replicate(200, {
+  x <- sample(seq(as.Date("2020-01-01"), as.Date("2021-12-31"), by = 1), 8)
+  identical(
+    if_date(x, n = 3, apart = 30, within = 365),
+    brute_force(x, n = 3, apart = 30, within = 365)
+  )
+})
+
+all(referee)
+#> [1] TRUE
+```
+
+The same checks run for the database method against SQLite, PostgreSQL,
+and SQL Server, so the SQL that the metaprogramming writes is held to
+the same standard as the R that is easy to read.
+
+## Where this sits among known techniques
+
+For readers who want to relate the algorithm to established ideas (and
+for the record of what we could and could not find elsewhere):
+
+**The selection problem itself is classical — when solved
+sequentially.** “Pick `n` points with pairwise gaps at least `g`” has a
+textbook greedy solution: sort the dates, take the earliest, then
+repeatedly take the next date at least `g` after the last pick, and
+check whether `n` picks were reached. It is linear after sorting, and
+its correctness rests on an *exchange argument* — the same style of
+proof used in the anchoring step above (competitive programmers may
+recognize the feasibility check inside the “aggressive cows” /
+maximize-the-minimum-gap problem). The catch: this greedy is inherently
+sequential — each pick depends on the previous one — which makes it a
+poor fit for SQL. Expressing it would require recursion (recursive
+common table expressions), which is not portable across database
+dialects and not supported by ‘dbplyr’.
+
+**The shrinking-window formulation removes the sequential dependency.**
+Each pass needs only [`min()`](https://rdrr.io/r/base/Extremes.html),
+[`max()`](https://rdrr.io/r/base/Extremes.html), and a count over the
+client’s group — all ordinary window aggregates — and the number of
+passes is fixed at `n %/% 2` before seeing any data. That is what makes
+the algorithm expressible in plain, non-recursive SQL. The nearest
+well-known SQL patterns solve different problems:
+[gaps-and-islands](https://www.practicewindowfunctions.com/learn/gap_and_island)
+classifies *consecutive* rows into runs, and `LEAD()`/`LAG()` threshold
+checks (as used for the `within` condition here) also only compare
+*consecutive* rows — but a qualifying `apart` set is generally not
+consecutive. Academic work on [threshold
+queries](https://arxiv.org/abs/2106.15703) studies a related family of
+“are there at least n rows such that …” questions, but not this
+gap-constrained subset selection. We have not found a published
+set-based equivalent of the shrinking-window search; pointers are
+welcome on the [issue
+tracker](https://github.com/KevinHzq/healthdb/issues).
+
+**The condition itself is everywhere in epidemiology, but implemented
+sequentially.** Validation studies routinely define cases by patterns
+like “two or more claims at least 30 days apart” — for example, in
+[case-finding algorithms for
+HIV](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3557280/) and [chronic
+dialysis](https://link.springer.com/article/10.1186/1471-2288-11-25) —
+and the published implementations are typically SAS or Stata programs
+that scan records row by row. Running the same logic as one set-based
+query inside the database appears to be uncommon.
+
+**Generating SQL from a host language is an old idea; this use of it is
+not well documented.** Query builders and ‘dbplyr’ itself are code
+generators, and the ‘rlang’ injection mechanics are covered in the
+[‘dbplyr’ translation
+vignette](https://dbplyr.tidyverse.org/articles/sql-translation.html)
+and community posts such as [this one on passing functions to
+‘dbplyr’](https://nathaneastwood.github.io/2021/02/18/using-functions-as-an-input-to-functions-with-dbplyr/).
+What we have not seen documented elsewhere is the pattern used here:
+running a loop at query-building time to unroll a bounded-pass,
+per-group algorithm into nested window-function subqueries, as a general
+way to push iterative logic to the database.

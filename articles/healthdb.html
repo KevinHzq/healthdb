@@ -34,7 +34,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
+<li><a class="dropdown-item" href="../articles/if_date_logic.html">The logic behind if_date() and restrict_date()</a></li>
+    <li><a class="dropdown-item" href="../articles/wrangling.html">Data wrangling helpers</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -274,10 +275,12 @@ is the opposite of filter, i.e.,
 <li>
 <p>Restrict the temporal pattern of diagnoses</p>
 <p><code><a href="../reference/restrict_date.html">restrict_date()</a></code> supports more complicated patterns like
-having n diagnoses at least i days apart within j years. Note that when
-SQL interpret order of dates, the result could be not deterministic if
-there were duplicate dates within client. Therefore, a unique row id
-(uid) has to be supplied to get consistent result.</p>
+having n diagnoses at least i days apart within j years (see
+<code><a href="../articles/if_date_logic.html">vignette("if_date_logic")</a></code> for how this works under the
+hood). Note that when SQL interpret order of dates, the result could be
+not deterministic if there were duplicate dates within client.
+Therefore, a unique row id (uid) has to be supplied to get consistent
+result.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result4</span> <span class="op">&lt;-</span> <span class="va">result3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/restrict_date.html">restrict_date</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>,</span>
