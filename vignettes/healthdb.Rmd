@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 -   *Call-building functions* (e.g., `build_def()`, `execute_def()`) that facilitate batch execution and re-use of case definitions. In essence, `build_def` creates codes of definitions (which is chain of the interactive functions, e.g., `define_case()`) that are not immediately ran. `execute_def` runs built definitions with different input data.
 
--   *Miscellaneous functions* such as computing age `compute_duration()`, collapsing records within a time range into one episode `collapse_episode()`, and more (on-going effort). Most of these functions have built-in checks signalling when things might go wrong, e.g., missing values in calculated ages.
+-   *Miscellaneous functions* such as computing age (`compute_duration()`), collapsing records within a time range into one episode (`collapse_episode()`), and more (on-going effort). Most of these functions have built-in checks signalling when things might go wrong, e.g., missing values in calculated ages. These helpers are introduced in the data wrangling vignette (`vignette("wrangling")`).
 
 ### Motivation
 
@@ -290,3 +290,7 @@ pool_case(result_list,
   force_proceed = TRUE
 )
 ```
+
+## Next steps
+
+Identifying the cases is usually just the beginning. The data wrangling vignette (`vignette("wrangling")`) introduces the helpers for what comes next: reporting sample sizes for your flowchart, computing age, decoding codes, scoring comorbidity, and reshaping records into episodes and periods.
