@@ -22,6 +22,8 @@
 
 -   Fixed report_n() (and the `report_on` argument of exclude()) erroring with "Can't coerce from a <integer64> object to an integer" on database backends whose counts come back as 64-bit integers (e.g., PostgreSQL).
 
+-   Fixed restrict_date() with both `apart` and `within` failing on PostgreSQL when `within` is passed as a plain number (e.g., `within = 365`, which is a double in R): the generated SQL added a numeric to a date ("date + 365.0"), which PostgreSQL rejects. `within` is now coerced to integer in this branch like in the others.
+
 -   Fixed restrict_date() with `apart` on PostgreSQL: the generated SQL summed and coalesced boolean columns, which PostgreSQL rejects ("function sum(boolean) does not exist"); the indicators are now explicit integers. Also fixed the `check_missing = TRUE` count, which could report a garbled number of removed records (e.g., "2.47e-323") or miss the warning entirely on some backends.
 
 -   The test suite can now run against PostgreSQL (`HEALTHDB_TEST_BACKEND=postgres` plus the standard `PG*` connection variables) and SQL Server (`HEALTHDB_TEST_BACKEND=sqlserver` plus an ODBC connection string in `HEALTHDB_TEST_ODBC`), and does so on GitHub Actions via service containers, in addition to the default local SQLite.

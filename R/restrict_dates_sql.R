@@ -142,7 +142,11 @@ restrict_dates.tbl_sql <- function(data, clnt_id, date_var, n, apart = NULL, wit
   } else {
     # apart and within
     # do overlap join then all_apart
+    stopifnot(is.wholenumber(within))
     apart <- as.integer(apart)
+    # as.integer, like the within-only branch: date + 30.0 (numeric) is not
+    # a valid operation on PostgreSQL, while date + 30 (integer) is
+    within <- as.integer(within)
 
     # same impossibility guard as if_date() so both methods error consistently
     if (apart * (n - 1) > within) stop("Condition is impossible as the n dates would span at least apart*(n - 1) days, which is greater than within")
