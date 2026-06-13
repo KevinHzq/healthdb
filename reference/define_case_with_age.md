@@ -17,6 +17,13 @@ and
 so that `n_per_clnt`, `apart`, and `within` are evaluated only on
 age-eligible records (e.g., "two or more visits while aged 18-65").
 
+The age restriction is an eligibility filter on the population, not a
+per-record case flag, so age-ineligible records are always removed
+regardless of `mode`. This differs from the
+`n_per_clnt`/`apart`/`within` criteria, which only add `flag_` columns
+(and keep all rows) when `mode = "flag"`. As a result, the output of
+`mode = "flag"` may still have fewer rows than the input.
+
 For other age restrictions based on a fixed time point (e.g., age at the
 baseline of follow-up), it can be done by filtering the input data or
 output of
@@ -150,6 +157,9 @@ define_case_with_age(
     [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
     Default is "flag".
 
+  - Note that the age restriction (`age_range`) always removes
+    age-ineligible records regardless of `mode`; see Description.
+
 - birth_date:
 
   Optional. The name of the column containing birth dates. Used to
@@ -164,9 +174,10 @@ define_case_with_age(
 - age_range:
 
   Optional. A length 2 numeric vector `c(min, max)` specifying the age
-  range in years. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for
-  age \>= 10, or `c(NA, 65)` for age \<= 65). At least one non-NA value
-  must be provided.
+  range in years (inclusive on both ends). Use `NA` for one-sided bounds
+  (e.g., `c(10, NA)` for age \>= 10, or `c(NA, 65)` for age \<= 65). At
+  least one non-NA value must be provided. Records outside this range
+  are always removed regardless of `mode`.
 
 - force_collect:
 
