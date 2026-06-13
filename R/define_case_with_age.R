@@ -6,6 +6,8 @@
 #'
 #' Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range are removed before counting records/dates per client and before interpreting the temporal relationship between records. In other words, the age restriction is applied before both [restrict_n()] and [restrict_date()], so that `n_per_clnt`, `apart`, and `within` are evaluated only on age-eligible records (e.g., "two or more visits while aged 18-65").
 #'
+#' The age restriction is an eligibility filter on the population, not a per-record case flag, so age-ineligible records are always removed regardless of `mode`. This differs from the `n_per_clnt`/`apart`/`within` criteria, which only add `flag_` columns (and keep all rows) when `mode = "flag"`. As a result, the output of `mode = "flag"` may still have fewer rows than the input.
+#'
 #' For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of [define_case()] instead of using this function.
 #'
 #' @inheritParams identify_row
@@ -24,9 +26,10 @@
 #' * "flag" - add new columns starting with "flag_" indicating if the client met the condition,
 #' * or "filter" - remove clients that did not meet the condition from the data.
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
+#' * Note that the age restriction (`age_range`) always removes age-ineligible records regardless of `mode`; see Description.
 #' @param birth_date Optional. The name of the column containing birth dates. Used to calculate age when `age_range` is specified. Requires `date_var` to be supplied. Age will be calculated as (date_var - birth_date)/365.25.
 #' @param age Optional. The name of the column containing age values. Used directly for age filtering when `age_range` is specified.
-#' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range in years. Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided.
+#' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range in years (inclusive on both ends). Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided. Records outside this range are always removed regardless of `mode`.
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
 #' @param verbose A logical for whether to print an explanation of the operation. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all.
 #' @param ... Additional arguments, e.g., `mode`, passing to [restrict_date()].

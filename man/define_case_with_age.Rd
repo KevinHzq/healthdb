@@ -68,13 +68,14 @@ define_case_with_age(
 \item "flag" - add new columns starting with "flag_" indicating if the client met the condition,
 \item or "filter" - remove clients that did not meet the condition from the data.
 \item This will be passed to both \code{\link[=restrict_n]{restrict_n()}} AND \code{\link[=restrict_date]{restrict_date()}}. Default is "flag".
+\item Note that the age restriction (\code{age_range}) always removes age-ineligible records regardless of \code{mode}; see Description.
 }}
 
 \item{birth_date}{Optional. The name of the column containing birth dates. Used to calculate age when \code{age_range} is specified. Requires \code{date_var} to be supplied. Age will be calculated as (date_var - birth_date)/365.25.}
 
 \item{age}{Optional. The name of the column containing age values. Used directly for age filtering when \code{age_range} is specified.}
 
-\item{age_range}{Optional. A length 2 numeric vector \code{c(min, max)} specifying the age range in years. Use \code{NA} for one-sided bounds (e.g., \code{c(10, NA)} for age >= 10, or \code{c(NA, 65)} for age <= 65). At least one non-NA value must be provided.}
+\item{age_range}{Optional. A length 2 numeric vector \code{c(min, max)} specifying the age range in years (inclusive on both ends). Use \code{NA} for one-sided bounds (e.g., \code{c(10, NA)} for age >= 10, or \code{c(NA, 65)} for age <= 65). At least one non-NA value must be provided. Records outside this range are always removed regardless of \code{mode}.}
 
 \item{force_collect}{A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.}
 
@@ -89,6 +90,8 @@ A subset of the input data that satisfied the specified case definition.
 This function extends the standard case definition function \code{\link[=define_case]{define_case()}} by allowing age-based filtering. See \code{\link[=define_case]{define_case()}} for more general description of what this function does.
 
 Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range are removed before counting records/dates per client and before interpreting the temporal relationship between records. In other words, the age restriction is applied before both \code{\link[=restrict_n]{restrict_n()}} and \code{\link[=restrict_date]{restrict_date()}}, so that \code{n_per_clnt}, \code{apart}, and \code{within} are evaluated only on age-eligible records (e.g., "two or more visits while aged 18-65").
+
+The age restriction is an eligibility filter on the population, not a per-record case flag, so age-ineligible records are always removed regardless of \code{mode}. This differs from the \code{n_per_clnt}/\code{apart}/\code{within} criteria, which only add \code{flag_} columns (and keep all rows) when \code{mode = "flag"}. As a result, the output of \code{mode = "flag"} may still have fewer rows than the input.
 
 For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of \code{\link[=define_case]{define_case()}} instead of using this function.
 }

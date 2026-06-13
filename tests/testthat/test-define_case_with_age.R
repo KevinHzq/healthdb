@@ -373,6 +373,29 @@ test_that("flag mode works with age restriction", {
   expect_true(all(output_df$age >= 18 & output_df$age <= 65))
 })
 
+test_that("age restriction removes age-ineligible records even in flag mode", {
+  # By design the age restriction is a population eligibility filter, not a
+  # per-record flag, so age-ineligible rows are dropped regardless of mode.
+  df <- data.frame(
+    clnt_id = c(1, 2, 3),
+    age = c(10, 30, 70),
+    diagx = c("a", "b", "c"),
+    uid = 1:3
+  )
+
+  output_df <- define_case_with_age(df,
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id,
+    age = age,
+    age_range = c(18, 65),
+    mode = "flag"
+  )
+
+  # only client 2 (age 30) is within range; rows are removed despite flag mode
+  expect_equal(output_df$clnt_id, 2)
+  expect_equal(nrow(output_df), 1)
+})
+
 test_that("keep first/last works with age restriction", {
   df <- letters_n(type = "data.frame", id = 1:10)
   df$age <- sample(10:80, nrow(df), replace = TRUE)
