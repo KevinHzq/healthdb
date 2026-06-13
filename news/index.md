@@ -122,6 +122,35 @@
 - Removed leftover commented-out code and browser() calls across the
   package; no functional change.
 
+- **Behavior change**: define_case_with_age() now applies the age
+  restriction (`age_range`) *before* restrict_n() and restrict_date()
+  instead of after, so that `n_per_clnt`, `apart`, and `within` are
+  evaluated only on age-eligible records (matching definitions such as
+  “two or more visits while aged 18-65”). Results may differ from
+  previous versions for calls that combine `age_range` with
+  `n_per_clnt > 1`, `apart`, or `within`: clients who met those
+  count/time-span criteria only by counting out-of-range records are no
+  longer included.
+
+- Fixed define_case_with_age() with `birth_date` erroring on database
+  backends that lack a SQL translation for
+  [`difftime()`](https://rdrr.io/r/base/difftime.html), most notably
+  SQLite (the generated query contained an invalid
+  `difftime(..., 'days' AS units)` and failed at collection). Age is now
+  computed with backend-appropriate date arithmetic (`DATEDIFF()` on SQL
+  Server, date subtraction on SQLite/PostgreSQL), so the `birth_date`
+  path works across all supported backends. The `age` column path was
+  unaffected.
+
+- define_case_with_age() age-calculation fixes: the age is now signed,
+  so a record dated before its `birth_date` (a data error) yields a
+  negative age and is excluded by `age_range` rather than being flipped
+  to a positive age that could wrongly pass the filter; the internal
+  temporary age column no longer overwrites an existing column of the
+  same name in the input; and `age_range` now errors when its lower
+  bound exceeds the upper bound instead of silently returning no
+  records.
+
 - Fixed a bug in define_case() and define_case_with_age(): with
   `keep = "last"`, the first occurrence of “min” anywhere in the
   internally generated code was string-replaced with “max”, which
