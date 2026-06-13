@@ -71,7 +71,7 @@ define_case_with_age(
 \item Note that the age restriction (\code{age_range}) always removes age-ineligible records regardless of \code{mode}; see Description.
 }}
 
-\item{birth_date}{Optional. The name of the column containing birth dates. Used to calculate age when \code{age_range} is specified. Requires \code{date_var} to be supplied. Age will be calculated as (date_var - birth_date)/365.25.}
+\item{birth_date}{Optional. The name of the column containing birth dates. Used to calculate age when \code{age_range} is specified. Requires \code{date_var} to be supplied. Age will be calculated as (date_var - birth_date)/365.25. The age is signed, so a record dated before its birth date (e.g., a data error) yields a negative age and is treated as outside \code{age_range} and removed.}
 
 \item{age}{Optional. The name of the column containing age values. Used directly for age filtering when \code{age_range} is specified.}
 

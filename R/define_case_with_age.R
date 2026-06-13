@@ -27,7 +27,7 @@
 #' * or "filter" - remove clients that did not meet the condition from the data.
 #' * This will be passed to both [restrict_n()] AND [restrict_date()]. Default is "flag".
 #' * Note that the age restriction (`age_range`) always removes age-ineligible records regardless of `mode`; see Description.
-#' @param birth_date Optional. The name of the column containing birth dates. Used to calculate age when `age_range` is specified. Requires `date_var` to be supplied. Age will be calculated as (date_var - birth_date)/365.25.
+#' @param birth_date Optional. The name of the column containing birth dates. Used to calculate age when `age_range` is specified. Requires `date_var` to be supplied. Age will be calculated as (date_var - birth_date)/365.25. The age is signed, so a record dated before its birth date (e.g., a data error) yields a negative age and is treated as outside `age_range` and removed.
 #' @param age Optional. The name of the column containing age values. Used directly for age filtering when `age_range` is specified.
 #' @param age_range Optional. A length 2 numeric vector `c(min, max)` specifying the age range in years (inclusive on both ends). Use `NA` for one-sided bounds (e.g., `c(10, NA)` for age >= 10, or `c(NA, 65)` for age <= 65). At least one non-NA value must be provided. Records outside this range are always removed regardless of `mode`.
 #' @param force_collect A logical for whether force downloading the result table if it is not a local data.frame. Downloading data could be slow, so the user has to opt in; default is FALSE.
@@ -193,8 +193,11 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
           dplyr::filter(.data[[!!age]] <= !!age_range[2])
       }
     } else if (has_birth_date) {
-      # Calculate age in years from birth_date and date_var. Date arithmetic
-      # translation differs by backend (see use.datediff()):
+      # Calculate age in years as (date_var - birth_date) / 365.25. The result
+      # is signed on purpose (no abs()): a record dated before the birth date
+      # yields a negative age and is excluded by the age_range bounds, rather
+      # than being flipped to a positive age that could wrongly pass the filter.
+      # Date arithmetic translation differs by backend (see use.datediff()):
       # - local data.frame: difftime() in days
       # - SQL Server/Postgres/etc.: difftime() translates to DATEDIFF()/date
       #   subtraction (passing units = "days" leaks invalid SQL, so it is omitted)
@@ -202,13 +205,13 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
       #   the date columns directly
       if (is.data.frame(result)) {
         result <- result %>%
-          dplyr::mutate(.age_calc = abs(as.numeric(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days"))) / 365.25)
+          dplyr::mutate(.age_calc = as.numeric(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days")) / 365.25)
       } else if (use.datediff(result)) {
         result <- result %>%
-          dplyr::mutate(.age_calc = abs(difftime(.data[[!!date_var]], .data[[!!birth_date]])) / 365.25)
+          dplyr::mutate(.age_calc = difftime(.data[[!!date_var]], .data[[!!birth_date]]) / 365.25)
       } else {
         result <- result %>%
-          dplyr::mutate(.age_calc = abs(.data[[!!date_var]] - .data[[!!birth_date]]) / 365.25)
+          dplyr::mutate(.age_calc = (.data[[!!date_var]] - .data[[!!birth_date]]) / 365.25)
       }
 
       if (!is.na(age_range[1]) & !is.na(age_range[2])) {

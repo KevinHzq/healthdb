@@ -468,6 +468,34 @@ test_that("age calculation is correct with different birth dates", {
   expect_equal(unique(output_df$clnt_id), 2)
 })
 
+test_that("record dated before birth (negative age) is excluded across backends", {
+  # client 1 has a record dated before its birth date (data error): the signed
+  # age is negative and must be treated as out of range, not flipped positive.
+  df <- data.frame(
+    clnt_id = c(1, 2),
+    dates = as.Date(c("2018-01-01", "2023-01-01")),
+    birth_dt = as.Date(c("2020-01-01", "2020-01-01")),
+    diagx = c("a", "b"),
+    uid = 1:2
+  )
+
+  local_out <- define_case_with_age(df,
+    diagx, "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(1, 5), mode = "filter", uid = uid
+  )
+  # client 1 age is -2 (excluded); client 2 age is 3 (kept)
+  expect_equal(local_out$clnt_id, 2)
+
+  skip_on_cran()
+  db_out <- define_case_with_age(memdb_tbl(df),
+    diagx, "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(1, 5), mode = "filter", uid = uid, force_collect = TRUE
+  )
+  expect_equal(sort(db_out$uid), sort(local_out$uid))
+})
+
 test_that("without age_range, function works as normal define_case", {
   df <- letters_n(type = "data.frame")
   df$age <- sample(10:80, nrow(df), replace = TRUE)
