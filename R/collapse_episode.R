@@ -1,7 +1,7 @@
 #' Group records no more than n days apart as episodes
 #'
 #' @md
-#' @description This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days apart. The length of the gap can be relaxed by another grouping variable.
+#' @description This function is useful for collapsing, e.g., medication dispensation or hospitalization, records into episodes if the records' dates are no more than n days apart. The length of the gap can be relaxed by another grouping variable. Records with a missing (`NA`) start or end date are removed with a warning before episodes are derived, because the gap to such records is undefined.
 #' @param data A data.frame or remote table that contains the id and date variables.
 #' @param clnt_id Column name of subject/person ID.
 #' @param start_dt Column name of the starting date of records.
@@ -20,15 +20,34 @@
 #' @export
 #'
 #' @examples
-#' # make toy data
-#' df <- make_test_dat() %>%
-#'   dplyr::select(clnt_id, dates)
+#' # toy dispensing records: each row has a supply start and end date
+#' rx <- data.frame(
+#'   clnt_id = c(1, 1, 1, 2, 2),
+#'   start = as.Date(c(
+#'     "2020-01-01", "2020-03-01", "2020-06-01",
+#'     "2020-01-01", "2020-01-10"
+#'   )),
+#'   end = as.Date(c(
+#'     "2020-01-15", "2020-03-15", "2020-06-15",
+#'     "2020-01-20", "2020-01-25"
+#'   )),
+#'   rx_id = c("a", "a", "b", "c", "c")
+#' )
 #'
-#' head(df)
+#' # collapse records no more than 14 days apart into episodes
+#' collapse_episode(rx, clnt_id, start_dt = start, end_dt = end, gap = 14)
 #'
-#' # collapse records no more than 90 days apart
-#' # end_dt could be absent then it is assumed to be the same as start_dt
-#' collapse_episode(df, clnt_id, start_dt = dates, gap = 90)
+#' # end_dt may be omitted, then each record is assumed to last a single day
+#' collapse_episode(rx, clnt_id, start_dt = start, gap = 14)
+#'
+#' # overwrite keeps related records (e.g. refills of the same prescription)
+#' # in one episode regardless of the gap: consecutive records with the same
+#' # rx_id are collapsed using gap_overwrite, while a change in rx_id falls
+#' # back to the regular gap. Here client 1's two "a" records merge even though
+#' # they are more than 14 days apart.
+#' collapse_episode(rx, clnt_id,
+#'   start_dt = start, end_dt = end, gap = 14, overwrite = rx_id
+#' )
 collapse_episode <- function(data, clnt_id, start_dt, end_dt = NULL, gap, overwrite = NULL, gap_overwrite = 99999, .dt_trans = data.table::as.IDate, ...) {
   # input checks
 

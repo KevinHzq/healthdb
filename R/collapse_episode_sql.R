@@ -34,6 +34,30 @@ collapse_episode.tbl_sql <- function(data, clnt_id, start_dt, end_dt = NULL, gap
   new_cols <- c("epi_id", "epi_no", "epi_seq", "epi_start_dt", "epi_stop_dt")
   if (any(colnames(data) %in% c(temp_cols, new_cols))) stop(paste("Existing variable names conflict those that will be used to derive episodes. Please rename or remove any of ", stringr::str_flatten_comma(c(temp_cols, new_cols))))
 
+  # drop records with missing dates before deriving gaps; an NA date makes the
+  # gap undefined and would otherwise be silently swept into a neighbouring
+  # episode (the backends even disagree on how NA flows through the window
+  # functions). Mirrors restrict_dates(); sum an explicit 1L/0L indicator for
+  # cross-dialect portability.
+  if (has_end) {
+    n_missing <- data %>%
+      dplyr::summarise(n_missing = sum(dplyr::if_else(is.na(.data[[start_dt_nm]]) | is.na(.data[[end_dt_nm]]), 1L, 0L), na.rm = TRUE))
+  } else {
+    n_missing <- data %>%
+      dplyr::summarise(n_missing = sum(dplyr::if_else(is.na(.data[[start_dt_nm]]), 1L, 0L), na.rm = TRUE))
+  }
+  n_missing <- n_missing %>%
+    dplyr::pull("n_missing") %>%
+    as.numeric()
+  if (isTRUE(n_missing > 0)) {
+    warning("Removed ", n_missing, " records with missing start_dt/end_dt")
+    if (has_end) {
+      data <- data %>% dplyr::filter(!is.na(.data[[start_dt_nm]]), !is.na(.data[[end_dt_nm]]))
+    } else {
+      data <- data %>% dplyr::filter(!is.na(.data[[start_dt_nm]]))
+    }
+  }
+
   # if end date was not supplied, treat it as the same as start
   if (!has_end) {
     end_dt_nm <- "temp_end"

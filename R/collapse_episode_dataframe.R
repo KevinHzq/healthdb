@@ -1,5 +1,5 @@
 #' @export
-collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, gap, overwrite = NULL, gap_overwrite = Inf, .dt_trans = data.table::as.IDate, ...) {
+collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, gap, overwrite = NULL, gap_overwrite = 99999, .dt_trans = data.table::as.IDate, ...) {
   # as_name(enquo(arg)) converts both quoted and unquoted column name to string
   clnt_id_nm <- rlang::as_name(rlang::enquo(clnt_id))
   start_dt_nm <- rlang::as_name(rlang::enquo(start_dt))
@@ -21,14 +21,25 @@ collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, 
 
   data <- data.table::as.data.table(data)
 
-  # treat potential name conflicts
+  # error on name conflicts (consistent with the database method)
   temp_cols <- c("last_end_dt", "scenario", "latest_end_dt")
   new_cols <- c("epi_id", "epi_no", "epi_seq", "epi_start_dt", "epi_stop_dt")
-  data.table::setnames(data, old = c(new_cols, temp_cols), new = paste(c(new_cols, temp_cols), "og", sep = "_", recycle0 = TRUE), skip_absent = TRUE)
+  if (any(colnames(data) %in% c(temp_cols, new_cols))) stop(paste("Existing variable names conflict those that will be used to derive episodes. Please rename or remove any of ", stringr::str_flatten_comma(c(temp_cols, new_cols))))
 
   # date transform
   if (!is.null(.dt_trans)) {
     data[, c(start_dt_nm, end_dt_nm) := lapply(.SD, function(x) .dt_trans(x, ...)), .SDcols = c(start_dt_nm, end_dt_nm)]
+  }
+
+  # drop records with missing dates before deriving gaps; an NA date makes the
+  # gap undefined and would otherwise propagate through cummax() and silently
+  # merge every later record into the same episode. Mirrors restrict_dates().
+  is_missing <- is.na(data[[start_dt_nm]])
+  if (has_end) is_missing <- is_missing | is.na(data[[end_dt_nm]])
+  n_missing <- sum(is_missing)
+  if (n_missing > 0) {
+    warning("Removed ", n_missing, " records with missing start_dt/end_dt")
+    data <- data[!is_missing]
   }
 
   # if end date was not supplied, treat it as the same as start
@@ -77,13 +88,19 @@ collapse_episode.data.frame <- function(data, clnt_id, start_dt, end_dt = NULL, 
   data[, epi_id := .GRP, by = c(clnt_id_nm, "epi_no")]
   # create seq# within an episode for each row
   data[, epi_seq := data.table::rowidv(epi_no), by = clnt_id_nm]
-  # summarize start and end date for each episode
-  data[, `:=`(
-    epi_start_dt = min(.SD[[start_dt_nm]], na.rm = TRUE),
-    epi_stop_dt = max(.SD[[end_dt_nm]], na.rm = TRUE)
-  ),
-  by = list(data[[clnt_id_nm]], epi_no), .SDcols = c(start_dt_nm, end_dt_nm)
-  ]
+  # summarize start and end date for each episode; guard the empty case so
+  # min()/max() do not warn ("no non-missing arguments") on zero-row input
+  if (nrow(data) > 0L) {
+    data[, `:=`(
+      epi_start_dt = min(.SD[[start_dt_nm]], na.rm = TRUE),
+      epi_stop_dt = max(.SD[[end_dt_nm]], na.rm = TRUE)
+    ),
+    by = list(data[[clnt_id_nm]], epi_no), .SDcols = c(start_dt_nm, end_dt_nm)
+    ]
+  } else {
+    # add the summary columns with the correct (empty) date types
+    data[, `:=`(epi_start_dt = data[[start_dt_nm]], epi_stop_dt = data[[end_dt_nm]])]
+  }
   # clean up aux variables
   data[, c(temp_cols) := NULL]
 
