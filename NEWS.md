@@ -1,5 +1,13 @@
 # healthdb (development version)
 
+-   collapse_episode() now removes records with a missing (`NA`) start or end date (with a warning reporting the count) before deriving episodes, consistent with restrict_date(). Previously a single missing end date silently merged every later record of that client into one episode on the data.frame backend (an `NA` propagated through `cummax()`), and the data.frame and database backends disagreed on the result. Both backends now drop such records and agree.
+
+-   collapse_episode() on a data.frame now errors when a column would clash with the names it derives (`epi_id`, `epi_no`, `epi_seq`, `epi_start_dt`, `epi_stop_dt`, and internal helpers), matching the database method. Previously the data.frame method silently renamed the clashing column with an `_og` suffix.
+
+-   collapse_episode()'s `gap_overwrite` default is now `99999` on every backend (the data.frame method previously declared `Inf`, which was dead via S3 dispatch and would have produced `NA` on the database method). No change for typical calls through the generic.
+
+-   collapse_episode() on a zero-row data.frame no longer emits spurious "no non-missing arguments to min/max" warnings; it returns the empty result with the episode columns added.
+
 -   New vignette "The logic behind if_date() and restrict_date()" (`vignette("if_date_logic")`) explaining the within rolling window, the shrinking-window search for the apart condition, how the search loop is unrolled into SQL window functions with metaprogramming, and how these relate to known techniques.
 
 -   New vignette "Data wrangling helpers" (`vignette("wrangling")`) introducing report_n(), compute_duration(), lookup(), compute_comorbidity(), collapse_episode(), cut_period(), and if_date(), with guidance on keeping the work on the database for as long as possible.
