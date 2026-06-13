@@ -165,6 +165,9 @@ define_case_with_age(
   Optional. The name of the column containing birth dates. Used to
   calculate age when `age_range` is specified. Requires `date_var` to be
   supplied. Age will be calculated as (date_var - birth_date)/365.25.
+  The age is signed, so a record dated before its birth date (e.g., a
+  data error) yields a negative age and is treated as outside
+  `age_range` and removed.
 
 - age:
 

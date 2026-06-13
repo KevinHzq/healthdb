@@ -151,7 +151,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 
 
 <dt id="arg-birth-date">birth_date<a class="anchor" aria-label="anchor" href="#arg-birth-date"></a></dt>
-<dd><p>Optional. The name of the column containing birth dates. Used to calculate age when <code>age_range</code> is specified. Requires <code>date_var</code> to be supplied. Age will be calculated as (date_var - birth_date)/365.25.</p></dd>
+<dd><p>Optional. The name of the column containing birth dates. Used to calculate age when <code>age_range</code> is specified. Requires <code>date_var</code> to be supplied. Age will be calculated as (date_var - birth_date)/365.25. The age is signed, so a record dated before its birth date (e.g., a data error) yields a negative age and is treated as outside <code>age_range</code> and removed.</p></dd>
 
 
 <dt id="arg-age">age<a class="anchor" aria-label="anchor" href="#arg-age"></a></dt>
