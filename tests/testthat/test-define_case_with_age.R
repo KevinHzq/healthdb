@@ -307,6 +307,46 @@ test_that("error if age_range has all NA values", {
   )
 })
 
+test_that("error if age_range lower bound exceeds upper bound", {
+  df <- letters_n(type = "data.frame")
+  df$age <- sample(10:80, nrow(df), replace = TRUE)
+
+  expect_error(
+    define_case_with_age(df,
+      starts_with("diagx"), "in", letters,
+      clnt_id = clnt_id,
+      age = age,
+      age_range = c(65, 18),
+      mode = "filter"
+    ),
+    "lower bound .* must not exceed the upper bound"
+  )
+})
+
+test_that("existing .age_calc column is not overwritten by birth_date age calc", {
+  df <- data.frame(
+    clnt_id = c(1, 2),
+    dates = as.Date(c("2020-01-01", "2020-01-01")),
+    birth_dt = as.Date(c("2010-01-01", "1980-01-01")),
+    diagx = c("a", "b"),
+    .age_calc = c("keep me 1", "keep me 2"),
+    uid = 1:2
+  )
+
+  output_df <- define_case_with_age(df,
+    diagx, "in", letters,
+    clnt_id = clnt_id,
+    date_var = dates,
+    birth_date = birth_dt,
+    age_range = c(18, 65),
+    mode = "filter"
+  )
+
+  # only client 2 (~40) is in range; their original .age_calc value is intact
+  expect_equal(output_df$clnt_id, 2)
+  expect_equal(output_df$.age_calc, "keep me 2")
+})
+
 test_that("error if neither birth_date nor age supplied", {
   df <- letters_n(type = "data.frame")
 

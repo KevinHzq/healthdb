@@ -119,9 +119,6 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
 
   rlang::check_required(clnt_id)
 
-  # place holder for temp var names
-  .age_calc <- NULL
-
   # capture variable names
   clnt_id <- rlang::as_name(rlang::enquo(clnt_id))
 
@@ -145,6 +142,7 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
   if (!is.null(age_range)) {
     if (length(age_range) != 2) stop("`age_range` must be a length 2 vector")
     if (all(is.na(age_range))) stop("`age_range` must have at least one non-NA value")
+    if (!any(is.na(age_range)) && age_range[1] > age_range[2]) stop("`age_range` lower bound (first element) must not exceed the upper bound (second element)")
     if (!has_birth_date & !has_age) stop("Either `birth_date` or `age` must be supplied if `age_range` is not NULL")
     if (has_birth_date & has_age) stop("Only one of `birth_date` or `age` should be supplied, not both")
     if (has_birth_date & !has_date_var) stop("`date_var` must be supplied to calculate age from `birth_date`")
@@ -193,6 +191,11 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
           dplyr::filter(.data[[!!age]] <= !!age_range[2])
       }
     } else if (has_birth_date) {
+      # temporary column to hold the calculated age; pick a name that does not
+      # collide with an existing column so user data is never overwritten
+      age_col <- ".age_calc"
+      while (age_col %in% colnames(result)) age_col <- paste0(age_col, "_")
+
       # Calculate age in years as (date_var - birth_date) / 365.25. The result
       # is signed on purpose (no abs()): a record dated before the birth date
       # yields a negative age and is excluded by the age_range bounds, rather
@@ -205,28 +208,28 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
       #   the date columns directly
       if (is.data.frame(result)) {
         result <- result %>%
-          dplyr::mutate(.age_calc = as.numeric(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days")) / 365.25)
+          dplyr::mutate(!!age_col := as.numeric(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days")) / 365.25)
       } else if (use.datediff(result)) {
         result <- result %>%
-          dplyr::mutate(.age_calc = difftime(.data[[!!date_var]], .data[[!!birth_date]]) / 365.25)
+          dplyr::mutate(!!age_col := difftime(.data[[!!date_var]], .data[[!!birth_date]]) / 365.25)
       } else {
         result <- result %>%
-          dplyr::mutate(.age_calc = (.data[[!!date_var]] - .data[[!!birth_date]]) / 365.25)
+          dplyr::mutate(!!age_col := (.data[[!!date_var]] - .data[[!!birth_date]]) / 365.25)
       }
 
       if (!is.na(age_range[1]) & !is.na(age_range[2])) {
         result <- result %>%
-          dplyr::filter(.data[[".age_calc"]] >= !!age_range[1] & .data[[".age_calc"]] <= !!age_range[2])
+          dplyr::filter(.data[[!!age_col]] >= !!age_range[1] & .data[[!!age_col]] <= !!age_range[2])
       } else if (!is.na(age_range[1])) {
         result <- result %>%
-          dplyr::filter(.data[[".age_calc"]] >= !!age_range[1])
+          dplyr::filter(.data[[!!age_col]] >= !!age_range[1])
       } else if (!is.na(age_range[2])) {
         result <- result %>%
-          dplyr::filter(.data[[".age_calc"]] <= !!age_range[2])
+          dplyr::filter(.data[[!!age_col]] <= !!age_range[2])
       }
 
       result <- result %>%
-        dplyr::select(-.age_calc)
+        dplyr::select(-dplyr::all_of(age_col))
     }
   }
 
