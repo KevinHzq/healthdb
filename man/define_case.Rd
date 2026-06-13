@@ -78,6 +78,8 @@ A subset of the input data that satisfied the specified case definition.
 }
 \description{
 This function is a composite of \code{\link[=identify_row]{identify_row()}}, \code{\link[=exclude]{exclude()}}, \code{\link[=restrict_n]{restrict_n()}}, and \code{\link[=restrict_date]{restrict_date()}}. It aims to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: \code{identify_row(vals) \%>\% exclude(identify_row(excl_vals), by = clnt_id) \%>\% restrict_n() \%>\% restrict_date()}. Only the necessary steps in the chain will be run if some arguments are missing, see the verbose output for what was done. Note that if \code{date_var} is supplied, \code{n_per_clnt} will be counted by distinct dates instead of number of records.
+
+If your case definition also restricts records to an age range (e.g., only count visits made when the client was aged 18-65), use \code{\link[=define_case_with_age]{define_case_with_age()}}, which extends this function with \code{birth_date}/\code{age} and \code{age_range} arguments.
 }
 \examples{
 sample_size <- 30
@@ -120,4 +122,7 @@ purrr::pmap(
   ),
   define_case
 )
+}
+\seealso{
+\code{\link[=define_case_with_age]{define_case_with_age()}} for the same workflow with an added age restriction.
 }

@@ -4,6 +4,8 @@
 #' @description
 #' This function is a composite of [identify_row()], [exclude()], [restrict_n()], and [restrict_date()]. It aims to implement common case definitions in epidemiological studies using administrative database as a one-shot big query. The intended use case is for definitions in the form of, e.g., two or more physician visits with some diagnostic code at least 30 days apart within two years. The component functions mentioned above are chained in the following order if all arguments were supplied: `identify_row(vals) %>% exclude(identify_row(excl_vals), by = clnt_id) %>% restrict_n() %>% restrict_date()`. Only the necessary steps in the chain will be run if some arguments are missing, see the verbose output for what was done. Note that if `date_var` is supplied, `n_per_clnt` will be counted by distinct dates instead of number of records.
 #'
+#' If your case definition also restricts records to an age range (e.g., only count visits made when the client was aged 18-65), use [define_case_with_age()], which extends this function with `birth_date`/`age` and `age_range` arguments.
+#'
 #' @inheritParams identify_row
 #' @param match One of "in", "start", "regex", "like", "between", and "glue_sql". It determines how values would be matched. See [identify_row()] for detail.
 #' @param vals Depending on `match`, it takes different input. See [identify_row()].
@@ -25,6 +27,7 @@
 #' @param ... Additional arguments, e.g., `flag_at`, passing to [restrict_date()].
 #'
 #' @return A subset of the input data that satisfied the specified case definition.
+#' @seealso [define_case_with_age()] for the same workflow with an added age restriction.
 #' @export
 #'
 #' @examples

@@ -57,9 +57,15 @@
 #'   keep = "first"
 #' )
 #'
-#' # with age restriction using birth_date
+#' # age restriction using birth_date
+#' # give each client a different birth date so age is calculated
+#' # at the time of each record (date_var - birth_date)
 #' df_with_birth <- df
-#' df_with_birth$birth_dt <- as.Date("1990-01-01")
+#' birth_dts <- as.Date(c("2008-05-01", "1985-08-20", "1950-03-15"))
+#' df_with_birth$birth_dt <- birth_dts[df_with_birth$clnt_id]
+#'
+#' # keep only records made when the client was aged 18-65;
+#' # the age restriction drops client 1 (~12) and client 3 (~70)
 #' define_case_with_age(df_with_birth,
 #'   vars = starts_with("diagx"), "in", vals = letters[1:4],
 #'   clnt_id = clnt_id, date_var = service_dt,
@@ -67,11 +73,23 @@
 #'   mode = "filter"
 #' )
 #'
-#' # age restriction with one-sided bound (age >= 18 only)
+#' # one-sided bound: keep records made at age >= 18 only;
+#' # the age restriction drops only client 1 (~12)
 #' define_case_with_age(df_with_birth,
 #'   vars = starts_with("diagx"), "in", vals = letters[1:4],
 #'   clnt_id = clnt_id, date_var = service_dt,
 #'   birth_date = birth_dt, age_range = c(18, NA),
+#'   mode = "filter"
+#' )
+#'
+#' # age restriction using a pre-computed age column
+#' # (age recorded at the time of the service, no birth date needed)
+#' df_with_age <- df
+#' df_with_age$age <- c(12, 35, 70)[df_with_age$clnt_id]
+#' define_case_with_age(df_with_age,
+#'   vars = starts_with("diagx"), "in", vals = letters[1:4],
+#'   clnt_id = clnt_id, date_var = service_dt,
+#'   age = age, age_range = c(18, 65),
 #'   mode = "filter"
 #' )
 #'
