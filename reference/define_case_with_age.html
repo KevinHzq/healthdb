@@ -214,9 +214,15 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-02 d     k       j      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-01 b     u       j      </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># with age restriction using birth_date</span></span></span>
+<span class="r-in"><span><span class="co"># age restriction using birth_date</span></span></span>
+<span class="r-in"><span><span class="co"># give each client a different birth date so age is calculated</span></span></span>
+<span class="r-in"><span><span class="co"># at the time of each record (date_var - birth_date)</span></span></span>
 <span class="r-in"><span><span class="va">df_with_birth</span> <span class="op">&lt;-</span> <span class="va">df</span></span></span>
-<span class="r-in"><span><span class="va">df_with_birth</span><span class="op">$</span><span class="va">birth_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1990-01-01"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">birth_dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2008-05-01"</span>, <span class="st">"1985-08-20"</span>, <span class="st">"1950-03-15"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df_with_birth</span><span class="op">$</span><span class="va">birth_dt</span> <span class="op">&lt;-</span> <span class="va">birth_dts</span><span class="op">[</span><span class="va">df_with_birth</span><span class="op">$</span><span class="va">clnt_id</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># keep only records made when the client was aged 18-65;</span></span></span>
+<span class="r-in"><span><span class="co"># the age restriction drops client 1 (~12) and client 3 (~70)</span></span></span>
 <span class="r-in"><span><span class="fu">define_case_with_age</span><span class="op">(</span><span class="va">df_with_birth</span>,</span></span>
 <span class="r-in"><span>  vars <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="st">"in"</span>, vals <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>, date_var <span class="op">=</span> <span class="va">service_dt</span>,</span></span>
@@ -233,21 +239,15 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-22     l       d       y 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-11     z       a       j 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-25     p       c       i 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        2 2020-01-02     d       k       j 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        2 2020-01-25     i       a       r 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-17     g       i       c 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-03     c       w       c 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-10     t       p       b 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-08     j       u       a 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-14     o       h       d 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-16     o       d       e 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-01     b       u       j 1990-01-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b 1985-08-20</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># age restriction with one-sided bound (age &gt;= 18 only)</span></span></span>
+<span class="r-in"><span><span class="co"># one-sided bound: keep records made at age &gt;= 18 only;</span></span></span>
+<span class="r-in"><span><span class="co"># the age restriction drops only client 1 (~12)</span></span></span>
 <span class="r-in"><span><span class="fu">define_case_with_age</span><span class="op">(</span><span class="va">df_with_birth</span>,</span></span>
 <span class="r-in"><span>  vars <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="st">"in"</span>, vals <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>, date_var <span class="op">=</span> <span class="va">service_dt</span>,</span></span>
@@ -264,19 +264,43 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-22     l       d       y 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-11     z       a       j 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-25     p       c       i 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        2 2020-01-02     d       k       j 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        2 2020-01-25     i       a       r 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-17     g       i       c 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-03     c       w       c 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-10     t       p       b 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-08     j       u       a 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-14     o       h       d 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-16     o       d       e 1990-01-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-01     b       u       j 1990-01-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       3 2020-01-08     j       u       a 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       3 2020-01-14     o       h       d 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       3 2020-01-16     o       d       e 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       3 2020-01-01     b       u       j 1950-03-15</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># age restriction using a pre-computed age column</span></span></span>
+<span class="r-in"><span><span class="co"># (age recorded at the time of the service, no birth date needed)</span></span></span>
+<span class="r-in"><span><span class="va">df_with_age</span> <span class="op">&lt;-</span> <span class="va">df</span></span></span>
+<span class="r-in"><span><span class="va">df_with_age</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">35</span>, <span class="fl">70</span><span class="op">)</span><span class="op">[</span><span class="va">df_with_age</span><span class="op">$</span><span class="va">clnt_id</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu">define_case_with_age</span><span class="op">(</span><span class="va">df_with_age</span>,</span></span>
+<span class="r-in"><span>  vars <span class="op">=</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"diagx"</span><span class="op">)</span>, <span class="st">"in"</span>, vals <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  clnt_id <span class="op">=</span> <span class="va">clnt_id</span>, date_var <span class="op">=</span> <span class="va">service_dt</span>,</span></span>
+<span class="r-in"><span>  age <span class="op">=</span> <span class="va">age</span>, age_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">65</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"filter"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2 age</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b  35</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple sources with purrr::pmap</span></span></span>
 <span class="r-in"><span><span class="co"># arguments with length = 1 will be recycle to match the number of sources</span></span></span>

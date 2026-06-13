@@ -370,6 +370,14 @@ with hospitalization data. Some studies may use more than a handful of
 data sources to define their sample. We packed steps 1-4 in one function
 <code><a href="../reference/define_case.html">define_case()</a></code>, and provide tools to perform batch execution
 with different data and parameters to meet those needs.</p>
+<p>If your case definition also needs an age restriction (e.g., only
+count records made when the client was within a certain age range), use
+<code><a href="../reference/define_case_with_age.html">define_case_with_age()</a></code>. It takes all the same arguments as
+<code><a href="../reference/define_case.html">define_case()</a></code> plus <code>birth_date</code>/<code>age</code>
+and <code>age_range</code>, applying the age filter before the temporal
+(<code>apart</code>/<code>within</code>) restriction. It can be supplied
+to <code>build_def(def_fn = ...)</code> just like
+<code><a href="../reference/define_case.html">define_case()</a></code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># build the full definition of SUD</span></span>
 <span><span class="va">sud_def</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_def.html">build_def</a></span><span class="op">(</span></span>

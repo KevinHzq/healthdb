@@ -225,9 +225,15 @@ define_case_with_age(df,
 #> 2       2 2020-01-02 d     k       j      
 #> 3       3 2020-01-01 b     u       j      
 
-# with age restriction using birth_date
+# age restriction using birth_date
+# give each client a different birth date so age is calculated
+# at the time of each record (date_var - birth_date)
 df_with_birth <- df
-df_with_birth$birth_dt <- as.Date("1990-01-01")
+birth_dts <- as.Date(c("2008-05-01", "1985-08-20", "1950-03-15"))
+df_with_birth$birth_dt <- birth_dts[df_with_birth$clnt_id]
+
+# keep only records made when the client was aged 18-65;
+# the age restriction drops client 1 (~12) and client 3 (~70)
 define_case_with_age(df_with_birth,
   vars = starts_with("diagx"), "in", vals = letters[1:4],
   clnt_id = clnt_id, date_var = service_dt,
@@ -244,21 +250,15 @@ define_case_with_age(df_with_birth,
 #> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Age restriction--------------
 #> → -------------- Output all records--------------
-#>    clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
-#> 1        1 2020-01-22     l       d       y 1990-01-01
-#> 2        1 2020-01-11     z       a       j 1990-01-01
-#> 3        1 2020-01-25     p       c       i 1990-01-01
-#> 4        2 2020-01-02     d       k       j 1990-01-01
-#> 5        2 2020-01-25     i       a       r 1990-01-01
-#> 6        2 2020-01-17     g       i       c 1990-01-01
-#> 7        2 2020-01-03     c       w       c 1990-01-01
-#> 8        2 2020-01-10     t       p       b 1990-01-01
-#> 9        3 2020-01-08     j       u       a 1990-01-01
-#> 10       3 2020-01-14     o       h       d 1990-01-01
-#> 11       3 2020-01-16     o       d       e 1990-01-01
-#> 12       3 2020-01-01     b       u       j 1990-01-01
+#>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
+#> 1       2 2020-01-02     d       k       j 1985-08-20
+#> 2       2 2020-01-25     i       a       r 1985-08-20
+#> 3       2 2020-01-17     g       i       c 1985-08-20
+#> 4       2 2020-01-03     c       w       c 1985-08-20
+#> 5       2 2020-01-10     t       p       b 1985-08-20
 
-# age restriction with one-sided bound (age >= 18 only)
+# one-sided bound: keep records made at age >= 18 only;
+# the age restriction drops only client 1 (~12)
 define_case_with_age(df_with_birth,
   vars = starts_with("diagx"), "in", vals = letters[1:4],
   clnt_id = clnt_id, date_var = service_dt,
@@ -275,19 +275,43 @@ define_case_with_age(df_with_birth,
 #> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Age restriction--------------
 #> → -------------- Output all records--------------
-#>    clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
-#> 1        1 2020-01-22     l       d       y 1990-01-01
-#> 2        1 2020-01-11     z       a       j 1990-01-01
-#> 3        1 2020-01-25     p       c       i 1990-01-01
-#> 4        2 2020-01-02     d       k       j 1990-01-01
-#> 5        2 2020-01-25     i       a       r 1990-01-01
-#> 6        2 2020-01-17     g       i       c 1990-01-01
-#> 7        2 2020-01-03     c       w       c 1990-01-01
-#> 8        2 2020-01-10     t       p       b 1990-01-01
-#> 9        3 2020-01-08     j       u       a 1990-01-01
-#> 10       3 2020-01-14     o       h       d 1990-01-01
-#> 11       3 2020-01-16     o       d       e 1990-01-01
-#> 12       3 2020-01-01     b       u       j 1990-01-01
+#>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
+#> 1       2 2020-01-02     d       k       j 1985-08-20
+#> 2       2 2020-01-25     i       a       r 1985-08-20
+#> 3       2 2020-01-17     g       i       c 1985-08-20
+#> 4       2 2020-01-03     c       w       c 1985-08-20
+#> 5       2 2020-01-10     t       p       b 1985-08-20
+#> 6       3 2020-01-08     j       u       a 1950-03-15
+#> 7       3 2020-01-14     o       h       d 1950-03-15
+#> 8       3 2020-01-16     o       d       e 1950-03-15
+#> 9       3 2020-01-01     b       u       j 1950-03-15
+
+# age restriction using a pre-computed age column
+# (age recorded at the time of the service, no birth date needed)
+df_with_age <- df
+df_with_age$age <- c(12, 35, 70)[df_with_age$clnt_id]
+define_case_with_age(df_with_age,
+  vars = starts_with("diagx"), "in", vals = letters[1:4],
+  clnt_id = clnt_id, date_var = service_dt,
+  age = age, age_range = c(18, 65),
+  mode = "filter"
+)
+#> → --------------Inclusion step--------------
+#> ℹ Identify records with condition(s):
+#> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
+#> • contains a value exactly matched values in set: letters[1:4]
+#> 
+#> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
+#> a b c d e g h i j k l o p r t u w y z 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> → --------------Age restriction--------------
+#> → -------------- Output all records--------------
+#>   clnt_id service_dt diagx diagx_1 diagx_2 age
+#> 1       2 2020-01-02     d       k       j  35
+#> 2       2 2020-01-25     i       a       r  35
+#> 3       2 2020-01-17     g       i       c  35
+#> 4       2 2020-01-03     c       w       c  35
+#> 5       2 2020-01-10     t       p       b  35
 
 # multiple sources with purrr::pmap
 # arguments with length = 1 will be recycle to match the number of sources

@@ -348,6 +348,16 @@ data sources to define their sample. We packed steps 1-4 in one function
 and provide tools to perform batch execution with different data and
 parameters to meet those needs.
 
+If your case definition also needs an age restriction (e.g., only count
+records made when the client was within a certain age range), use
+[`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md).
+It takes all the same arguments as
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+plus `birth_date`/`age` and `age_range`, applying the age filter before
+the temporal (`apart`/`within`) restriction. It can be supplied to
+`build_def(def_fn = ...)` just like
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md).
+
 ``` r
 
 # build the full definition of SUD

@@ -18,6 +18,12 @@ missing, see the verbose output for what was done. Note that if
 `date_var` is supplied, `n_per_clnt` will be counted by distinct dates
 instead of number of records.
 
+If your case definition also restricts records to an age range (e.g.,
+only count visits made when the client was aged 18-65), use
+[`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md),
+which extends this function with `birth_date`/`age` and `age_range`
+arguments.
+
 ## Usage
 
 ``` r
@@ -162,6 +168,11 @@ define_case(
 ## Value
 
 A subset of the input data that satisfied the specified case definition.
+
+## See also
+
+[`define_case_with_age()`](https://kevinhzq.github.io/healthdb/reference/define_case_with_age.md)
+for the same workflow with an added age restriction.
 
 ## Examples
 
