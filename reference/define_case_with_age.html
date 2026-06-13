@@ -208,15 +208,15 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b d g h i k n q s t x y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output first records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-11 z     a       j      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-02 d     k       j      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-01 b     u       j      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-12 d     g       x      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-18 x     a       i      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-03 y     a       t      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># age restriction using birth_date</span></span></span>
 <span class="r-in"><span><span class="co"># give each client a different birth date so age is calculated</span></span></span>
@@ -239,16 +239,15 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b d g h i k n q s t x y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-22     q       b       n 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-20     x       k       a 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-18     x       a       i 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-22     i       q       d 1985-08-20</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># one-sided bound: keep records made at age &gt;= 18 only;</span></span></span>
 <span class="r-in"><span><span class="co"># the age restriction drops only client 1 (~12)</span></span></span>
@@ -264,20 +263,18 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b d g h i k n q s t x y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b 1985-08-20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       3 2020-01-08     j       u       a 1950-03-15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       3 2020-01-14     o       h       d 1950-03-15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       3 2020-01-16     o       d       e 1950-03-15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       3 2020-01-01     b       u       j 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-22     q       b       n 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-20     x       k       a 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-18     x       a       i 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-22     i       q       d 1985-08-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       3 2020-01-10     s       y       a 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       3 2020-01-03     y       a       t 1950-03-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       3 2020-01-04     s       h       d 1950-03-15</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># age restriction using a pre-computed age column</span></span></span>
 <span class="r-in"><span><span class="co"># (age recorded at the time of the service, no birth date needed)</span></span></span>
@@ -295,16 +292,15 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b d g h i k n q s t x y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Age restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2 age</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-02     d       k       j  35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-25     i       a       r  35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-17     g       i       c  35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-03     c       w       c  35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-10     t       p       b  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       2 2020-01-22     q       b       n  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-20     x       k       a  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-18     x       a       i  35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-22     i       q       d  35</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple sources with purrr::pmap</span></span></span>
 <span class="r-in"><span><span class="co"># arguments with length = 1 will be recycle to match the number of sources</span></span></span>
@@ -330,8 +326,8 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: c("a", "b", "c", "d")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a b c d e g h i j k l o p r t u w y z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a b d g h i k n q s t x y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Exclusion step--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where all of the diagx, diagx_1, diagx_2 column(s) in each record</span>
@@ -342,7 +338,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 "clnt_id" in data, 0 were excluded.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 2 records with distinct service_dt</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 2 records with distinct service_dt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Inclusion step--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
@@ -350,7 +346,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f   g   h   i   j   k   l   n   o   p   q   r   u   w   z </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a   d   e   f   g   h   i   j   m   n   o   q   r   s   t   v   w   x   y   z </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NAs </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1 </span>
@@ -360,29 +356,23 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^n|^o|^p</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b   c   d   e   f   h   i   l   m   n   o   p   q   r   s   t   v   x   y   z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NAs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   b   e   j   n   o   p   q   w   x NAs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 "clnt_id" in data, 3 were excluded.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-22     l       d       y               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-11     z       a       j               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-25     p       c       i               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        2 2020-01-02     d       k       j               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        2 2020-01-25     i       a       r               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-17     g       i       c               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-03     c       w       c               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-10     t       p       b               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-08     j       u       a               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-14     o       h       d               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-16     o       d       e               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-01     b       u       j               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 2020-01-12     d       g       x               0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2 2020-01-22     q       b       n               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       2 2020-01-20     x       k       a               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       2 2020-01-18     x       a       i               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       2 2020-01-22     i       q       d               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       3 2020-01-10     s       y       a               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       3 2020-01-03     y       a       t               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       3 2020-01-04     s       h       d               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] clnt_id         service_dt      diagx           diagx_1        </span>

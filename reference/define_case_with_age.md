@@ -233,15 +233,15 @@ define_case_with_age(df,
 #> • contains a value exactly matched values in set: letters[1:4]
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a b c d e g h i j k l o p r t u w y z 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> a b d g h i k n q s t x y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → -------------- Output first records--------------
 #> # A tibble: 3 × 5
 #>   clnt_id service_dt diagx diagx_1 diagx_2
 #>     <int> <date>     <chr> <chr>   <chr>  
-#> 1       1 2020-01-11 z     a       j      
-#> 2       2 2020-01-02 d     k       j      
-#> 3       3 2020-01-01 b     u       j      
+#> 1       1 2020-01-12 d     g       x      
+#> 2       2 2020-01-18 x     a       i      
+#> 3       3 2020-01-03 y     a       t      
 
 # age restriction using birth_date
 # give each client a different birth date so age is calculated
@@ -264,16 +264,15 @@ define_case_with_age(df_with_birth,
 #> • contains a value exactly matched values in set: letters[1:4]
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a b c d e g h i j k l o p r t u w y z 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> a b d g h i k n q s t x y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Age restriction--------------
 #> → -------------- Output all records--------------
 #>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
-#> 1       2 2020-01-02     d       k       j 1985-08-20
-#> 2       2 2020-01-25     i       a       r 1985-08-20
-#> 3       2 2020-01-17     g       i       c 1985-08-20
-#> 4       2 2020-01-03     c       w       c 1985-08-20
-#> 5       2 2020-01-10     t       p       b 1985-08-20
+#> 1       2 2020-01-22     q       b       n 1985-08-20
+#> 2       2 2020-01-20     x       k       a 1985-08-20
+#> 3       2 2020-01-18     x       a       i 1985-08-20
+#> 4       2 2020-01-22     i       q       d 1985-08-20
 
 # one-sided bound: keep records made at age >= 18 only;
 # the age restriction drops only client 1 (~12)
@@ -289,20 +288,18 @@ define_case_with_age(df_with_birth,
 #> • contains a value exactly matched values in set: letters[1:4]
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a b c d e g h i j k l o p r t u w y z 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> a b d g h i k n q s t x y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Age restriction--------------
 #> → -------------- Output all records--------------
 #>   clnt_id service_dt diagx diagx_1 diagx_2   birth_dt
-#> 1       2 2020-01-02     d       k       j 1985-08-20
-#> 2       2 2020-01-25     i       a       r 1985-08-20
-#> 3       2 2020-01-17     g       i       c 1985-08-20
-#> 4       2 2020-01-03     c       w       c 1985-08-20
-#> 5       2 2020-01-10     t       p       b 1985-08-20
-#> 6       3 2020-01-08     j       u       a 1950-03-15
-#> 7       3 2020-01-14     o       h       d 1950-03-15
-#> 8       3 2020-01-16     o       d       e 1950-03-15
-#> 9       3 2020-01-01     b       u       j 1950-03-15
+#> 1       2 2020-01-22     q       b       n 1985-08-20
+#> 2       2 2020-01-20     x       k       a 1985-08-20
+#> 3       2 2020-01-18     x       a       i 1985-08-20
+#> 4       2 2020-01-22     i       q       d 1985-08-20
+#> 5       3 2020-01-10     s       y       a 1950-03-15
+#> 6       3 2020-01-03     y       a       t 1950-03-15
+#> 7       3 2020-01-04     s       h       d 1950-03-15
 
 # age restriction using a pre-computed age column
 # (age recorded at the time of the service, no birth date needed)
@@ -320,16 +317,15 @@ define_case_with_age(df_with_age,
 #> • contains a value exactly matched values in set: letters[1:4]
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a b c d e g h i j k l o p r t u w y z 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> a b d g h i k n q s t x y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Age restriction--------------
 #> → -------------- Output all records--------------
 #>   clnt_id service_dt diagx diagx_1 diagx_2 age
-#> 1       2 2020-01-02     d       k       j  35
-#> 2       2 2020-01-25     i       a       r  35
-#> 3       2 2020-01-17     g       i       c  35
-#> 4       2 2020-01-03     c       w       c  35
-#> 5       2 2020-01-10     t       p       b  35
+#> 1       2 2020-01-22     q       b       n  35
+#> 2       2 2020-01-20     x       k       a  35
+#> 3       2 2020-01-18     x       a       i  35
+#> 4       2 2020-01-22     i       q       d  35
 
 # multiple sources with purrr::pmap
 # arguments with length = 1 will be recycle to match the number of sources
@@ -355,8 +351,8 @@ purrr::pmap(
 #> • contains a value exactly matched values in set: c("a", "b", "c", "d")
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a b c d e g h i j k l o p r t u w y z 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> a b d g h i k n q s t x y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
 #> → --------------Exclusion step--------------
 #> ℹ Identify records with condition(s):
 #> • where all of the diagx, diagx_1, diagx_2 column(s) in each record
@@ -367,7 +363,7 @@ purrr::pmap(
 #> ℹ Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" 
 #> ℹ Of the 3 "clnt_id" in data, 0 were excluded.
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 3 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 2 records with distinct service_dt
+#> ℹ Of the 3 clients in the input, 1 were flagged as 0 by restricting that each client must have at least 2 records with distinct service_dt
 #> → -------------- Output all records--------------
 #> → --------------Inclusion step--------------
 #> ℹ Identify records with condition(s):
@@ -375,7 +371,7 @@ purrr::pmap(
 #> • contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>   a   b   c   d   e   f   g   h   i   j   k   l   n   o   p   q   r   u   w   z 
+#>   a   d   e   f   g   h   i   j   m   n   o   q   r   s   t   v   w   x   y   z 
 #>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
 #> NAs 
 #>   1 
@@ -385,29 +381,23 @@ purrr::pmap(
 #> • contains a value satisfied regular expression: ^n|^o|^p
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>   b   c   d   e   f   h   i   l   m   n   o   p   q   r   s   t   v   x   y   z 
-#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
-#> NAs 
-#>   1 
+#>   b   e   j   n   o   p   q   w   x NAs 
+#>   1   1   1   1   1   1   1   1   1   1 
 #> ℹ Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" 
 #> ℹ Of the 3 "clnt_id" in data, 3 were excluded.
 #> → --------------No. rows restriction--------------
 #> ℹ Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt
 #> → -------------- Output all records--------------
 #> [[1]]
-#>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n
-#> 1        1 2020-01-22     l       d       y               1
-#> 2        1 2020-01-11     z       a       j               1
-#> 3        1 2020-01-25     p       c       i               1
-#> 4        2 2020-01-02     d       k       j               1
-#> 5        2 2020-01-25     i       a       r               1
-#> 6        2 2020-01-17     g       i       c               1
-#> 7        2 2020-01-03     c       w       c               1
-#> 8        2 2020-01-10     t       p       b               1
-#> 9        3 2020-01-08     j       u       a               1
-#> 10       3 2020-01-14     o       h       d               1
-#> 11       3 2020-01-16     o       d       e               1
-#> 12       3 2020-01-01     b       u       j               1
+#>   clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n
+#> 1       1 2020-01-12     d       g       x               0
+#> 2       2 2020-01-22     q       b       n               1
+#> 3       2 2020-01-20     x       k       a               1
+#> 4       2 2020-01-18     x       a       i               1
+#> 5       2 2020-01-22     i       q       d               1
+#> 6       3 2020-01-10     s       y       a               1
+#> 7       3 2020-01-03     y       a       t               1
+#> 8       3 2020-01-04     s       h       d               1
 #> 
 #> [[2]]
 #> [1] clnt_id         service_dt      diagx           diagx_1        

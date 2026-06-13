@@ -190,15 +190,17 @@ If your case definition also restricts records to an age range (e.g., only count
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: letters[1:4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   f   g   h   i   m   n   p   q   r   s   u   v   w   z NAs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f   g   h   i   j   k   p   q   r   s   t   v   w   x   y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NAs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output first records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-24 b     v       f      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-04 a     g       v      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-07 w     n       a      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       1 2020-01-02 a     e       r      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       2 2020-01-10 f     d       v      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       3 2020-01-01 y     d       k      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple sources with purrr::pmap</span></span></span>
 <span class="r-in"><span><span class="co"># arguments with length = 1 will be recycle to match the number of sources</span></span></span>
@@ -224,8 +226,10 @@ If your case definition also restricts records to an age range (e.g., only count
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value exactly matched values in set: c("a", "b", "c", "d")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   f   g   h   i   m   n   p   q   r   s   u   v   w   z NAs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f   g   h   i   j   k   p   q   r   s   t   v   w   x   y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NAs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Exclusion step--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where all of the diagx, diagx_1, diagx_2 column(s) in each record</span>
@@ -244,45 +248,44 @@ If your case definition also restricts records to an age range (e.g., only count
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   d   e   f   g   h   i   j   k   m   o   p   s   u   v   w   x   y   z </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NAs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f   g   h   i   j   k   l   p   r   t   v   w   y NAs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------Exclusion step--------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^n|^o|^p</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a d f h j m n o p r s u w </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c d e h j l o p q s v y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1 1 1 1 1 1 1 1 1 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 "clnt_id" in data, 2 were excluded.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 3 "clnt_id" in data, 3 were excluded.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → --------------No. rows restriction--------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 1 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → -------------- Output all records--------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-29     r       d       a               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-24     b       v       f               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-31     c       m       b               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        2 2020-01-13     d       h       p               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        2 2020-01-04     a       g       v               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-15     a       q       m               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-27     z       d       f               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-07     h    &lt;NA&gt;       b               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        3 2020-01-07     w       n       a               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       3 2020-01-12     b       r       u               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-20     i       b       s               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-14     c    &lt;NA&gt;       c               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1 2020-01-16     h       a       h               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1 2020-01-02     a       e       r               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1 2020-01-21     c       d       x               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        1 2020-01-06     b       f       t               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        1 2020-01-09     w       r       b               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        2 2020-01-31     c       p       q               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        2 2020-01-10     f       d       v               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        2 2020-01-21     d       p       s               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        2 2020-01-17     a       e       c               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       2 2020-01-20     g    &lt;NA&gt;       a               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       3 2020-01-01     y       d       k               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       3 2020-01-06     b       v       r               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       3 2020-01-19     a    &lt;NA&gt;       i               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14       3 2020-01-14     a       c       k               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15       3 2020-01-18     i       a       t               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16       3 2020-01-05     j       g       c               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 2020-01-30     g       w       m               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       1 2020-01-21     z       g       y               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       1 2020-01-24     b       v       f               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       1 2020-01-20     x       j       s               1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       1 2020-01-12     e    &lt;NA&gt;       v               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] clnt_id         service_dt      diagx           diagx_1        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] diagx_2         flag_restrict_n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

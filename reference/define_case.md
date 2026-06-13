@@ -204,15 +204,17 @@ define_case(df,
 #> • contains a value exactly matched values in set: letters[1:4]
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>   a   b   c   d   f   g   h   i   m   n   p   q   r   s   u   v   w   z NAs 
-#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+#>   a   b   c   d   e   f   g   h   i   j   k   p   q   r   s   t   v   w   x   y 
+#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+#> NAs 
+#>   1 
 #> → -------------- Output first records--------------
 #> # A tibble: 3 × 5
 #>   clnt_id service_dt diagx diagx_1 diagx_2
 #>     <int> <date>     <chr> <chr>   <chr>  
-#> 1       1 2020-01-24 b     v       f      
-#> 2       2 2020-01-04 a     g       v      
-#> 3       3 2020-01-07 w     n       a      
+#> 1       1 2020-01-02 a     e       r      
+#> 2       2 2020-01-10 f     d       v      
+#> 3       3 2020-01-01 y     d       k      
 
 # multiple sources with purrr::pmap
 # arguments with length = 1 will be recycle to match the number of sources
@@ -238,8 +240,10 @@ purrr::pmap(
 #> • contains a value exactly matched values in set: c("a", "b", "c", "d")
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>   a   b   c   d   f   g   h   i   m   n   p   q   r   s   u   v   w   z NAs 
-#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+#>   a   b   c   d   e   f   g   h   i   j   k   p   q   r   s   t   v   w   x   y 
+#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+#> NAs 
+#>   1 
 #> → --------------Exclusion step--------------
 #> ℹ Identify records with condition(s):
 #> • where all of the diagx, diagx_1, diagx_2 column(s) in each record
@@ -258,44 +262,43 @@ purrr::pmap(
 #> • contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>   a   b   d   e   f   g   h   i   j   k   m   o   p   s   u   v   w   x   y   z 
-#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
-#> NAs 
-#>   1 
+#>   a   b   c   d   e   f   g   h   i   j   k   l   p   r   t   v   w   y NAs 
+#>   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
 #> → --------------Exclusion step--------------
 #> ℹ Identify records with condition(s):
 #> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
 #> • contains a value satisfied regular expression: ^n|^o|^p
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#> a d f h j m n o p r s u w 
-#> 1 1 1 1 1 1 1 1 1 1 1 1 1 
+#> c d e h j l o p q s v y 
+#> 1 1 1 1 1 1 1 1 1 1 1 1 
 #> ℹ Exclude records in `data` through anti_join with `excl` matching on (by argument): "clnt_id" 
-#> ℹ Of the 3 "clnt_id" in data, 2 were excluded.
+#> ℹ Of the 3 "clnt_id" in data, 3 were excluded.
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 1 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt
+#> ℹ Of the 0 clients in the input, 0 were flagged as 0 by restricting that each client must have at least 3 records with distinct service_dt
 #> → -------------- Output all records--------------
 #> [[1]]
 #>    clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n
-#> 1        1 2020-01-29     r       d       a               1
-#> 2        1 2020-01-24     b       v       f               1
-#> 3        1 2020-01-31     c       m       b               1
-#> 4        2 2020-01-13     d       h       p               1
-#> 5        2 2020-01-04     a       g       v               1
-#> 6        2 2020-01-15     a       q       m               1
-#> 7        2 2020-01-27     z       d       f               1
-#> 8        2 2020-01-07     h    <NA>       b               1
-#> 9        3 2020-01-07     w       n       a               1
-#> 10       3 2020-01-12     b       r       u               1
-#> 11       3 2020-01-20     i       b       s               1
-#> 12       3 2020-01-14     c    <NA>       c               1
+#> 1        1 2020-01-16     h       a       h               1
+#> 2        1 2020-01-02     a       e       r               1
+#> 3        1 2020-01-21     c       d       x               1
+#> 4        1 2020-01-06     b       f       t               1
+#> 5        1 2020-01-09     w       r       b               1
+#> 6        2 2020-01-31     c       p       q               1
+#> 7        2 2020-01-10     f       d       v               1
+#> 8        2 2020-01-21     d       p       s               1
+#> 9        2 2020-01-17     a       e       c               1
+#> 10       2 2020-01-20     g    <NA>       a               1
+#> 11       3 2020-01-01     y       d       k               1
+#> 12       3 2020-01-06     b       v       r               1
+#> 13       3 2020-01-19     a    <NA>       i               1
+#> 14       3 2020-01-14     a       c       k               1
+#> 15       3 2020-01-18     i       a       t               1
+#> 16       3 2020-01-05     j       g       c               1
 #> 
 #> [[2]]
-#>   clnt_id service_dt diagx diagx_1 diagx_2 flag_restrict_n
-#> 1       1 2020-01-30     g       w       m               1
-#> 2       1 2020-01-21     z       g       y               1
-#> 3       1 2020-01-24     b       v       f               1
-#> 4       1 2020-01-20     x       j       s               1
-#> 5       1 2020-01-12     e    <NA>       v               1
+#> [1] clnt_id         service_dt      diagx           diagx_1        
+#> [5] diagx_2         flag_restrict_n
+#> <0 rows> (or 0-length row.names)
 #> 
 ```

@@ -115,12 +115,12 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> • contains a value satisfied regular expression: ^304
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 
+#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049 3050 3051 3052 3053 3054 
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
-#> 3054 3055 3056 3057 3058 3059  999  NAs 
-#>    1    1    1    1    1    1    1    1 
+#> 3055 3056 3057 3058 3059  999  NAs 
+#>    1    1    1    1    1    1    1 
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 27 clients in the input, 17 were flagged as 0 by restricting that each client must have at least 2 records 
+#> ℹ Of the 25 clients in the input, 19 were flagged as 0 by restricting that each client must have at least 2 records 
 #> → -------------- Output all records--------------
 #> 
 #> Actions for definition SUD using source df2:
@@ -130,30 +130,24 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> • contains a value satisfied regular expression: ^305
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
-#>  304 3040 3041 3042 3043 3045 3046 3047 3048 3049  305 3050 3051 3052 3053 3054 
+#>  304 3040 3041 3042 3043 3044 3045 3046 3047 3049  305 3050 3051 3052 3053 3054 
 #>    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
 #> 3055 3056 3057 3058 3059  999  NAs 
 #>    1    1    1    1    1    1    1 
 #> → --------------No. rows restriction--------------
-#> ℹ Of the 25 clients in the input, 22 were flagged as 0 by restricting that each client must have at least 3 records 
+#> ℹ Of the 28 clients in the input, 27 were flagged as 0 by restricting that each client must have at least 3 records 
 #> → -------------- Output all records--------------
 
 # pool results from src1 and src2 together at client level
 pool_case(sud_by_src, sud_def, output_lvl = "clnt")
-#> # A tibble: 13 × 6
-#>    def   clnt_id raw_in_src1 raw_in_src2 valid_in_src1 valid_in_src2
-#>    <chr>   <int>       <dbl>       <dbl>         <int>         <int>
-#>  1 SUD         3           1           0             1             0
-#>  2 SUD         4           1           0             1             0
-#>  3 SUD         9           1           0             1             0
-#>  4 SUD        10           1           0             1             0
-#>  5 SUD        15           1           0             1             0
-#>  6 SUD        22           0           1             0             1
-#>  7 SUD        26           0           1             0             1
-#>  8 SUD        28           1           1             1             0
-#>  9 SUD        34           1           0             1             0
-#> 10 SUD        41           1           0             1             0
-#> 11 SUD        44           0           1             0             1
-#> 12 SUD        46           1           1             1             0
-#> 13 SUD        48           1           1             1             0
+#> # A tibble: 7 × 6
+#>   def   clnt_id raw_in_src1 raw_in_src2 valid_in_src1 valid_in_src2
+#>   <chr>   <int>       <dbl>       <dbl>         <int>         <int>
+#> 1 SUD         1           1           0             1             0
+#> 2 SUD         6           1           1             1             0
+#> 3 SUD        13           0           1             0             1
+#> 4 SUD        16           1           0             1             0
+#> 5 SUD        23           1           1             1             0
+#> 6 SUD        38           1           1             1             0
+#> 7 SUD        40           1           0             1             0
 ```
