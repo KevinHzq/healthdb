@@ -8,10 +8,14 @@ for more general description of what this function does.
 
 Note that when using this function with an existing age variable, the
 age should be determined at the time of the record. Records that are not
-in the eligible age range will be remove before interpreting the
-temporal relationship between records. In other words, the age
-restriction is applied before
-[`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md).
+in the eligible age range are removed before counting records/dates per
+client and before interpreting the temporal relationship between
+records. In other words, the age restriction is applied before both
+[`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md)
+and
+[`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md),
+so that `n_per_clnt`, `apart`, and `within` are evaluated only on
+age-eligible records (e.g., "two or more visits while aged 18-65").
 
 For other age restrictions based on a fixed time point (e.g., age at the
 baseline of follow-up), it can be done by filtering the input data or
