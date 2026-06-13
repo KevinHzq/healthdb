@@ -90,6 +90,9 @@ test_that("keep first/last works on df", {
 })
 
 test_that("passing ... works", {
+  # seed the random fixture so the left/right comparison does not depend on
+  # global RNG state left by earlier tests (local_seed restores it on exit)
+  withr::local_seed(1)
   df <- make_test_dat()
   output_l <- define_case(df, starts_with("diagx"), "start", c("304"), clnt_id = clnt_id, mode = "filter", n_per_clnt = 2, date_var = dates, apart = 2, within = 365, uid = uid, force_collect = TRUE, flag_at = "left")
   output_r <- define_case(df, starts_with("diagx"), "start", c("304"), clnt_id = clnt_id, mode = "filter", n_per_clnt = 2, date_var = dates, apart = 2, within = 365, uid = uid, force_collect = TRUE, flag_at = "right")
