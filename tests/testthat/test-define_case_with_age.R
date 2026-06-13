@@ -187,6 +187,32 @@ test_that("age restriction + restrict_n works", {
   expect_true(all(output_df$age >= 18 & output_df$age <= 65))
 })
 
+test_that("restrict_n counts only age-eligible records (age applied first)", {
+  # client 1 has 2 visits but only 1 within the age range -> with n_per_clnt = 2
+  # it should NOT qualify, because counting happens after the age restriction.
+  # client 2 has 2 visits both within range -> qualifies.
+  df <- data.frame(
+    clnt_id = c(1, 1, 2, 2),
+    dates = as.Date(c("2020-01-01", "2020-02-01", "2020-01-01", "2020-02-01")),
+    age = c(10, 30, 30, 40),
+    diagx = c("a", "b", "c", "d"),
+    uid = 1:4
+  )
+
+  output_df <- define_case_with_age(df,
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id,
+    date_var = dates,
+    n_per_clnt = 2,
+    age = age,
+    age_range = c(18, 65),
+    mode = "filter"
+  )
+
+  expect_equal(sort(unique(output_df$clnt_id)), 2)
+  expect_true(all(output_df$age >= 18 & output_df$age <= 65))
+})
+
 test_that("age restriction + restrict_date works", {
   df <- letters_n(type = "data.frame")
   df$age <- sample(10:80, nrow(df), replace = TRUE)

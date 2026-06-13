@@ -88,7 +88,7 @@ A subset of the input data that satisfied the specified case definition.
 \description{
 This function extends the standard case definition function \code{\link[=define_case]{define_case()}} by allowing age-based filtering. See \code{\link[=define_case]{define_case()}} for more general description of what this function does.
 
-Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range will be remove before interpreting the temporal relationship between records. In other words, the age restriction is applied before \code{\link[=restrict_date]{restrict_date()}}.
+Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range are removed before counting records/dates per client and before interpreting the temporal relationship between records. In other words, the age restriction is applied before both \code{\link[=restrict_n]{restrict_n()}} and \code{\link[=restrict_date]{restrict_date()}}, so that \code{n_per_clnt}, \code{apart}, and \code{within} are evaluated only on age-eligible records (e.g., "two or more visits while aged 18-65").
 
 For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of \code{\link[=define_case]{define_case()}} instead of using this function.
 }

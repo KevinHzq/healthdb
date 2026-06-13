@@ -4,7 +4,7 @@
 #' @description
 #' This function extends the standard case definition function [define_case()] by allowing age-based filtering. See [define_case()] for more general description of what this function does.
 #'
-#' Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range will be remove before interpreting the temporal relationship between records. In other words, the age restriction is applied before [restrict_date()].
+#' Note that when using this function with an existing age variable, the age should be determined at the time of the record. Records that are not in the eligible age range are removed before counting records/dates per client and before interpreting the temporal relationship between records. In other words, the age restriction is applied before both [restrict_n()] and [restrict_date()], so that `n_per_clnt`, `apart`, and `within` are evaluated only on age-eligible records (e.g., "two or more visits while aged 18-65").
 #'
 #' For other age restrictions based on a fixed time point (e.g., age at the baseline of follow-up), it can be done by filtering the input data or output of [define_case()] instead of using this function.
 #'
@@ -175,11 +175,6 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
     result <- rlang::inject(result %>% exclude(!!excl, by = !!clnt_id, report_on = !!if_report, verbose = verbose))
   }
 
-  if (n_per_clnt > 1) {
-    if (verbose) rlang::inform(c(">" = "--------------No. rows restriction--------------\n"))
-    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), mode = mode, verbose = verbose))
-  }
-
   if (!is.null(age_range)) {
     if (verbose) rlang::inform(c(">" = "--------------Age restriction--------------\n"))
 
@@ -227,6 +222,11 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
       result <- result %>%
         dplyr::select(-.age_calc)
     }
+  }
+
+  if (n_per_clnt > 1) {
+    if (verbose) rlang::inform(c(">" = "--------------No. rows restriction--------------\n"))
+    result <- rlang::inject(result %>% restrict_n(clnt_id = !!clnt_id, n_per_clnt = n_per_clnt, count_by = !!ifelse(has_date_var, date_var, rlang::missing_arg()), mode = mode, verbose = verbose))
   }
 
   if (has_date_var & any(!is.null(apart), !is.null(within))) {
