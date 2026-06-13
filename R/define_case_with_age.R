@@ -195,9 +195,23 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
           dplyr::filter(.data[[!!age]] <= !!age_range[2])
       }
     } else if (has_birth_date) {
-      # Calculate age from birth_date and date_var using difftime for SQL compatibility
-      result <- result %>%
-        dplyr::mutate(.age_calc = abs(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days")) / 365.25)
+      # Calculate age in years from birth_date and date_var. Date arithmetic
+      # translation differs by backend (see use.datediff()):
+      # - local data.frame: difftime() in days
+      # - SQL Server/Postgres/etc.: difftime() translates to DATEDIFF()/date
+      #   subtraction (passing units = "days" leaks invalid SQL, so it is omitted)
+      # - SQLite and other dialects without a difftime translation: subtract
+      #   the date columns directly
+      if (is.data.frame(result)) {
+        result <- result %>%
+          dplyr::mutate(.age_calc = abs(as.numeric(difftime(.data[[!!date_var]], .data[[!!birth_date]], units = "days"))) / 365.25)
+      } else if (use.datediff(result)) {
+        result <- result %>%
+          dplyr::mutate(.age_calc = abs(difftime(.data[[!!date_var]], .data[[!!birth_date]])) / 365.25)
+      } else {
+        result <- result %>%
+          dplyr::mutate(.age_calc = abs(.data[[!!date_var]] - .data[[!!birth_date]]) / 365.25)
+      }
 
       if (!is.na(age_range[1]) & !is.na(age_range[2])) {
         result <- result %>%

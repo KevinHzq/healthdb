@@ -65,9 +65,8 @@ test_that("one-sided age bounds work (upper bound only)", {
   expect_true(all(output_df$age <= 65))
 })
 
-test_that("age restriction works with database backend", {
+test_that("age restriction with age column works with database backend", {
   skip_on_cran()
-  # Use age column directly to avoid SQL translation issues with dates
   df <- letters_n(type = "data.frame")
   df$age <- sample(10:80, nrow(df), replace = TRUE)
   db <- memdb_tbl(df)
@@ -83,6 +82,73 @@ test_that("age restriction works with database backend", {
 
   expect_s3_class(output_df, "data.frame")
   expect_true(all(output_df$age >= 18 & output_df$age <= 65))
+})
+
+test_that("age restriction with birth_date works across backends", {
+  skip_on_cran()
+  # Deterministic data so the database result can be compared exactly to the
+  # local data.frame result. Age is computed from (date_var - birth_date), and
+  # the date arithmetic must translate correctly on SQLite (default),
+  # PostgreSQL and SQL Server (selected via HEALTHDB_TEST_BACKEND in CI).
+  df <- data.frame(
+    clnt_id = c(1, 1, 2, 2, 3, 3),
+    dates = as.Date(c(
+      "2020-01-01", "2020-06-01", "2020-01-01",
+      "2020-06-01", "2020-01-01", "2020-06-01"
+    )),
+    birth_dt = as.Date(c(
+      "2008-01-01", "2008-01-01", "1985-01-01",
+      "1985-01-01", "1950-01-01", "1950-01-01"
+    )),
+    diagx = c("a", "b", "c", "d", "e", "f"),
+    uid = 1:6
+  )
+
+  # client 1 (~12) and client 3 (~70) are out of range; only client 2 (~35) kept
+  local_out <- define_case_with_age(df,
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(18, 65), mode = "filter", uid = uid
+  )
+  expect_equal(sort(unique(local_out$clnt_id)), 2)
+
+  db_out <- define_case_with_age(memdb_tbl(df),
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(18, 65), mode = "filter", uid = uid, force_collect = TRUE
+  )
+  expect_s3_class(db_out, "data.frame")
+  # database result must match the local result exactly
+  expect_equal(sort(db_out$uid), sort(local_out$uid))
+  # as.numeric() handles both Date (local) and numeric (some backends return
+  # collected dates as days since epoch) representations
+  ages <- (as.numeric(db_out$dates) - as.numeric(db_out$birth_dt)) / 365.25
+  expect_true(all(ages >= 18 & ages <= 65))
+})
+
+test_that("one-sided birth_date age bound works across backends", {
+  skip_on_cran()
+  df <- data.frame(
+    clnt_id = c(1, 2, 3),
+    dates = as.Date(c("2020-01-01", "2020-01-01", "2020-01-01")),
+    birth_dt = as.Date(c("2008-01-01", "1985-01-01", "1950-01-01")),
+    diagx = c("a", "b", "c"),
+    uid = 1:3
+  )
+
+  local_out <- define_case_with_age(df,
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(18, NA), mode = "filter", uid = uid
+  )
+  db_out <- define_case_with_age(memdb_tbl(df),
+    starts_with("diagx"), "in", letters,
+    clnt_id = clnt_id, date_var = dates, birth_date = birth_dt,
+    age_range = c(18, NA), mode = "filter", uid = uid, force_collect = TRUE
+  )
+  # only client 1 (~12) is below 18
+  expect_equal(sort(local_out$clnt_id), c(2, 3))
+  expect_equal(sort(db_out$uid), sort(local_out$uid))
 })
 
 test_that("age restriction + exclude works", {
