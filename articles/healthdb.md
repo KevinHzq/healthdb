@@ -354,7 +354,9 @@ records made when the client was within a certain age range), use
 It takes all the same arguments as
 [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
 plus `birth_date`/`age` and `age_range`, applying the age filter before
-the temporal (`apart`/`within`) restriction. It can be supplied to
+both the count (`n_per_clnt`) and temporal (`apart`/`within`)
+restrictions, so those are evaluated only on age-eligible records (e.g.,
+“two or more visits while aged 18-65”). It can be supplied to
 `build_def(def_fn = ...)` just like
 [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md).
 
