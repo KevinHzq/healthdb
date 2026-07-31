@@ -47,6 +47,27 @@ test_that("ignore_case reaches identify_row through define_case", {
   expect_equal(out_cs$diagx, "f10")
 })
 
+test_that("verbose reports case sensitivity for 'like'/'start' only", {
+  df <- mixed_case_dat()
+
+  for (dat in list(df, memdb_tbl(df))) {
+    expect_message(
+      identify_rows(dat, diagx, "start", "f1", verbose = TRUE),
+      "ignoring case.*ignore_case = FALSE.*faster"
+    )
+    expect_message(
+      identify_rows(dat, diagx, "start", "f1", ignore_case = FALSE, verbose = TRUE),
+      "matching case exactly"
+    )
+    # match types that ignore_case does not apply to say nothing about case
+    expect_no_match(
+      capture_messages(identify_rows(dat, diagx, "in", "f10", verbose = TRUE)),
+      "case",
+      all = TRUE
+    )
+  }
+})
+
 test_that("ignore_case does not affect the other match types", {
   df <- mixed_case_dat()
 

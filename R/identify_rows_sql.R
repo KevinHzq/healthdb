@@ -105,11 +105,19 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
   if (verbose) {
     # no result overview for remote tables as the query would have to be
     # executed immediately, which is not desired
-    rlang::inform(c(
+    msg <- c(
       "i" = "Identify records with condition(s):",
       "*" = glue::glue('where {ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the"))} {paste0(vars, collapse = ", ")} column(s) in each record'),
       "*" = glue::glue("contains a value {match_msg} {match_str}")
-    ))
+    )
+    # only the LIKE-based match types are affected by ignore_case
+    if (match %in% c("like", "start")) {
+      msg <- c(msg, "*" = ifelse(ignore_case,
+        "ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster on a large table because the database can then use an index on the column(s)",
+        "matching case exactly"
+      ))
+    }
+    rlang::inform(msg)
   }
 
   # job done
