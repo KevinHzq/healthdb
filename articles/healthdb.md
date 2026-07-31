@@ -109,13 +109,6 @@ sets for the two sources:
 
     # make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later
     claim_db <- make_test_dat(vals_kept = c("303", "304", "305", "291", "292", glue("30{30:59}"), glue("29{10:29}"), noise_val = c("999", "111")), type = "database")
-    #> Warning: `src_memdb()` was deprecated in dbplyr 2.6.0.
-    #> ℹ Please use `memdb()` instead.
-    #> ℹ The deprecated feature was likely used in the healthdb package.
-    #>   Please report the issue at <https://github.com/KevinHzq/healthdb/issues>.
-    #> This warning is displayed once per session.
-    #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    #> generated.
 
     # this is a database table
     # note that in-memory SQLite database stores dates as numbers

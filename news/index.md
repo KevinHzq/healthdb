@@ -2,6 +2,22 @@
 
 ## healthdb (development version)
 
+- make_test_dat() with `type = "database"` no longer emits a
+  “[`src_memdb()`](https://dbplyr.tidyverse.org/reference/src_memdb.html)
+  was deprecated in dbplyr 2.6.0” warning naming healthdb. The in-memory
+  SQLite database it writes to is now opened directly through
+  ‘DBI’/‘RSQLite’ and cached for the session, instead of going through
+  the ‘dbplyr’ helpers, whose names differ across versions
+  ([`src_memdb()`](https://dbplyr.tidyverse.org/reference/src_memdb.html)/[`tbl_memdb()`](https://dbplyr.tidyverse.org/reference/src_memdb.html)
+  are deprecated as of 2.6.0 in favour of
+  [`memdb()`](https://dbplyr.tidyverse.org/reference/memdb.html), which
+  does not exist before it). The examples of execute_def() and
+  fetch_var() likewise create their database table with
+  [`DBI::dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html)
+  plus
+  [`dplyr::copy_to()`](https://dplyr.tidyverse.org/reference/copy_to.html).
+  No change in behavior, and the minimum ‘dbplyr’ version is unchanged.
+
 - Fixed identify_row() with `match = "glue_sql"` failing on SQL Server
   with “Incorrect syntax near the keyword ‘AS’” under ‘dbplyr’ 2.6.0.
   The supplied SQL fragment is opaque to ‘dbplyr’, which since that

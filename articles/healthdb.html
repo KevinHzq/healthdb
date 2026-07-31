@@ -158,13 +158,6 @@ diagnostic codes</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># make_test_dat() makes either a toy data.frame or database table in memory with known number of rows that satisfy the query we will show later</span></span>
 <span><span class="va">claim_db</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_test_dat.html">make_test_dat</a></span><span class="op">(</span>vals_kept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"303"</span>, <span class="st">"304"</span>, <span class="st">"305"</span>, <span class="st">"291"</span>, <span class="st">"292"</span>, <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"30{30:59}"</span><span class="op">)</span>, <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"29{10:29}"</span><span class="op">)</span>, noise_val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"999"</span>, <span class="st">"111"</span><span class="op">)</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"database"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: `src_memdb()` was deprecated in dbplyr 2.6.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `memdb()` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">healthdb</span> package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/KevinHzq/healthdb/issues&gt;</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
 <span></span>
 <span><span class="co"># this is a database table</span></span>
 <span><span class="co"># note that in-memory SQLite database stores dates as numbers</span></span>

@@ -74,9 +74,8 @@ df <- data.frame(
 )
 
 # make df a database table
-db <- dbplyr::tbl_memdb(df)
-#> Warning: `tbl_memdb()` was deprecated in dbplyr 2.6.0.
-#> ℹ Use `copy_to(memdb(), df)` instead
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+db <- dplyr::copy_to(con, df, "df")
 
 # use build_def to make a toy definition
 sud_def <- build_def("SUD", # usually a disease name
