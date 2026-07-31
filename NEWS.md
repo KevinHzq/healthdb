@@ -1,5 +1,7 @@
 # healthdb (development version)
 
+-   Fixed identify_row() with `match = "glue_sql"` failing on SQL Server with "Incorrect syntax near the keyword 'AS'" under 'dbplyr' 2.6.0. The supplied SQL fragment is opaque to 'dbplyr', which since that version wraps it in `CAST(... AS BIT) = 1` on SQL Server; T-SQL has no boolean value type, so a condition cannot be a `CAST` operand. The fragment is now wrapped in `CASE WHEN ... THEN 1 ELSE 0 END = 1`, which generates the same valid SQL on every backend and on both 'dbplyr' 2.5.x and 2.6.0.
+
 -   collapse_episode() now removes records with a missing (`NA`) start or end date (with a warning reporting the count) before deriving episodes, consistent with restrict_date(). Previously a single missing end date silently merged every later record of that client into one episode on the data.frame backend (an `NA` propagated through `cummax()`), and the data.frame and database backends disagreed on the result. Both backends now drop such records and agree.
 
 -   collapse_episode() on a data.frame now errors when a column would clash with the names it derives (`epi_id`, `epi_no`, `epi_seq`, `epi_start_dt`, `epi_stop_dt`, and internal helpers), matching the database method. Previously the data.frame method silently renamed the clashing column with an `_og` suffix.
