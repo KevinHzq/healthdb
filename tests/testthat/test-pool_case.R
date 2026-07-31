@@ -185,6 +185,77 @@ test_that("edge case full flag works", {
   expect_gt(nrow(pool_result), 0)
 })
 
+test_that("first/last entry summaries do not depend on the input row order", {
+  # clnt 1: dad has only 2 records, so it fails n_per_clnt = 3 and holds no valid
+  #   record, but its records still bracket the msp ones in time.
+  # clnt 2: both sources are valid and share the earliest and the latest date, so
+  #   the source is decided by the alphabetical tie-break.
+  msp_df <- data.frame(
+    clnt_id = c(1, 1, 2, 2, 2),
+    uid = 1:5,
+    dates = as.Date(c("2020-05-01", "2020-09-01", "2020-02-01", "2020-06-01", "2020-08-01")),
+    diagx = "304a"
+  )
+  dad_df <- data.frame(
+    clnt_id = c(1, 1, 2, 2, 2),
+    uid = 6:10,
+    dates = as.Date(c("2020-03-01", "2020-12-01", "2020-02-01", "2020-07-01", "2020-08-01")),
+    diagx = "305a"
+  )
+  def <- build_def("SUD",
+    src_labs = c("msp", "dad"),
+    fn_args = list(
+      vars = "diagx",
+      match = "start",
+      mode = c("flag", "flag"),
+      vals = list("304", "305"),
+      clnt_id = clnt_id,
+      uid = uid,
+      date_var = dates,
+      n_per_clnt = c(2, 3)
+    )
+  )
+
+  result <- execute_def(def, with_data = list(msp = msp_df, dad = dad_df))
+  pool_result <- pool_case(result, def, output_lvl = "clnt", include_src = "all")
+
+  expect_equal(pool_result$clnt_id, c(1, 2))
+  # the earliest record of a client is not necessarily one that made them a case
+  expect_equal(pool_result$first_entry_date, as.Date(c("2020-03-01", "2020-02-01")))
+  expect_equal(pool_result$first_entry_src, c("dad", "dad"))
+  expect_equal(pool_result$first_valid_date, as.Date(c("2020-05-01", "2020-02-01")))
+  expect_equal(pool_result$first_valid_src, c("msp", "dad"))
+  expect_equal(pool_result$last_entry_date, as.Date(c("2020-12-01", "2020-08-01")))
+  expect_equal(pool_result$last_entry_src, c("dad", "msp"))
+  # clnt 1's two dad records fail n_per_clnt = 3, but clnt 2's three do not
+  expect_equal(as.numeric(pool_result$valid_in_dad), c(0, 3))
+
+  # shuffling the input must not change any of the above
+  set.seed(42)
+  result_shuffled <- execute_def(def, with_data = list(
+    msp = msp_df[sample(nrow(msp_df)), ],
+    dad = dad_df[sample(nrow(dad_df)), ]
+  ))
+  expect_equal(
+    pool_case(result_shuffled, def, output_lvl = "clnt", include_src = "all"),
+    pool_result
+  )
+
+  # and the database backend must agree with the data.frame one
+  result_db <- execute_def(def, with_data = list(msp = memdb_tbl(msp_df), dad = memdb_tbl(dad_df)))
+  pool_db <- pool_case(result_db, def, output_lvl = "clnt", include_src = "all") %>%
+    dplyr::collect() %>%
+    dplyr::arrange(clnt_id)
+  as_date <- function(x) if (is.numeric(x)) as.Date(x, origin = "1970-01-01") else as.Date(x)
+  expect_equal(as.numeric(pool_db$clnt_id), pool_result$clnt_id)
+  expect_equal(as_date(pool_db$first_entry_date), pool_result$first_entry_date)
+  expect_equal(pool_db$first_entry_src, pool_result$first_entry_src)
+  expect_equal(as_date(pool_db$first_valid_date), pool_result$first_valid_date)
+  expect_equal(pool_db$first_valid_src, pool_result$first_valid_src)
+  expect_equal(as_date(pool_db$last_entry_date), pool_result$last_entry_date)
+  expect_equal(pool_db$last_entry_src, pool_result$last_entry_src)
+})
+
 test_that("test window function behavior", {
   db <- memdb_tbl(mtcars)
   db1 <- db %>%

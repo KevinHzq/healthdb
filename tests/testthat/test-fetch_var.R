@@ -139,3 +139,103 @@ test_that("database x works", {
   expect_in(out_df$sex, c(df2$sex, NA))
   expect_in(out_df$age, c(dplyr::pull(db3, age), NA))
 })
+
+test_that("result does not rely on left_join preserving row order", {
+  # simulates join backends that do not preserve x's row order, e.g., duckdb
+  # joins via duckplyr::methods_overwrite(), by shuffling the joined rows
+  df1 <- data.frame(
+    clnt_id = rep(1:3, each = 2), year = rep(2020:2021, 3),
+    v = 1:6
+  )
+  df2 <- data.frame(clnt_id = 1:3, sex = c("F", "M", "F"))
+  df3 <- data.frame(
+    clnt_id = rep(1:3, each = 2), year = rep(2020:2021, 3),
+    age = 21:26
+  )
+  real_left_join <- dplyr::left_join
+  local_mocked_bindings(
+    left_join = function(x, ...) {
+      out <- real_left_join(x, ...)
+      out[sample(nrow(out)), , drop = FALSE]
+    },
+    .package = "dplyr"
+  )
+  out_df <- fetch_var(df1,
+    keys = c(clnt_id, year),
+    linkage = list(
+      df2 ~ sex | clnt_id,
+      df3 ~ age
+    )
+  )
+  expect_equal(out_df$sex, c("F", "F", "M", "M", "F", "F"))
+  expect_equal(out_df$age, 21:26)
+  expect_false(".fetch_var_row_id" %in% colnames(out_df))
+})
+
+test_that("fetched name colliding with an excluded key errors", {
+  df1 <- data.frame(clnt_id = rep(1:3, each = 2), year = rep(2020:2021, 3), v = 1:6)
+  # y carries a `year` column with a different meaning (e.g., birth year)
+  df2 <- data.frame(clnt_id = 1:3, sex = c("F", "M", "F"), year = c(1999, 1998, 1997))
+  expect_error(
+    fetch_var(df1,
+      keys = c(clnt_id, year),
+      linkage = list(df2 ~ c(sex, year) | clnt_id)
+    ),
+    "keys not included"
+  )
+  # also triggered by greedy tidyselect
+  expect_error(
+    fetch_var(df1,
+      keys = c(clnt_id, year),
+      linkage = list(df2 ~ everything() | clnt_id)
+    ),
+    "keys not included"
+  )
+})
+
+test_that("fetched name colliding with data's columns errors", {
+  df1 <- data.frame(clnt_id = 1:3, v = 1:3)
+  df2 <- data.frame(clnt_id = 1:3, v = c(9, 8, 7))
+  expect_error(
+    fetch_var(df1,
+      keys = clnt_id,
+      linkage = list(df2 ~ v)
+    ),
+    "already exist"
+  )
+})
+
+test_that("same name fetched from multiple sources errors", {
+  df1 <- data.frame(clnt_id = 1:3, year = 2020:2022)
+  df2 <- data.frame(clnt_id = 1:3, sex = c("F", "M", "F"))
+  df3 <- data.frame(year = 2020:2022, sex = c("M", "F", "M"))
+  expect_error(
+    fetch_var(df1,
+      keys = c(clnt_id, year),
+      linkage = list(
+        df2 ~ sex | clnt_id,
+        df3 ~ sex | year
+      )
+    ),
+    "more than one source"
+  )
+})
+
+test_that("non-formula element in linkage errors", {
+  df1 <- data.frame(clnt_id = 1:3)
+  df2 <- data.frame(clnt_id = 1:3, sex = c("F", "M", "F"))
+  expect_error(
+    fetch_var(df1, keys = clnt_id, linkage = list(df2 ~ sex, "oops")),
+    "is_formula"
+  )
+})
+
+test_that("duplicated key after '|' is tolerated", {
+  df1 <- data.frame(clnt_id = 1:3, year = 2020:2022)
+  df2 <- data.frame(clnt_id = 1:3, sex = c("F", "M", "F"))
+  out_df <- fetch_var(df1,
+    keys = c(clnt_id, year),
+    linkage = list(df2 ~ sex | clnt_id + clnt_id)
+  )
+  expect_equal(out_df$sex, c("F", "M", "F"))
+})

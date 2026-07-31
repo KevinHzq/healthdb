@@ -20,10 +20,10 @@ pool_case(
 \item{output_lvl}{Either:
 \itemize{
 \item "raw" - output all records (default),
-\item or "clnt" - output one record per client with summaries including date and source of the first valid record ('first_valid_date/src'), and the latest record ('last_entry_date/src'). Source-specific record counts are also provided (see the return section).
+\item or "clnt" - output one record per client with summaries including the date and source of the earliest record ('first_entry_date/src'), the first valid record ('first_valid_date/src'), and the latest record ('last_entry_date/src'). Source-specific record counts are also provided (see the return section).
 }}
 
-\item{include_src}{Character. It determines records from which sources should be included. This matters when clients were identified only from, not all, but some of the sources. This choice will not impact the number of client that would be identified but has impact on the number of records and the latest entry date. The options are one of:
+\item{include_src}{Character. It determines records from which sources should be included. This matters when clients were identified only from, not all, but some of the sources. This choice will not impact the number of client that would be identified but has impact on the number of records and the first/latest entry date. The options are one of:
 \itemize{
 \item "all" - records from all sources are included;
 \item "has_valid" - for each client, records from sources that contain at least one valid record are included;
@@ -33,7 +33,28 @@ pool_case(
 \item{...}{Additional arguments passing to \code{\link[=bind_source]{bind_source()}}}
 }
 \value{
-A data.frame or remote table with clients that satisfied the predefined case definition. Columns started with "raw_in_" are source-specific counts of raw records, and columns started with "valid_in_" are the number of valid entries (or the number of flags) in each source.
+A data.frame or remote table with clients that satisfied the predefined case definition. The columns depend on \code{output_lvl}.
+
+With \code{output_lvl = "raw"}, the output is the row-bound records of the qualified clients. Note that these are the records \code{\link[=define_case]{define_case()}} returned for each source, i.e., only those matching the codes in \code{vals}, further subset by \code{include_src}; they are referred to as the client's "included records" below. The variables that \code{\link[=build_def]{build_def()}} named in the definition are kept and renamed to a common set of names:
+\itemize{
+\item \code{def} - the definition label (\code{def_lab} in \code{\link[=build_def]{build_def()}}) the record was identified by.
+\item \code{src} - the source label (\code{src_labs} in \code{\link[=build_def]{build_def()}}) the record came from.
+\item \code{clnt_id}, \code{uid}, \code{date_var} - the client id, unique record id, and date variable, taken from the \code{clnt_id}, \code{uid}, and \code{date_var} arguments of \code{\link[=define_case]{define_case()}}. \code{uid} and \code{date_var} are present only if they were supplied in the definition.
+\item \code{flag_restrict_n}, \code{flag_restrict_date} - the flags produced by \code{\link[=restrict_n]{restrict_n()}} and \code{\link[=restrict_date]{restrict_date()}}, present only if the definition used \code{n_per_clnt} greater than 1, or \code{apart}/\code{within}, respectively.
+\item \code{flag_valid_record} - 1 if the record satisfied all the criteria of the definition, and 0 otherwise. It is taken from \code{flag_restrict_date} if present, otherwise from \code{flag_restrict_n}, and is filled with 1 for the sources that had no such flag (i.e., sources whose criteria were applied by filtering instead of flagging).
+\item \code{src_No} - the position of the source in the input list. This is added by \code{\link[=bind_source]{bind_source()}} when binding local data.frames only, and is absent when all inputs are remote tables.
+}
+
+With \code{output_lvl = "clnt"}, the output has one row per \code{def} and \code{clnt_id} summarizing that client's included records. The date columns are present only if \code{date_var} was supplied for every source in the definition; otherwise they are omitted with a warning.
+\itemize{
+\item \code{first_entry_date}, \code{first_entry_src} - the date of the client's earliest included record, and the source it came from, regardless of whether that record was valid.
+\item \code{first_valid_date}, \code{first_valid_src} - the date of the client's earliest record with \code{flag_valid_record} equal to 1, and the source it came from. Note that \code{first_valid_date} can be later than \code{first_entry_date}: the earliest record of a client is often not one of the records that made them a case.
+\item \code{last_entry_date}, \code{last_entry_src} - the date of the client's latest included record, and the source it came from, regardless of whether that record was valid.
+\item \code{raw_in_[src]} - one column per source, counting the client's included records in that source.
+\item \code{valid_in_[src]} - one column per source, counting the client's valid records (i.e., the number of flags) in that source.
+}
+
+The source of the first/last record is determined by comparing dates, and ties are broken by the alphabetical order of the source labels, e.g., if a client's earliest date is present in both "dad" and "msp", \code{first_entry_src} is "dad". Records with a missing date never contribute to the first/last date or source.
 }
 \description{
 This function filters and pools, i.e., row-binds, qualified clients/groups from different sources with an option to summarize by client. Unlike \code{\link[=bind_source]{bind_source()}}, no need to supply variable names; the function will guess what should be included and their names from the supplied definition from \code{\link[=build_def]{build_def()}}. Whether a client is qualified relies on the flag variables set by \code{\link[=define_case]{define_case()}}. Therefore, this function is intended to be used only with the built-in \code{\link[=define_case]{define_case()}} as \code{def_fn} in \code{\link[=build_def]{build_def()}}.
