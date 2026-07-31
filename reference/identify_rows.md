@@ -178,12 +178,14 @@ identify_rows(iris, starts_with("Sepal"), "between", c(3, 5), if_all = TRUE)
 
 # applying to remote table; species starts with se or ends with ca
 iris_db <- dbplyr::memdb_frame(iris)
+#> Warning: memdb_frame(data.frame(...)) was deprecated in dbplyr 2.6.0.
+#> ℹ Use `copy_to(memdb(), df)` instead.
 identify_rows(iris_db, Species, "like", c("se%", "%ca"))
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL LIKE pattern: se% OR %ca
-#> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.53.1 [:memory:]
+#> # A query:  ?? x 5
+#> # Database: sqlite 3.53.3 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          5.1         3.5          1.4         0.2 setosa 
@@ -209,8 +211,8 @@ identify_rows(iris_db, Species, "glue_sql",
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` LIKE 'se%'
-#> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.53.1 [:memory:]
+#> # A query:  ?? x 5
+#> # Database: sqlite 3.53.3 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          5.1         3.5          1.4         0.2 setosa 
@@ -233,8 +235,8 @@ identify_rows(iris_db, Species, "glue_sql",
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL WHERE clause: `Species` IN ('setosa', 'virginica')
-#> # Source:   SQL [?? x 5]
-#> # Database: sqlite 3.53.1 [:memory:]
+#> # A query:  ?? x 5
+#> # Database: sqlite 3.53.3 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 #>           <dbl>       <dbl>        <dbl>       <dbl> <chr>  
 #>  1          5.1         3.5          1.4         0.2 setosa 

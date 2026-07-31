@@ -251,27 +251,27 @@ restrict_date(db, clnt_id, dates, n = 4, apart = 7, uid = uid) %>%
 #>   COALESCE(`temp_nm_flag_apart`, 0) AS `flag_restrict_date`
 #> FROM (
 #>   SELECT
-#>     `q01`.*,
+#>     *,
 #>     CASE WHEN ((`final_win_gap` * `sum_win_1`) >= 7) THEN 1 ELSE 0 END AS `temp_nm_flag_apart`
 #>   FROM (
 #>     SELECT
-#>       `q01`.*,
+#>       *,
 #>       MAX(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1` - MIN(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1` AS `final_win_gap`
 #>     FROM (
 #>       SELECT
-#>         `q01`.*,
+#>         *,
 #>         CASE
 #> WHEN (SUM(`in_win_1`) OVER (PARTITION BY `clnt_id`) >= (4 - 1 * 2)) THEN 1
 #> ELSE 0
 #> END AS `sum_win_1`
 #>       FROM (
 #>         SELECT
-#>           `dbplyr_SwlKLUUEdL`.*,
+#>           *,
 #>           CASE
 #> WHEN (`dates` BETWEEN MIN(`dates`) OVER `win1` + 7 AND MAX(`dates`) OVER `win1` - 7) THEN 1
 #> ELSE 0
 #> END AS `in_win_1`
-#>         FROM `dbplyr_SwlKLUUEdL`
+#>         FROM `dbplyr_tmp_SwlKLUUEdL`
 #>         WINDOW `win1` AS (PARTITION BY `clnt_id`)
 #>       ) AS `q01`
 #>     ) AS `q01`

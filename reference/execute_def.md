@@ -75,6 +75,8 @@ df <- data.frame(
 
 # make df a database table
 db <- dbplyr::tbl_memdb(df)
+#> Warning: `tbl_memdb()` was deprecated in dbplyr 2.6.0.
+#> ℹ Use `copy_to(memdb(), df)` instead
 
 # use build_def to make a toy definition
 sud_def <- build_def("SUD", # usually a disease name
@@ -127,8 +129,8 @@ sud_def %>% execute_def(with_data = list(src1 = df, src2 = db), force_proceed = 
 #> <0 rows> (or 0-length row.names)
 #> 
 #> $SUD.src2
-#> # Source:   SQL [?? x 8]
-#> # Database: sqlite 3.53.1 [:memory:]
+#> # A query:  ?? x 8
+#> # Database: sqlite 3.53.3 [:memory:]
 #> # ℹ 8 variables: def <lgl>, src <lgl>, clnt_id <int>, service_dt <int>,
 #> #   diagx <chr>, diagx_1 <chr>, diagx_2 <chr>, flag_restrict_n <lgl>
 #> 

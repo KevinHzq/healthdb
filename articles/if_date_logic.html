@@ -287,7 +287,7 @@ of SQL: the aggregate functions become window functions
 each pass becomes a nested subquery.</p>
 <p>You can see the generated SQL for yourself:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">dbplyr</span><span class="fu">::</span><span class="fu"><a href="https://dbplyr.tidyverse.org/reference/memdb_frame.html" class="external-link">memdb_frame</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">dbplyr</span><span class="fu">::</span><span class="fu"><a href="https://dbplyr.tidyverse.org/reference/memdb.html" class="external-link">memdb_frame</a></span><span class="op">(</span></span>
 <span>  clnt_id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  uid <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,</span>
 <span>  dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">9</span>, <span class="fl">16</span>, <span class="fl">23</span>, <span class="fl">30</span><span class="op">)</span></span>
@@ -305,33 +305,33 @@ each pass becomes a nested subquery.</p>
 <span><span class="co">#&gt;   COALESCE(`temp_nm_flag_apart`, 0)<span style="color: #0000BB;"> AS </span>`flag_restrict_date`</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">FROM</span> (</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">SELECT</span></span></span>
-<span><span class="co">#&gt;     `q01`.*,</span></span>
+<span><span class="co">#&gt;     *,</span></span>
 <span><span class="co">#&gt;     CASE WHEN ((`final_win_gap` * `sum_win_1`) &gt;= 7) THEN 1 ELSE 0 END<span style="color: #0000BB;"> AS </span>`temp_nm_flag_apart`</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">FROM</span> (</span></span>
 <span><span class="co">#&gt;     <span style="color: #0000BB;">SELECT</span></span></span>
-<span><span class="co">#&gt;       `q01`.*,</span></span>
+<span><span class="co">#&gt;       *,</span></span>
 <span><span class="co">#&gt;       MAX(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1` - MIN(CASE WHEN (`in_win_1` = 1) THEN (`dates`) END) OVER `win1`<span style="color: #0000BB;"> AS </span>`final_win_gap`</span></span>
 <span><span class="co">#&gt;     <span style="color: #0000BB;">FROM</span> (</span></span>
 <span><span class="co">#&gt;       <span style="color: #0000BB;">SELECT</span></span></span>
-<span><span class="co">#&gt;         `q01`.*,</span></span>
+<span><span class="co">#&gt;         *,</span></span>
 <span><span class="co">#&gt;         CASE</span></span>
 <span><span class="co">#&gt; WHEN (SUM(`in_win_1`) OVER (PARTITION BY `clnt_id`) &gt;= (4 - 1 * 2)) THEN 1</span></span>
 <span><span class="co">#&gt; ELSE 0</span></span>
 <span><span class="co">#&gt; END<span style="color: #0000BB;"> AS </span>`sum_win_1`</span></span>
 <span><span class="co">#&gt;       <span style="color: #0000BB;">FROM</span> (</span></span>
 <span><span class="co">#&gt;         <span style="color: #0000BB;">SELECT</span></span></span>
-<span><span class="co">#&gt;           `dbplyr_SwlKLUUEdL`.*,</span></span>
+<span><span class="co">#&gt;           *,</span></span>
 <span><span class="co">#&gt;           CASE</span></span>
 <span><span class="co">#&gt; WHEN (`dates` BETWEEN MIN(`dates`) OVER `win1` + 7 AND MAX(`dates`) OVER `win1` - 7) THEN 1</span></span>
 <span><span class="co">#&gt; ELSE 0</span></span>
 <span><span class="co">#&gt; END<span style="color: #0000BB;"> AS </span>`in_win_1`</span></span>
-<span><span class="co">#&gt;         <span style="color: #0000BB;">FROM</span> `dbplyr_SwlKLUUEdL`</span></span>
+<span><span class="co">#&gt;         <span style="color: #0000BB;">FROM</span> `dbplyr_tmp_SwlKLUUEdL`</span></span>
 <span><span class="co">#&gt;         <span style="color: #0000BB;">WINDOW</span> `win1` AS (PARTITION BY `clnt_id`)</span></span>
-<span><span class="co">#&gt;       )<span style="color: #0000BB;"> AS </span>`q01`</span></span>
-<span><span class="co">#&gt;     )<span style="color: #0000BB;"> AS </span>`q01`</span></span>
+<span><span class="co">#&gt;       ) <span style="color: #0000BB;">AS </span>`q01`</span></span>
+<span><span class="co">#&gt;     ) <span style="color: #0000BB;">AS </span>`q01`</span></span>
 <span><span class="co">#&gt;     <span style="color: #0000BB;">WINDOW</span> `win1` AS (PARTITION BY `clnt_id`)</span></span>
-<span><span class="co">#&gt;   )<span style="color: #0000BB;"> AS </span>`q01`</span></span>
-<span><span class="co">#&gt; )<span style="color: #0000BB;"> AS </span>`q01`</span></span></code></pre></div>
+<span><span class="co">#&gt;   ) <span style="color: #0000BB;">AS </span>`q01`</span></span>
+<span><span class="co">#&gt; ) <span style="color: #0000BB;">AS </span>`q01`</span></span></code></pre></div>
 <p>Reading from the innermost subquery outward, you can follow the
 passes of the search: <code>in_win_1</code> (the first window),
 <code>sum_win_1</code> (enough dates left?), then the final gap check —
@@ -434,7 +434,7 @@ logic to the database.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
