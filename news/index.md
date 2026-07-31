@@ -11,6 +11,52 @@
   which generates the same valid SQL on every backend and on both
   ‘dbplyr’ 2.5.x and 2.6.0.
 
+- pool_case() with `output_lvl = "clnt"` now also reports
+  `first_entry_date` and `first_entry_src`, the mirror image of
+  `last_entry_date`/`last_entry_src`: the date and source of the
+  client’s earliest included record, whether or not it was a valid one.
+  This is distinct from `first_valid_date`, which is the earliest record
+  that counted towards the case definition and is therefore often later
+  than the client’s very first record.
+
+- Fixed pool_case() with `output_lvl = "clnt"` reporting the wrong
+  `first_valid_src` and `last_entry_src` on the data.frame backend. Both
+  were taken from the first/last row of the client rather than from the
+  row holding the first/last date, so they reported the first/last
+  source in binding order (which is the same for every client) whenever
+  the bound records were not already sorted by date. The source is now
+  found by comparing dates on both backends, with ties broken by the
+  alphabetical order of the source labels, matching what the database
+  backend already produced. Records with a missing date no longer
+  influence the result on either backend.
+
+- The return value of pool_case() is now documented column by column for
+  both `output_lvl` options.
+
+- fetch_var() on a data.frame no longer relies on
+  [`left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
+  preserving the row order of its input when re-attaching the fetched
+  variables. Matched values are now re-aligned by an internal row id, so
+  results stay correct even when the join methods are overridden by a
+  backend that does not guarantee row order (e.g., ‘duckplyr’ via
+  `methods_overwrite()`, under which fetched values could previously be
+  silently attached to the wrong rows). The one-to-one check is now
+  based on the row ids, which is slightly stronger than the previous
+  row-count check.
+
+- fetch_var() now errors informatively when the names of fetched
+  variables clash with each other, with columns already in `data`, or
+  with keys not used in their linkage. Previously such clashes were
+  resolved silently by renaming (e.g., `var.x`/`var.y` or `var...2`), so
+  an output column could carry a name that no longer meant what it
+  appeared to; a variable sharing a name with an unused key was
+  particularly deceptive, as `data`’s own column shadowed the fetched
+  one.
+
+- fetch_var() now rejects any non-formula element in `linkage` up front
+  (previously a single valid formula let malformed elements through to
+  an obscure error), and tolerates duplicated key names after `|`.
+
 - collapse_episode() now removes records with a missing (`NA`) start or
   end date (with a warning reporting the count) before deriving
   episodes, consistent with restrict_date(). Previously a single missing

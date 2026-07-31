@@ -550,21 +550,22 @@ pool_case(result_list,
   include_src = "has_valid",
   force_proceed = TRUE
 )
-#> # A tibble: 29 × 10
-#>    def   clnt_id first_valid_date first_valid_src last_entry_date last_entry_src
-#>    <chr>   <int>            <dbl> <chr>                     <dbl> <chr>         
-#>  1 SUD         1            18064 hosp                      18064 hosp          
-#>  2 SUD         4            16625 hosp                      17279 hosp          
-#>  3 SUD         5            16614 hosp                      17414 hosp          
-#>  4 SUD         7            17700 hosp                      17865 hosp          
-#>  5 SUD         8            17821 hosp                      18135 hosp          
-#>  6 SUD         9            17637 hosp                      18344 hosp          
-#>  7 SUD        11            17675 hosp                      18395 hosp          
-#>  8 SUD        12            17888 hosp                      17888 hosp          
-#>  9 SUD        13            18342 hosp                      18342 hosp          
-#> 10 SUD        16            18088 hosp                      18088 hosp          
+#> # A tibble: 29 × 12
+#>    def   clnt_id first_entry_date first_entry_src first_valid_date
+#>    <chr>   <int>            <dbl> <chr>                      <dbl>
+#>  1 SUD         1            18064 hosp                       18064
+#>  2 SUD         4            16625 hosp                       16625
+#>  3 SUD         5            16614 hosp                       16614
+#>  4 SUD         7            17700 hosp                       17700
+#>  5 SUD         8            17821 hosp                       17821
+#>  6 SUD         9            17637 hosp                       17637
+#>  7 SUD        11            17675 hosp                       17675
+#>  8 SUD        12            17888 hosp                       17888
+#>  9 SUD        13            18342 hosp                       18342
+#> 10 SUD        16            18088 hosp                       18088
 #> # ℹ 19 more rows
-#> # ℹ 4 more variables: raw_in_claim <dbl>, raw_in_hosp <dbl>,
+#> # ℹ 7 more variables: first_valid_src <chr>, last_entry_date <dbl>,
+#> #   last_entry_src <chr>, raw_in_claim <dbl>, raw_in_hosp <dbl>,
 #> #   valid_in_claim <int>, valid_in_hosp <int>
 ```
 

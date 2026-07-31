@@ -67,12 +67,12 @@
 
 <dt id="arg-output-lvl">output_lvl<a class="anchor" aria-label="anchor" href="#arg-output-lvl"></a></dt>
 <dd><p>Either:</p><ul><li><p>"raw" - output all records (default),</p></li>
-<li><p>or "clnt" - output one record per client with summaries including date and source of the first valid record ('first_valid_date/src'), and the latest record ('last_entry_date/src'). Source-specific record counts are also provided (see the return section).</p></li>
+<li><p>or "clnt" - output one record per client with summaries including the date and source of the earliest record ('first_entry_date/src'), the first valid record ('first_valid_date/src'), and the latest record ('last_entry_date/src'). Source-specific record counts are also provided (see the return section).</p></li>
 </ul></dd>
 
 
 <dt id="arg-include-src">include_src<a class="anchor" aria-label="anchor" href="#arg-include-src"></a></dt>
-<dd><p>Character. It determines records from which sources should be included. This matters when clients were identified only from, not all, but some of the sources. This choice will not impact the number of client that would be identified but has impact on the number of records and the latest entry date. The options are one of:</p><ul><li><p>"all" - records from all sources are included;</p></li>
+<dd><p>Character. It determines records from which sources should be included. This matters when clients were identified only from, not all, but some of the sources. This choice will not impact the number of client that would be identified but has impact on the number of records and the first/latest entry date. The options are one of:</p><ul><li><p>"all" - records from all sources are included;</p></li>
 <li><p>"has_valid" - for each client, records from sources that contain at least one valid record are included;</p></li>
 <li><p>"n_per_clnt" - for each client, if they had fewer than <code>n_per_clnt</code> records in a source (see <code><a href="restrict_n.html">restrict_n()</a></code>), then records from that source are removed.</p></li>
 </ul></dd>
@@ -84,7 +84,19 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame or remote table with clients that satisfied the predefined case definition. Columns started with "raw_in_" are source-specific counts of raw records, and columns started with "valid_in_" are the number of valid entries (or the number of flags) in each source.</p>
+    <p>A data.frame or remote table with clients that satisfied the predefined case definition. The columns depend on <code>output_lvl</code>.</p>
+<p>With <code>output_lvl = "raw"</code>, the output is the row-bound records of the qualified clients. Note that these are the records <code><a href="define_case.html">define_case()</a></code> returned for each source, i.e., only those matching the codes in <code>vals</code>, further subset by <code>include_src</code>; they are referred to as the client's "included records" below. The variables that <code><a href="build_def.html">build_def()</a></code> named in the definition are kept and renamed to a common set of names:</p><ul><li><p><code>def</code> - the definition label (<code>def_lab</code> in <code><a href="build_def.html">build_def()</a></code>) the record was identified by.</p></li>
+<li><p><code>src</code> - the source label (<code>src_labs</code> in <code><a href="build_def.html">build_def()</a></code>) the record came from.</p></li>
+<li><p><code>clnt_id</code>, <code>uid</code>, <code>date_var</code> - the client id, unique record id, and date variable, taken from the <code>clnt_id</code>, <code>uid</code>, and <code>date_var</code> arguments of <code><a href="define_case.html">define_case()</a></code>. <code>uid</code> and <code>date_var</code> are present only if they were supplied in the definition.</p></li>
+<li><p><code>flag_restrict_n</code>, <code>flag_restrict_date</code> - the flags produced by <code><a href="restrict_n.html">restrict_n()</a></code> and <code><a href="restrict_date.html">restrict_date()</a></code>, present only if the definition used <code>n_per_clnt</code> greater than 1, or <code>apart</code>/<code>within</code>, respectively.</p></li>
+<li><p><code>flag_valid_record</code> - 1 if the record satisfied all the criteria of the definition, and 0 otherwise. It is taken from <code>flag_restrict_date</code> if present, otherwise from <code>flag_restrict_n</code>, and is filled with 1 for the sources that had no such flag (i.e., sources whose criteria were applied by filtering instead of flagging).</p></li>
+<li><p><code>src_No</code> - the position of the source in the input list. This is added by <code><a href="bind_source.html">bind_source()</a></code> when binding local data.frames only, and is absent when all inputs are remote tables.</p></li>
+</ul><p>With <code>output_lvl = "clnt"</code>, the output has one row per <code>def</code> and <code>clnt_id</code> summarizing that client's included records. The date columns are present only if <code>date_var</code> was supplied for every source in the definition; otherwise they are omitted with a warning.</p><ul><li><p><code>first_entry_date</code>, <code>first_entry_src</code> - the date of the client's earliest included record, and the source it came from, regardless of whether that record was valid.</p></li>
+<li><p><code>first_valid_date</code>, <code>first_valid_src</code> - the date of the client's earliest record with <code>flag_valid_record</code> equal to 1, and the source it came from. Note that <code>first_valid_date</code> can be later than <code>first_entry_date</code>: the earliest record of a client is often not one of the records that made them a case.</p></li>
+<li><p><code>last_entry_date</code>, <code>last_entry_src</code> - the date of the client's latest included record, and the source it came from, regardless of whether that record was valid.</p></li>
+<li><p><code>raw_in_[src]</code> - one column per source, counting the client's included records in that source.</p></li>
+<li><p><code>valid_in_[src]</code> - one column per source, counting the client's valid records (i.e., the number of flags) in that source.</p></li>
+</ul><p>The source of the first/last record is determined by comparing dates, and ties are broken by the alphabetical order of the source labels, e.g., if a client's earliest date is present in both "dad" and "msp", <code>first_entry_src</code> is "dad". Records with a missing date never contribute to the first/last date or source.</p>
     </div>
 
     <div class="section level2">

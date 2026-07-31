@@ -15,6 +15,17 @@ input, an error will be given when one-to-many joins were detected.
 However, such checking could be an expensive operation on remote source.
 Therefore, for database input, the result will not be checked.
 
+The names of the fetched variables must not clash with each other, with
+columns already in `data`, or with any key not used in their linkage
+(see the `|` syntax below); an error will be given in these cases, as
+the clashing columns would otherwise be silently renamed (e.g.,
+`var.x`/`var.y`) with results that no longer mean what their names
+suggest. Also note that `|` is reserved for separating variables and
+keys in the linkage formulas and thus cannot be used within the
+'tidyselect' expressions, e.g., use
+`c(starts_with("a"), ends_with("b"))` instead of
+`starts_with("a") | ends_with("b")`.
+
 ## Usage
 
 ``` r

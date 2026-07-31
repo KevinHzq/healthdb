@@ -45,9 +45,10 @@ pool_case(
   - "raw" - output all records (default),
 
   - or "clnt" - output one record per client with summaries including
-    date and source of the first valid record ('first_valid_date/src'),
-    and the latest record ('last_entry_date/src'). Source-specific
-    record counts are also provided (see the return section).
+    the date and source of the earliest record ('first_entry_date/src'),
+    the first valid record ('first_valid_date/src'), and the latest
+    record ('last_entry_date/src'). Source-specific record counts are
+    also provided (see the return section).
 
 - include_src:
 
@@ -55,7 +56,7 @@ pool_case(
   included. This matters when clients were identified only from, not
   all, but some of the sources. This choice will not impact the number
   of client that would be identified but has impact on the number of
-  records and the latest entry date. The options are one of:
+  records and the first/latest entry date. The options are one of:
 
   - "all" - records from all sources are included;
 
@@ -75,9 +76,81 @@ pool_case(
 ## Value
 
 A data.frame or remote table with clients that satisfied the predefined
-case definition. Columns started with "raw_in\_" are source-specific
-counts of raw records, and columns started with "valid_in\_" are the
-number of valid entries (or the number of flags) in each source.
+case definition. The columns depend on `output_lvl`.
+
+With `output_lvl = "raw"`, the output is the row-bound records of the
+qualified clients. Note that these are the records
+[`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md)
+returned for each source, i.e., only those matching the codes in `vals`,
+further subset by `include_src`; they are referred to as the client's
+"included records" below. The variables that
+[`build_def()`](https://kevinhzq.github.io/healthdb/reference/build_def.md)
+named in the definition are kept and renamed to a common set of names:
+
+- `def` - the definition label (`def_lab` in
+  [`build_def()`](https://kevinhzq.github.io/healthdb/reference/build_def.md))
+  the record was identified by.
+
+- `src` - the source label (`src_labs` in
+  [`build_def()`](https://kevinhzq.github.io/healthdb/reference/build_def.md))
+  the record came from.
+
+- `clnt_id`, `uid`, `date_var` - the client id, unique record id, and
+  date variable, taken from the `clnt_id`, `uid`, and `date_var`
+  arguments of
+  [`define_case()`](https://kevinhzq.github.io/healthdb/reference/define_case.md).
+  `uid` and `date_var` are present only if they were supplied in the
+  definition.
+
+- `flag_restrict_n`, `flag_restrict_date` - the flags produced by
+  [`restrict_n()`](https://kevinhzq.github.io/healthdb/reference/restrict_n.md)
+  and
+  [`restrict_date()`](https://kevinhzq.github.io/healthdb/reference/restrict_date.md),
+  present only if the definition used `n_per_clnt` greater than 1, or
+  `apart`/`within`, respectively.
+
+- `flag_valid_record` - 1 if the record satisfied all the criteria of
+  the definition, and 0 otherwise. It is taken from `flag_restrict_date`
+  if present, otherwise from `flag_restrict_n`, and is filled with 1 for
+  the sources that had no such flag (i.e., sources whose criteria were
+  applied by filtering instead of flagging).
+
+- `src_No` - the position of the source in the input list. This is added
+  by
+  [`bind_source()`](https://kevinhzq.github.io/healthdb/reference/bind_source.md)
+  when binding local data.frames only, and is absent when all inputs are
+  remote tables.
+
+With `output_lvl = "clnt"`, the output has one row per `def` and
+`clnt_id` summarizing that client's included records. The date columns
+are present only if `date_var` was supplied for every source in the
+definition; otherwise they are omitted with a warning.
+
+- `first_entry_date`, `first_entry_src` - the date of the client's
+  earliest included record, and the source it came from, regardless of
+  whether that record was valid.
+
+- `first_valid_date`, `first_valid_src` - the date of the client's
+  earliest record with `flag_valid_record` equal to 1, and the source it
+  came from. Note that `first_valid_date` can be later than
+  `first_entry_date`: the earliest record of a client is often not one
+  of the records that made them a case.
+
+- `last_entry_date`, `last_entry_src` - the date of the client's latest
+  included record, and the source it came from, regardless of whether
+  that record was valid.
+
+- `raw_in_[src]` - one column per source, counting the client's included
+  records in that source.
+
+- `valid_in_[src]` - one column per source, counting the client's valid
+  records (i.e., the number of flags) in that source.
+
+The source of the first/last record is determined by comparing dates,
+and ties are broken by the alphabetical order of the source labels,
+e.g., if a client's earliest date is present in both "dad" and "msp",
+`first_entry_src` is "dad". Records with a missing date never contribute
+to the first/last date or source.
 
 ## Examples
 
