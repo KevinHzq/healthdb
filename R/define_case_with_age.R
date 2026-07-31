@@ -114,7 +114,7 @@
 #'   ),
 #'   define_case_with_age
 #' )
-define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, mode = c("flag", "filter"), birth_date = NULL, age = NULL, age_range = NULL, force_collect = FALSE, verbose = getOption("healthdb.verbose"), ...) {
+define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_clnt = 1, date_var = NULL, apart = NULL, within = NULL, uid = NULL, excl_vals = NULL, excl_args = NULL, keep = c("all", "first", "last"), if_all = FALSE, ignore_case = TRUE, mode = c("flag", "filter"), birth_date = NULL, age = NULL, age_range = NULL, force_collect = FALSE, verbose = getOption("healthdb.verbose"), ...) {
   stopifnot(rlang::is_named2(excl_args))
 
   rlang::check_required(clnt_id)
@@ -153,8 +153,8 @@ define_case_with_age <- function(data, vars, match = "in", vals, clnt_id, n_per_
   if (keep != "all" & !has_date_var) stop("`date_var` must be supplied for sorting if not keeping all records")
 
   # capture the arguments to be re-used in two identify_row calls
-  arg <- rlang::enexprs(vars, match, vals, if_all, verbose)
-  names(arg) <- purrr::map_chr(rlang::exprs(vars, match, vals, if_all, verbose), rlang::as_label)
+  arg <- rlang::enexprs(vars, match, vals, if_all, ignore_case, verbose)
+  names(arg) <- purrr::map_chr(rlang::exprs(vars, match, vals, if_all, ignore_case, verbose), rlang::as_label)
   # data is included separately since the call should be evaluate on the data already assigned to `data`,
   # instead of the original symbol of data in the global environment
   incl <- rlang::call2("identify_row", data = rlang::expr(data), !!!arg)

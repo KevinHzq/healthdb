@@ -19,6 +19,7 @@ define_case_with_age(
   excl_args = NULL,
   keep = c("all", "first", "last"),
   if_all = FALSE,
+  ignore_case = TRUE,
   mode = c("flag", "filter"),
   birth_date = NULL,
   age = NULL,
@@ -62,6 +63,8 @@ define_case_with_age(
 }}
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
+
+\item{ignore_case}{A logical for whether \code{match = "like"} and \code{"start"} should ignore case. Default is TRUE, because codes in administrative data are often inconsistently cased, and a case-sensitive match would silently miss records. Both the values and the patterns are lower-cased before comparison, so the result does not depend on the backend: without it, matching would be case-sensitive for data.frames, case-sensitive or not on remote tables depending on the database, the database's collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive match, which on a large table can also be much faster, as wrapping the column in \code{LOWER()} prevents the database from using an index on it.}
 
 \item{mode}{Either:
 \itemize{

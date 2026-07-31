@@ -1,5 +1,5 @@
 #' @export
-identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
+identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, ignore_case = TRUE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   # input checks
   match <- rlang::arg_match0(match, c("in", "start", "regex", "like", "between", "glue_sql"))
   if (match == "glue_sql") stop("'glue_sql' match option cannot be applied to local data frame.")
@@ -42,7 +42,7 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
       match_str <- paste0("^", vals, collapse = "|")
       match_msg <- "satisfied regular expression:"
       # extract matched values from all possible ones
-      matched_vals <- all_val[data.table::like(all_val, match_str)]
+      matched_vals <- all_val[data.table::like(all_val, match_str, ignore.case = ignore_case)]
     },
     "regex" = {
       match_str <- paste0(vals, collapse = "|")
@@ -52,7 +52,11 @@ identify_rows.data.frame <- function(data, vars, match = c("in", "start", "regex
     "like" = {
       match_str <- paste0(vals, collapse = "|")
       match_msg <- "satisfied LIKE expression:"
-      matched_vals <- all_val[stringr::str_like(all_val, match_str)]
+      matched_vals <- if (ignore_case) {
+        all_val[stringr::str_like(tolower(all_val), tolower(match_str))]
+      } else {
+        all_val[stringr::str_like(all_val, match_str)]
+      }
     },
     "in" = {
       match_str <- deparse(substitute(vals))
