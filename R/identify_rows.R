@@ -15,7 +15,7 @@
 #'  - "between": dplyr::between(var, val1, val2)
 #'  - "glue_sql": For remote table only, this gives full control of the WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
 #'
-#'  Note on case sensitivity of "like"/"start" matching: the data.frame method ([stringr::str_like()]) is case-sensitive, while for remote tables it follows the database. For example, 'LIKE' is case-sensitive on PostgreSQL, case-insensitive for ASCII characters on SQLite, and determined by the collation (commonly case-insensitive) on SQL Server. For portable results, match the case of the values in your data, or normalize the case of both sides, e.g., `identify_rows(dplyr::mutate(data, var = toupper(var)), var, "like", toupper(vals))`.
+#'  Matching by "like"/"start" ignores case by default; see `ignore_case`. The other match types are unaffected: "in" and "between" compare values as they are, and "regex" follows the pattern you supply (use `"(?i)"` to make it case-insensitive).
 #' @param vals Depending on `match`, it takes different input:
 #'  - "in": a vector of values (numeric/character/Date)
 #'  - "start": a vector of numeric/character that would be modified into a regex or LIKE pattern string by adding "^" in front or "%" at the end
@@ -23,6 +23,7 @@
 #'  - "between": a vector of numeric or date with exactly two elements, e.g., c(lower, upper)
 #'  - "glue_sql": a string of a SQL WHERE clause, which will be passed to [glue::glue_sql()]. See examples for detail.
 #' @param if_all A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.
+#' @param ignore_case A logical for whether `match = "like"` and `"start"` should ignore case. Default is TRUE, because codes in administrative data are often inconsistently cased, and a case-sensitive match would silently miss records. Both the values and the patterns are lower-cased before comparison, so the result does not depend on the backend: without it, matching would be case-sensitive for data.frames, case-sensitive or not on remote tables depending on the database, the database's collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive match, which on a large table can also be much faster, as wrapping the column in `LOWER()` prevents the database from using an index on it.
 #' @param verbose A logical for whether to print an explanation of the query and an overview of the result. Default is fetching from options. Use `options(healthdb.verbose = FALSE)` to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.
 #' @param query_only A logical for whether keeping the output as remote table (Default TRUE) or downloading the query result as a tibble (FALSE). The argument is ignored when the input data is a data.frame/tibble.
 #' @param ... For remote table method only. Additional arguments passing to [glue::glue_sql()] for parameterized queries.
@@ -51,7 +52,7 @@
 #'   "{`vars`} IN ({what*})",
 #'   what = c("setosa", "virginica")
 #' )
-identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
+identify_rows <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, ignore_case = TRUE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   rlang::check_required(vars)
   rlang::check_required(vals)
   if (length(vals) == 0) {

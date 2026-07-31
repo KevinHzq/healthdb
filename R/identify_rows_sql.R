@@ -1,5 +1,5 @@
 #' @export
-identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
+identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", "like", "between", "glue_sql"), vals, if_all = FALSE, ignore_case = TRUE, verbose = getOption("healthdb.verbose"), query_only = TRUE, ...) {
   # input checks
   check_con(data)
 
@@ -67,7 +67,17 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
     # left start empty so getting action from like
     "start" = ,
     "like" = {
-      like_conds <- lapply(vals, function(x) rlang::expr((!!across)(dplyr::all_of(vars), ~ stringr::str_like(., !!x))))
+      # both sides are lower-cased for a case-insensitive match, instead of
+      # leaving it to the database: LIKE is case-sensitive on some backends and
+      # not others, and 'dbplyr' 2.6.0 additionally pins str_like() to
+      # case-sensitive on SQL Server with an explicit COLLATE clause.
+      like_conds <- lapply(vals, function(x) {
+        if (ignore_case) {
+          rlang::expr((!!across)(dplyr::all_of(vars), ~ stringr::str_like(tolower(.), !!tolower(x))))
+        } else {
+          rlang::expr((!!across)(dplyr::all_of(vars), ~ stringr::str_like(., !!x)))
+        }
+      })
       data %>% dplyr::filter(!!Reduce(function(lhs, rhs) rlang::expr(!!lhs | !!rhs), like_conds))
     },
     "regex" = ,
@@ -95,11 +105,19 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
   if (verbose) {
     # no result overview for remote tables as the query would have to be
     # executed immediately, which is not desired
-    rlang::inform(c(
+    msg <- c(
       "i" = "Identify records with condition(s):",
       "*" = glue::glue('where {ifelse(if_all & length(vars) > 1, "all of the", ifelse(length(vars) > 1, "at least one of the", "the"))} {paste0(vars, collapse = ", ")} column(s) in each record'),
       "*" = glue::glue("contains a value {match_msg} {match_str}")
-    ))
+    )
+    # only the LIKE-based match types are affected by ignore_case
+    if (match %in% c("like", "start")) {
+      msg <- c(msg, "*" = ifelse(ignore_case,
+        "ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster on a large table because the database can then use an index on the column(s)",
+        "matching case exactly"
+      ))
+    }
+    rlang::inform(msg)
   }
 
   # job done

@@ -11,6 +11,7 @@ identify_rows(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
+  ignore_case = TRUE,
   verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
@@ -22,6 +23,7 @@ identify_row(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
+  ignore_case = TRUE,
   verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
@@ -42,7 +44,7 @@ identify_row(
 \item "glue_sql": For remote table only, this gives full control of the WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
 }
 
-Note on case sensitivity of "like"/"start" matching: the data.frame method (\code{\link[stringr:str_like]{stringr::str_like()}}) is case-sensitive, while for remote tables it follows the database. For example, 'LIKE' is case-sensitive on PostgreSQL, case-insensitive for ASCII characters on SQLite, and determined by the collation (commonly case-insensitive) on SQL Server. For portable results, match the case of the values in your data, or normalize the case of both sides, e.g., \code{identify_rows(dplyr::mutate(data, var = toupper(var)), var, "like", toupper(vals))}.}
+Matching by "like"/"start" ignores case by default; see \code{ignore_case}. The other match types are unaffected: "in" and "between" compare values as they are, and "regex" follows the pattern you supply (use \code{"(?i)"} to make it case-insensitive).}
 
 \item{vals}{Depending on \code{match}, it takes different input:
 \itemize{
@@ -54,6 +56,8 @@ Note on case sensitivity of "like"/"start" matching: the data.frame method (\cod
 }}
 
 \item{if_all}{A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.}
+
+\item{ignore_case}{A logical for whether \code{match = "like"} and \code{"start"} should ignore case. Default is TRUE, because codes in administrative data are often inconsistently cased, and a case-sensitive match would silently miss records. Both the values and the patterns are lower-cased before comparison, so the result does not depend on the backend: without it, matching would be case-sensitive for data.frames, case-sensitive or not on remote tables depending on the database, the database's collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive match, which on a large table can also be much faster, as wrapping the column in \code{LOWER()} prevents the database from using an index on it.}
 
 \item{verbose}{A logical for whether to print an explanation of the query and an overview of the result. Default is fetching from options. Use \code{options(healthdb.verbose = FALSE)} to suppress once and for all. Result overview is not for remote tables as the query is not executed immediately, thus no result is available for summary without adding an extra run (may be slow) of the query.}
 
