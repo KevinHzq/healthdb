@@ -57,7 +57,8 @@
 #'
 #' # example if some y is remote
 #' # make df2 as database table
-#' db2 <- dbplyr::tbl_memdb(df2)
+#' con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+#' db2 <- dplyr::copy_to(con, df2, "df2")
 #'
 #' fetch_var(df1,
 #'   keys = c(id, year),

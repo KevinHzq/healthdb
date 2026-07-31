@@ -23,5 +23,11 @@
   toremove <- names(op.healthdb) %in% names(op)
   if (any(toremove)) options(op.healthdb[toremove])
 
+  # close the in-memory test database from memdb_con() if one was opened
+  con <- memdb_cache$con
+  if (!is.null(con) && requireNamespace("DBI", quietly = TRUE) && DBI::dbIsValid(con)) {
+    DBI::dbDisconnect(con)
+  }
+
   invisible()
 }
