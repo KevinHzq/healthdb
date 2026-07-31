@@ -82,7 +82,12 @@ identify_rows.tbl_sql <- function(data, vars, match = c("in", "start", "regex", 
       data %>% dplyr::filter((!!across)(dplyr::all_of(vars), ~ dplyr::between(., !!vals[1], !!vals[2])))
     },
     "glue_sql" = {
-      data %>% dplyr::filter(dbplyr::sql(match_str))
+      # 'match_str' is an opaque SQL string, so dbplyr cannot tell that it is
+      # already a condition. Wrapping it in CASE WHEN makes the top-level
+      # expression a comparison: SQL Server has no boolean value type, and
+      # rejects the CAST(... AS BIT) that dbplyr (>= 2.6.0) adds otherwise.
+      # The generated SQL is identical across dbplyr versions and backends.
+      data %>% dplyr::filter(dbplyr::sql(paste0("CASE WHEN (", match_str, ") THEN 1 ELSE 0 END")) == 1L)
     }
   )
 
