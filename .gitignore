@@ -5,3 +5,5 @@
 .Rprofile
 inst/doc
 docs
+manuscript/
+.DS_Store
