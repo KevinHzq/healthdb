@@ -37,6 +37,8 @@ A data.frame or remote table containing all original columns of x and new variab
 \description{
 This function fetches variables from different tables that are linked by common IDs. It calls \code{\link[dplyr:left_join]{dplyr::left_join()}} multiple times with various source tables (y argument of the join) to gather variables. It is not meant to replace left_join() but simplify syntax for the situation that you started off with a table of your study sample and wanted to gather covariates from different sources linked by common client IDs, which is often the case when working with healthcare databases.
 \strong{Caution}: this function is intended for one-to-one joins only because it could be problematic when we do not know which source caused a one-to-many join and changed the number of rows. For data.frame input, an error will be given when one-to-many joins were detected. However, such checking could be an expensive operation on remote source. Therefore, for database input, the result will not be checked.
+
+The names of the fetched variables must not clash with each other, with columns already in \code{data}, or with any key not used in their linkage (see the \code{|} syntax below); an error will be given in these cases, as the clashing columns would otherwise be silently renamed (e.g., \code{var.x}/\code{var.y}) with results that no longer mean what their names suggest. Also note that \code{|} is reserved for separating variables and keys in the linkage formulas and thus cannot be used within the 'tidyselect' expressions, e.g., use \code{c(starts_with("a"), ends_with("b"))} instead of \code{starts_with("a") | ends_with("b")}.
 }
 \examples{
 # make toy data

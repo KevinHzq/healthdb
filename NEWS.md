@@ -2,6 +2,12 @@
 
 -   Fixed identify_row() with `match = "glue_sql"` failing on SQL Server with "Incorrect syntax near the keyword 'AS'" under 'dbplyr' 2.6.0. The supplied SQL fragment is opaque to 'dbplyr', which since that version wraps it in `CAST(... AS BIT) = 1` on SQL Server; T-SQL has no boolean value type, so a condition cannot be a `CAST` operand. The fragment is now wrapped in `CASE WHEN ... THEN 1 ELSE 0 END = 1`, which generates the same valid SQL on every backend and on both 'dbplyr' 2.5.x and 2.6.0.
 
+-   fetch_var() on a data.frame no longer relies on `left_join()` preserving the row order of its input when re-attaching the fetched variables. Matched values are now re-aligned by an internal row id, so results stay correct even when the join methods are overridden by a backend that does not guarantee row order (e.g., 'duckplyr' via `methods_overwrite()`, under which fetched values could previously be silently attached to the wrong rows). The one-to-one check is now based on the row ids, which is slightly stronger than the previous row-count check.
+
+-   fetch_var() now errors informatively when the names of fetched variables clash with each other, with columns already in `data`, or with keys not used in their linkage. Previously such clashes were resolved silently by renaming (e.g., `var.x`/`var.y` or `var...2`), so an output column could carry a name that no longer meant what it appeared to; a variable sharing a name with an unused key was particularly deceptive, as `data`'s own column shadowed the fetched one.
+
+-   fetch_var() now rejects any non-formula element in `linkage` up front (previously a single valid formula let malformed elements through to an obscure error), and tolerates duplicated key names after `|`.
+
 -   collapse_episode() now removes records with a missing (`NA`) start or end date (with a warning reporting the count) before deriving episodes, consistent with restrict_date(). Previously a single missing end date silently merged every later record of that client into one episode on the data.frame backend (an `NA` propagated through `cummax()`), and the data.frame and database backends disagreed on the result. Both backends now drop such records and agree.
 
 -   collapse_episode() on a data.frame now errors when a column would clash with the names it derives (`epi_id`, `epi_no`, `epi_seq`, `epi_start_dt`, `epi_stop_dt`, and internal helpers), matching the database method. Previously the data.frame method silently renamed the clashing column with an `_og` suffix.
