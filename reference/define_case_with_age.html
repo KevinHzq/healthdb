@@ -68,6 +68,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span>  excl_args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"first"</span>, <span class="st">"last"</span><span class="op">)</span>,</span>
 <span>  if_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore_case <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flag"</span>, <span class="st">"filter"</span><span class="op">)</span>,</span>
 <span>  birth_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  age <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -140,6 +141,10 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 
 <dt id="arg-if-all">if_all<a class="anchor" aria-label="anchor" href="#arg-if-all"></a></dt>
 <dd><p>A logical for whether combining the predicates (if multiple columns were selected by vars) with AND instead of OR. Default is FALSE, e.g., var1 in vals OR var2 in vals.</p></dd>
+
+
+<dt id="arg-ignore-case">ignore_case<a class="anchor" aria-label="anchor" href="#arg-ignore-case"></a></dt>
+<dd><p>A logical for whether <code>match = "like"</code> and <code>"start"</code> should ignore case. Default is TRUE, because codes in administrative data are often inconsistently cased, and a case-sensitive match would silently miss records. Both the values and the patterns are lower-cased before comparison, so the result does not depend on the backend: without it, matching would be case-sensitive for data.frames, case-sensitive or not on remote tables depending on the database, the database's collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive match, which on a large table can also be much faster, as wrapping the column in <code>LOWER()</code> prevents the database from using an index on it.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
@@ -344,6 +349,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a   d   e   f   g   h   i   j   m   n   o   q   r   s   t   v   w   x   y   z </span>
@@ -354,6 +360,7 @@ For other age restrictions based on a fixed time point (e.g., age at the baselin
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Identify records with condition(s):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> where at least one of the diagx, diagx_1, diagx_2 column(s) in each record</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> contains a value satisfied regular expression: ^n|^o|^p</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   b   e   j   n   o   p   q   w   x NAs </span>

@@ -42,6 +42,7 @@ define_case(
   excl_args = NULL,
   keep = c("all", "first", "last"),
   if_all = FALSE,
+  ignore_case = TRUE,
   mode = c("flag", "filter"),
   force_collect = FALSE,
   verbose = getOption("healthdb.verbose"),
@@ -131,6 +132,19 @@ define_case(
   A logical for whether combining the predicates (if multiple columns
   were selected by vars) with AND instead of OR. Default is FALSE, e.g.,
   var1 in vals OR var2 in vals.
+
+- ignore_case:
+
+  A logical for whether `match = "like"` and `"start"` should ignore
+  case. Default is TRUE, because codes in administrative data are often
+  inconsistently cased, and a case-sensitive match would silently miss
+  records. Both the values and the patterns are lower-cased before
+  comparison, so the result does not depend on the backend: without it,
+  matching would be case-sensitive for data.frames, case-sensitive or
+  not on remote tables depending on the database, the database's
+  collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive
+  match, which on a large table can also be much faster, as wrapping the
+  column in `LOWER()` prevents the database from using an index on it.
 
 - mode:
 
@@ -260,6 +274,7 @@ purrr::pmap(
 #> ℹ Identify records with condition(s):
 #> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
 #> • contains a value satisfied regular expression: ^e|^f|^g|^h|^i|^j
+#> • ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
 #>   a   b   c   d   e   f   g   h   i   j   k   l   p   r   t   v   w   y NAs 
@@ -268,6 +283,7 @@ purrr::pmap(
 #> ℹ Identify records with condition(s):
 #> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
 #> • contains a value satisfied regular expression: ^n|^o|^p
+#> • ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
 #> c d e h j l o p q s v y 

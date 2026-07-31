@@ -2,6 +2,30 @@
 
 ## healthdb (development version)
 
+- **Behavior change**: identify_row() (and
+  define_case()/define_case_with_age(), which pass it through) with
+  `match = "like"` or `"start"` now ignores case by default, via the new
+  `ignore_case` argument. Codes in administrative data are often
+  inconsistently cased, so a case-sensitive match silently misses
+  records, e.g., `match = "start"` with `vals = "f10"` previously did
+  not find “F10” on a data.frame. Both the values and the patterns are
+  lower-cased before comparison, so the result no longer depends on the
+  backend. Previously the behavior was case-sensitive for data.frames,
+  and for remote tables it followed the database, its collation, and the
+  ‘dbplyr’ version: ‘dbplyr’ 2.5.x translated `str_like()` to
+  case-insensitive `ILIKE` on PostgreSQL and a bare, collation-dependent
+  `LIKE` on SQL Server, while 2.6.0 pins both to case-sensitive (on SQL
+  Server with an explicit `COLLATE Latin1_General_100_CS_AS` clause).
+  Set `ignore_case = FALSE` for the previous case-sensitive behavior; on
+  a large table it is also faster, as wrapping the column in `LOWER()`
+  prevents an index on it from being used. Only the comparison is
+  case-folded; the values in the output keep their original case. The
+  verbose output now reports whether the match ignores case, and points
+  to `ignore_case = FALSE` for speed when it does. The other match types
+  are unchanged: “in” and “between” compare values as they are, and
+  “regex” follows the supplied pattern (use `"(?i)"` for a
+  case-insensitive one).
+
 - make_test_dat() with `type = "database"` no longer emits a
   “[`src_memdb()`](https://dbplyr.tidyverse.org/reference/src_memdb.html)
   was deprecated in dbplyr 2.6.0” warning naming healthdb. The in-memory

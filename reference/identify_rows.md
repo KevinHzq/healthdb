@@ -23,6 +23,7 @@ identify_rows(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
+  ignore_case = TRUE,
   verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
@@ -34,6 +35,7 @@ identify_row(
   match = c("in", "start", "regex", "like", "between", "glue_sql"),
   vals,
   if_all = FALSE,
+  ignore_case = TRUE,
   verbose = getOption("healthdb.verbose"),
   query_only = TRUE,
   ...
@@ -76,16 +78,10 @@ identify_row(
   - "glue_sql": For remote table only, this gives full control of the
     WHERE clause using dplyr::filter(dbplyr::sql(glue::glue_sql(...)))
 
-  Note on case sensitivity of "like"/"start" matching: the data.frame
-  method
-  ([`stringr::str_like()`](https://stringr.tidyverse.org/reference/str_like.html))
-  is case-sensitive, while for remote tables it follows the database.
-  For example, 'LIKE' is case-sensitive on PostgreSQL, case-insensitive
-  for ASCII characters on SQLite, and determined by the collation
-  (commonly case-insensitive) on SQL Server. For portable results, match
-  the case of the values in your data, or normalize the case of both
-  sides, e.g.,
-  `identify_rows(dplyr::mutate(data, var = toupper(var)), var, "like", toupper(vals))`.
+  Matching by "like"/"start" ignores case by default; see `ignore_case`.
+  The other match types are unaffected: "in" and "between" compare
+  values as they are, and "regex" follows the pattern you supply (use
+  `"(?i)"` to make it case-insensitive).
 
 - vals:
 
@@ -111,6 +107,19 @@ identify_row(
   A logical for whether combining the predicates (if multiple columns
   were selected by vars) with AND instead of OR. Default is FALSE, e.g.,
   var1 in vals OR var2 in vals.
+
+- ignore_case:
+
+  A logical for whether `match = "like"` and `"start"` should ignore
+  case. Default is TRUE, because codes in administrative data are often
+  inconsistently cased, and a case-sensitive match would silently miss
+  records. Both the values and the patterns are lower-cased before
+  comparison, so the result does not depend on the backend: without it,
+  matching would be case-sensitive for data.frames, case-sensitive or
+  not on remote tables depending on the database, the database's
+  collation, and the 'dbplyr' version. Set to FALSE for a case-sensitive
+  match, which on a large table can also be much faster, as wrapping the
+  column in `LOWER()` prevents the database from using an index on it.
 
 - verbose:
 
@@ -184,6 +193,7 @@ identify_rows(iris_db, Species, "like", c("se%", "%ca"))
 #> ℹ Identify records with condition(s):
 #> • where the Species column(s) in each record
 #> • contains a value satisfied SQL LIKE pattern: se% OR %ca
+#> • ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster on a large table because the database can then use an index on the column(s)
 #> # A query:  ?? x 5
 #> # Database: sqlite 3.53.3 [:memory:]
 #>    Sepal.Length Sepal.Width Petal.Length Petal.Width Species

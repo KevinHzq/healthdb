@@ -186,6 +186,7 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> ℹ Identify records with condition(s):
 #> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
 #> • contains a value satisfied regular expression: ^304
+#> • ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
 #>  304 3040 3041 3042 3043 3044 3045 3046 3047 3048 3049 3050 3051 3052 3053 3054 
@@ -201,6 +202,7 @@ sud_by_src <- sud_def %>% execute_def(with_data = list(src1 = df1, src2 = df2))
 #> ℹ Identify records with condition(s):
 #> • where at least one of the diagx, diagx_1, diagx_2 column(s) in each record
 #> • contains a value satisfied regular expression: ^305
+#> • ignoring case. Use ignore_case = FALSE for a case-sensitive match, which may run faster
 #> 
 #> All unique value(s) and frequency in the result (as the conditions require just one of the columns containing target values; irrelevant values may come from other vars columns): 
 #>  304 3040 3041 3042 3043 3044 3045 3046 3047 3049  305 3050 3051 3052 3053 3054 
